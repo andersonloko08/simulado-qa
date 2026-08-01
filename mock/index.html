@@ -27,8 +27,7 @@
             <a href="../modules/index.html" class="nav-link" data-page="modules"><i class="fa-solid fa-book-open"></i> Módulos</a>
             <a href="index.html" class="nav-link" data-page="mock"><i class="fa-solid fa-microphone"></i> Mock Interview</a>
             <a href="../career/index.html" class="nav-link" data-page="career"><i class="fa-solid fa-compass"></i> Career Engine</a>
-            <a href="../companies/index.html" class="nav-link" data-page="companies"><i class="fa-solid fa-building"></i> Empresas</a>
-            <a href="../english/index.html" class="nav-link" data-page="english"><i class="fa-solid fa-language"></i> English</a>
+                        <a href="../english/index.html" class="nav-link" data-page="english"><i class="fa-solid fa-language"></i> English</a>
             <a href="../tracker/index.html" class="nav-link" data-page="tracker"><i class="fa-solid fa-chart-line"></i> Gaps</a>
             <a href="../roadmap/index.html" class="nav-link" data-page="roadmap"><i class="fa-solid fa-route"></i> Roadmap</a>
         </div>
@@ -135,7 +134,7 @@
     </main>
 
     <footer class="footer">
-        <p>InterviewOps Portugal &copy; 2026. Desenvolvido para estudos.</p>
+        <p>InterviewOps Portugal &copy; 2026. Desenvolvido para estudos. <a href="../privacidade/index.html" style="color: var(--primary);"><span data-i18n="privacy_title">Política de Privacidade</span></a></p>
     </footer>
 
     <script src="../javascript/app.js"></script>
@@ -143,16 +142,16 @@
         let QUESTION_DB = [];
         let session = { questions: [], index: 0, correct: 0, weak: 0, startedAt: null, timer: null, remaining: 0, duration: 120 };
 
-        const WEAK_KEY = 'interviewops_weak_categories';
+        const WEAK_KEY = 'weak_categories';
 
         function getWeakCategories() {
-            try { return JSON.parse(localStorage.getItem(WEAK_KEY)) || {}; } catch (e) { return {}; }
+            try { return storeGet(WEAK_KEY) || {}; } catch (e) { return {}; }
         }
 
         function addWeak(category) {
             const w = getWeakCategories();
             w[category] = (w[category] || 0) + 1;
-            localStorage.setItem(WEAK_KEY, JSON.stringify(w));
+            storeSet(WEAK_KEY, w);
         }
 
         document.addEventListener('DOMContentLoaded', async () => {

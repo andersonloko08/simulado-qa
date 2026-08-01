@@ -32,8 +32,7 @@
             <a href="modules/index.html" class="nav-link" data-page="modules"><i class="fa-solid fa-book-open"></i> Módulos</a>
             <a href="mock/index.html" class="nav-link" data-page="mock"><i class="fa-solid fa-microphone"></i> Mock Interview</a>
             <a href="career/index.html" class="nav-link" data-page="career"><i class="fa-solid fa-compass"></i> Career Engine</a>
-            <a href="companies/index.html" class="nav-link" data-page="companies"><i class="fa-solid fa-building"></i> Empresas</a>
-            <a href="english/index.html" class="nav-link" data-page="english"><i class="fa-solid fa-language"></i> English</a>
+                        <a href="english/index.html" class="nav-link" data-page="english"><i class="fa-solid fa-language"></i> English</a>
             <a href="tracker/index.html" class="nav-link" data-page="tracker"><i class="fa-solid fa-chart-line"></i> Gaps</a>
             <a href="roadmap/index.html" class="nav-link" data-page="roadmap"><i class="fa-solid fa-route"></i> Roadmap</a>
         </div>
@@ -88,29 +87,16 @@
             </div>
         </section>
 
-        <!-- COMPANIES PREVIEW -->
-        <section class="content-section">
-            <div class="flex-between mb-2">
-                <h2 style="margin-bottom:0;"><i class="fa-solid fa-building"></i> Company Playbooks</h2>
-                <a href="companies/index.html" class="outline-btn small-btn">Ver playbooks <i class="fa-solid fa-arrow-right"></i></a>
-            </div>
-            <p class="text-muted mb-2">Preparação direcionada por empresa: cultura, stack, perguntas esperadas e histórias recomendadas.</p>
-            <div class="grid-4" id="home-companies">
-                <div class="stat-box"><i class="fa-solid fa-spinner fa-spin"></i> Carregando empresas...</div>
-            </div>
-        </section>
-
     </main>
 
     <footer class="footer">
-        <p>InterviewOps Portugal &copy; 2026. Desenvolvido para estudos. <i class="fa-solid fa-location-dot" style="color: var(--primary);"></i> Portugal</p>
+        <p>InterviewOps Portugal &copy; 2026. Desenvolvido para estudos. <a href="privacidade/index.html" style="color: var(--primary);"><span data-i18n="privacy_title">Política de Privacidade</span></a> <i class="fa-solid fa-location-dot" style="color: var(--primary);"></i> Portugal</p>
     </footer>
 
     <script src="javascript/app.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
             const modulesBox = document.getElementById('home-modules');
-            const companiesBox = document.getElementById('home-companies');
             try {
                 const data = await loadJSON('json/modules.json');
                 const metas = data.metadata || data.modules || [];
@@ -125,19 +111,6 @@
                 `).join('') || '<p class="text-muted">Nenhum módulo encontrado.</p>';
             } catch (e) {
                 modulesBox.innerHTML = '<p class="text-muted">Não foi possível carregar os módulos. Execute via servidor local.</p>';
-            }
-            try {
-                const data = await loadJSON('json/companies.json');
-                const comps = (data.companies || []).slice(0, 5);
-                companiesBox.innerHTML = comps.map(c => `
-                    <a href="companies/playbook.html?id=${c.id}" class="module-card">
-                        <div class="module-icon"><i class="fa-solid ${c.icon || 'fa-building'}"></i></div>
-                        <h3>${escapeHtml(c.name)}</h3>
-                        <p>${escapeHtml((c.focus || []).slice(0, 2).join(' · '))}</p>
-                    </a>
-                `).join('') || '<p class="text-muted">Nenhuma empresa encontrada.</p>';
-            } catch (e) {
-                companiesBox.innerHTML = '<p class="text-muted">Não foi possível carregar as empresas.</p>';
             }
         });
     </script>

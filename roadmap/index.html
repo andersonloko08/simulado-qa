@@ -26,8 +26,7 @@
             <a href="../modules/index.html" class="nav-link" data-page="modules"><i class="fa-solid fa-book-open"></i> Módulos</a>
             <a href="../mock/index.html" class="nav-link" data-page="mock"><i class="fa-solid fa-microphone"></i> Mock Interview</a>
             <a href="../career/index.html" class="nav-link" data-page="career"><i class="fa-solid fa-compass"></i> Career Engine</a>
-            <a href="../companies/index.html" class="nav-link" data-page="companies"><i class="fa-solid fa-building"></i> Empresas</a>
-            <a href="../english/index.html" class="nav-link" data-page="english"><i class="fa-solid fa-language"></i> English</a>
+                        <a href="../english/index.html" class="nav-link" data-page="english"><i class="fa-solid fa-language"></i> English</a>
             <a href="../tracker/index.html" class="nav-link" data-page="tracker"><i class="fa-solid fa-chart-line"></i> Gaps</a>
             <a href="index.html" class="nav-link" data-page="roadmap"><i class="fa-solid fa-route"></i> Roadmap</a>
         </div>
@@ -63,12 +62,12 @@
     </main>
 
     <footer class="footer">
-        <p>InterviewOps Portugal &copy; 2026. Desenvolvido para estudos.</p>
+        <p>InterviewOps Portugal &copy; 2026. Desenvolvido para estudos. <a href="../privacidade/index.html" style="color: var(--primary);"><span data-i18n="privacy_title">Política de Privacidade</span></a></p>
     </footer>
 
     <script src="../javascript/app.js"></script>
     <script>
-        const REVIEW_KEY = 'interviewops_review_done';
+        const REVIEW_KEY = 'review_done';
         let MODULES = [];
 
         function modulePct(m) {
@@ -152,7 +151,7 @@
 
         window.completeReview = function() {
             const today = new Date().toISOString().slice(0, 10);
-            localStorage.setItem(REVIEW_KEY, today);
+            storeSet(REVIEW_KEY, today);
             const streak = updateStreak();
             document.getElementById('review-feedback').innerHTML = `<span class="badge badge-success"><i class="fa-solid fa-fire"></i> Revisão concluída! Streak: ${streak} dias.</span>`;
             checkReviewDone();
@@ -168,7 +167,7 @@
 
         function checkReviewDone() {
             const today = new Date().toISOString().slice(0, 10);
-            if (localStorage.getItem(REVIEW_KEY) === today) {
+            if (storeGet(REVIEW_KEY) === today) {
                 document.getElementById('mark-review').disabled = true;
                 document.getElementById('mark-review').innerHTML = '<i class="fa-solid fa-check"></i> Concluído hoje';
             }
