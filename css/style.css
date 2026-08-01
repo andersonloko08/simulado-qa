@@ -179,6 +179,31 @@ code {
     transform: rotate(15deg);
 }
 
+/* Language selector */
+.lang-select-wrap {
+    position: relative;
+}
+
+.lang-select {
+    background: var(--card-bg);
+    color: var(--text-color);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    padding: 0.35rem 0.5rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: var(--transition);
+    max-width: 130px;
+}
+
+.lang-select:hover {
+    border-color: var(--primary);
+}
+
+.lang-select:focus {
+    outline: 2px solid var(--primary-light);
+}
+
 /* Nav */
 .main-nav {
     background: var(--card-bg);

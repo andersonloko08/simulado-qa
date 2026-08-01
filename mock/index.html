@@ -88,6 +88,7 @@
                     </div>
                     <p class="text-muted" style="font-size:0.85rem;">Tempo para responder em voz alta (como em uma entrevista real)</p>
                     <h2 id="q-text" style="font-size:1.3rem; line-height:1.4; margin-bottom:1rem;">...</h2>
+                    <div id="q-options" style="margin-bottom:1rem; text-align:left;"></div>
                     <div class="flex gap-2 wrap" style="justify-content:center;">
                         <button class="success-btn" onclick="revealAnswer()"><i class="fa-solid fa-eye"></i> Encerrar e revelar resposta</button>
                         <button class="outline-btn" onclick="nextQuestion(true)"><i class="fa-solid fa-forward"></i> Pular</button>
@@ -218,10 +219,26 @@
 
         function showQuestion() {
             const q = session.questions[session.index];
+            const lang = resolveLang(q.category);
+            const ldata = q.lang && q.lang[lang] ? q.lang[lang] : (q.lang && q.lang['pt-br']) || q;
             document.getElementById('q-progress').innerText = `${session.index + 1}/${session.questions.length}`;
             document.getElementById('q-category').innerText = q.category;
             document.getElementById('q-category').className = `badge badge-info`;
-            document.getElementById('q-text').innerText = q.question;
+            document.getElementById('q-text').innerText = ldata.question || '';
+
+            // múltipla escolha: mostra alternativas e espera resposta
+            const optionsBox = document.getElementById('q-options');
+            if (q.type === 'choice' && ldata.options && ldata.options.length) {
+                optionsBox.style.display = 'block';
+                optionsBox.innerHTML = ldata.options.map((opt, i) => `
+                    <button class="option-label choice-opt" data-opt="${i}" onclick="selectChoice(this)" style="display:flex; align-items:center; gap:0.5rem; width:100%; text-align:left; padding:0.7rem 1rem; border-radius:8px; border:1px solid var(--option-border); background:var(--option-bg); cursor:pointer; margin-bottom:0.5rem; font-size:0.95rem;">
+                        <span class="badge badge-info" style="min-width:1.6rem; text-align:center;">${String.fromCharCode(65 + i)}</span>
+                        <span>${escapeHtml(opt)}</span>
+                    </button>`).join('');
+            } else {
+                optionsBox.style.display = 'none';
+            }
+            window._currentChoice = null;
 
             session.remaining = session.duration;
             renderTimer();
@@ -237,6 +254,16 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
+        window.selectChoice = function(btn) {
+            document.querySelectorAll('.choice-opt').forEach(b => {
+                b.style.borderColor = 'var(--option-border)';
+                b.style.background = 'var(--option-bg)';
+            });
+            btn.style.borderColor = 'var(--primary)';
+            btn.style.background = 'var(--primary-light)';
+            window._currentChoice = parseInt(btn.dataset.opt, 10);
+        };
+
         function renderTimer() {
             const circle = document.getElementById('timer-circle');
             const text = document.getElementById('timer-text');
@@ -251,6 +278,38 @@
         window.revealAnswer = function() {
             clearInterval(session.timer);
             const q = session.questions[session.index];
+            const lang = resolveLang(q.category);
+            const ldata = q.lang && q.lang[lang] ? q.lang[lang] : (q.lang && q.lang['pt-br']) || q;
+            const qcat = q.category;
+            const qdiff = q.difficulty;
+            const qq = ldata.question || '';
+            const answerText = ldata.expectedAnswer || '';
+            const mistakes = ldata.commonMistakes || q.commonMistakes || [];
+            const followUps = ldata.followUps || q.followUps || [];
+            const realExample = ldata.realExample || '';
+            const english = ldata.english || '';
+
+            let answerBlock = '';
+            if (q.type === 'choice' && ldata.options && ldata.options.length) {
+                const chosen = window._currentChoice;
+                const correct = q.answer;
+                const isRight = chosen === correct;
+                if (chosen !== null && chosen !== undefined) {
+                    if (isRight) session.correct++;
+                    else session.weak++;
+                }
+                answerBlock = `
+                    <div class="callout ${isRight ? 'callout-success' : 'callout-danger'}" style="margin-top:0.75rem;">
+                        <strong><i class="fa-solid ${isRight ? 'fa-check' : 'fa-xmark'}"></i> ${isRight ? t('correct') : t('incorrect')}</strong>
+                    </div>
+                    <div class="q-options-review" style="margin-top:0.75rem;">
+                        ${ldata.options.map((opt, i) => `
+                            <div class="option-label" style="padding:0.6rem 1rem; border-radius:8px; margin-bottom:0.4rem; ${i === correct ? 'border-color:var(--success); background:var(--success-light); color:var(--success-dark);' : i === chosen ? 'border-color:var(--danger); background:var(--danger-light); color:var(--danger-dark);' : ''}">
+                                ${String.fromCharCode(65 + i)}. ${escapeHtml(opt)} ${i === correct ? '<i class="fa-solid fa-circle-check"></i>' : ''} ${i === chosen && !isRight ? '<i class="fa-solid fa-circle-xmark"></i>' : ''}
+                            </div>`).join('')}
+                    </div>`;
+            }
+
             document.getElementById('interview').style.display = 'none';
             const reveal = document.getElementById('reveal');
             reveal.style.display = 'block';
@@ -258,20 +317,21 @@
             document.getElementById('reveal-content').innerHTML = `
                 <div class="q-card">
                     <div class="q-meta">
-                        <span class="badge badge-info">${escapeHtml(q.category)}</span>
-                        <span class="badge ${q.difficulty === 'Avançada' ? 'badge-danger' : q.difficulty === 'Média' || q.difficulty === 'Intermediária' ? 'badge-warning' : 'badge-success'}">${escapeHtml(q.difficulty)}</span>
+                        <span class="badge badge-info">${escapeHtml(qcat)}</span>
+                        <span class="badge ${qdiff === 'Avançada' ? 'badge-danger' : qdiff === 'Média' || qdiff === 'Intermediária' ? 'badge-warning' : 'badge-success'}">${escapeHtml(qdiff)}</span>
                     </div>
-                    <div class="q-text">${escapeHtml(q.question)}</div>
-                    <div class="callout callout-success"><strong><i class="fa-solid fa-check"></i> Resposta esperada:</strong> ${escapeHtml(q.expectedAnswer)}</div>
+                    <div class="q-text">${escapeHtml(qq)}</div>
+                    ${answerBlock}
+                    ${answerText ? `<div class="callout callout-success"><strong><i class="fa-solid fa-check"></i> ${t('show_answer')}:</strong> ${escapeHtml(answerText)}</div>` : ''}
                     <div class="criteria">
-                        <div class="criteria-box criteria-good"><strong><i class="fa-solid fa-circle-check"></i> Pontos fortes a incluir</strong><p style="margin-top:0.4rem;">${escapeHtml(q.expectedAnswer)}</p></div>
-                        <div class="criteria-box criteria-missing"><strong><i class="fa-solid fa-circle-xmark"></i> Pontos que você pode ter esquecido</strong><ul style="margin:0.4rem 0 0 1.2rem;">${(q.commonMistakes || []).map(m => `<li>${escapeHtml(m)}</li>`).join('')}</ul></div>
-                        <div class="criteria-box criteria-tech"><strong><i class="fa-solid fa-microchip"></i> Perspectiva técnica</strong><p style="margin-top:0.4rem;">Use termos como ${(q.followUps || []).slice(0, 2).join(', ') || 'trade-offs, contratos e determinismo'} na sua resposta.</p></div>
+                        <div class="criteria-box criteria-good"><strong><i class="fa-solid fa-circle-check"></i> Pontos fortes a incluir</strong><p style="margin-top:0.4rem;">${escapeHtml(answerText) || escapeHtml(qq)}</p></div>
+                        <div class="criteria-box criteria-missing"><strong><i class="fa-solid fa-circle-xmark"></i> Pontos que você pode ter esquecido</strong><ul style="margin:0.4rem 0 0 1.2rem;">${(mistakes).map(m => `<li>${escapeHtml(m)}</li>`).join('') || '<li>—</li>'}</ul></div>
+                        <div class="criteria-box criteria-tech"><strong><i class="fa-solid fa-microchip"></i> Perspectiva técnica</strong><p style="margin-top:0.4rem;">Use termos como ${(followUps).slice(0, 2).join(', ') || 'trade-offs, contratos e determinismo'} na sua resposta.</p></div>
                         <div class="criteria-box criteria-business"><strong><i class="fa-solid fa-briefcase"></i> Perspectiva de negócio</strong><p style="margin-top:0.4rem;">Conecte a resposta com valor para o negócio: redução de risco, tempo de entrega, conformidade e qualidade percebida pelo cliente.</p></div>
                     </div>
-                    ${(q.followUps && q.followUps.length) ? `<div class="followups"><strong><i class="fa-solid fa-angles-right"></i> Follow-ups esperados:</strong><ul>${q.followUps.map(f => `<li>${escapeHtml(f)}</li>`).join('')}</ul></div>` : ''}
-                    ${q.realExample ? `<div class="callout callout-warning" style="margin-top:0.75rem;"><strong><i class="fa-solid fa-lightbulb"></i> Exemplo real (conte essa história):</strong> ${escapeHtml(q.realExample)}</div>` : ''}
-                    ${q.english ? `<div class="callout callout-info" style="margin-top:0.75rem;"><strong><i class="fa-solid fa-language"></i> English answer:</strong> ${escapeHtml(q.english)}</div>` : ''}
+                    ${(followUps && followUps.length) ? `<div class="followups"><strong><i class="fa-solid fa-angles-right"></i> Follow-ups esperados:</strong><ul>${followUps.map(f => `<li>${escapeHtml(f)}</li>`).join('')}</ul></div>` : ''}
+                    ${realExample ? `<div class="callout callout-warning" style="margin-top:0.75rem;"><strong><i class="fa-solid fa-lightbulb"></i> Exemplo real (conte essa história):</strong> ${escapeHtml(realExample)}</div>` : ''}
+                    ${english ? `<div class="callout callout-info" style="margin-top:0.75rem;"><strong><i class="fa-solid fa-language"></i> English answer:</strong> ${escapeHtml(english)}</div>` : ''}
                 </div>`;
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };

@@ -13,3 +13,7 @@ Desktop.ini
 node_modules/
 *.log
 .DS_Store
+
+# Python
+__pycache__/
+*.py[cod]

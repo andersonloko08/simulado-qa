@@ -1,0 +1,119 @@
+{
+  "id": "javascript",
+  "title": "JavaScript para QA",
+  "icon": "fa-js",
+  "level": "Intermediário",
+  "duration": "2 semanas",
+  "shortDescription": "Closures, async/await, Playwright, Cypress e testes com JS.",
+  "description": "JavaScript no contexto de automação: fundamentos modernos, programação assíncrona, manipulação de DOM e frameworks E2E como Playwright e Cypress. Essencial para vagas que pedem automação web com Node.js.",
+  "topics": ["ES6+", "Async/Await", "Playwright", "Cypress"],
+  "concepts": [
+    {
+      "title": "Fundamentos ES6+ para Automação",
+      "theory": "Automação web moderna roda em Node.js. Essenciais: arrow functions (() => {}), template literals, destructuring de objetos/arrays, spread/rest, let/const (escopo de bloco vs var), e módulos (import/export). Em testes, destructuring é muito usado ao extrair dados de respostas (const { id, name } = response.body) e spread para clonar objetos de payload sem mutação.",
+      "examples": [
+        "const { id, name } = await request.get('/users/1');",
+        "const base = { method: 'GET' }; const headers = { ...base, Authorization: 'Bearer x' };",
+        "const users = list.filter(u => u.active).map(u => u.name);",
+        "export async function login(page, user) { ... }"
+      ],
+      "commonMistakes": [
+        "Usar var (escopo de função) em vez de let/const (escopo de bloco).",
+        "Mutar objetos de payload compartilhados entre testes.",
+        "Não conhecer a diferença entre == e === (coerção implícita)."
+      ]
+    },
+    {
+      "title": "Programação Assíncrona: Callbacks, Promises e Async/Await",
+      "theory": "Node.js é assíncrono. Callbacks eram o padrão original (função passada como argumento); Promises padronizaram com .then()/.catch(); async/await torna o código síncrono na leitura. Em Playwright/Cypress, todo passo que interage com o browser é assíncrono e deve ser aguardado com await. Regra de ouro em automação: nunca misturar await com chamadas não aguardadas em sequência dependente, e usar Promise.all para operações paralelas independentes.",
+      "examples": [
+        "await page.goto('https://app.com');",
+        "const title = await page.title();",
+        "const [a, b] = await Promise.all([getOrders(), getUsers()]);",
+        "try { await api.create(body); } catch (e) { /* trata erro esperado */ }"
+      ],
+      "commonMistakes": [
+        "Esquecer await em chamadas assíncronas.",
+        "Usar Promise.all com operações que interferem entre si (estado compartilhado).",
+        "Tratar erros de forma genérica sem assertar a mensagem."
+      ]
+    },
+    {
+      "title": "Playwright: Locators, Auto-wait e Fixtures",
+      "theory": "Playwright é o framework E2E líder. Pontos-chave: locators por papel (getByRole), texto, data-testid e CSS; auto-wait embutido (não precisa de sleeps); Web-first assertions que aguardam (expect(locator).toBeVisible()); isolamento por context/browser; e fixtures para setup. Interceptação de rede com page.route permite mockar APIs e testar estados de erro determinísticos.",
+      "examples": [
+        "await page.getByRole('button', { name: 'Enviar' }).click();",
+        "await expect(page.locator('[data-testid=toast]')).toBeVisible();",
+        "await page.route('**/api/orders', route => route.fulfill({ body: '[]' }));",
+        "test.use({ viewport: { width: 390, height: 844 } });"
+      ],
+      "commonMistakes": [
+        "Usar page.waitForTimeout() (sleep) em vez de auto-wait.",
+        "Locators frágeis baseados em XPath absoluto ou CSS de classe dinâmica.",
+        "Compartilhar estado entre testes (deve-se isolar por test)."
+      ]
+    }
+  ],
+  "quiz": [
+    {
+      "question": "O que é uma closure em JavaScript?",
+      "options": ["Uma função que retorna o próprio endereço de memória", "Uma função que 'lembra' do escopo léxico onde foi criada, mesmo quando executada fora dele", "Um objeto que encapsula propriedades privadas de forma permanente", "Uma estrutura de dados para empilhar chamadas assíncronas"],
+      "answer": 1,
+      "explanation": "Closure é uma função que mantém referência ao seu escopo de criação (variáveis que estavam acessíveis ali). Isso permite estados privados e é base de muitos padrões de módulo e de funções factory."
+    },
+    {
+      "question": "Qual a diferença entre arrow function e function declaration no contexto de automação?",
+      "options": ["Arrow functions não podem ser assíncronas", "Arrow functions não têm seu próprio 'this' (herdam do escopo externo)", "Function declarations são sempre mais rápidas", "Não há diferença prática"],
+      "answer": 1,
+      "explanation": "Arrow functions não possuem 'this' próprio — herdam do contexto léxico. Isso evita bugs de escopo em callbacks e em hooks de testes (ex.: hooks do Playwright), onde o 'this' importa."
+    },
+    {
+      "question": "O que acontece se você esquecer o 'await' antes de uma chamada assíncrona no Playwright?",
+      "options": ["O teste falha na hora com erro de sintaxe", "A operação continua em background e a asserção seguinte pode rodar antes de a ação concluir, causando flakiness", "Nada, o Playwright resolve automaticamente", "O Node.js bloqueia até a promise resolver"],
+      "answer": 1,
+      "explanation": "Sem await, a promise é despachada e não aguardada. O teste avança para o próximo passo, que pode asserar antes do estado esperado — origem clássica de testes flaky."
+    },
+    {
+      "question": "Como você clona um objeto de payload sem mutar o original em um teste?",
+      "options": ["const novo = payload;", "const novo = { ...payload };", "payload.push({});", "const novo = JSON.parse(payload);"],
+      "answer": 1,
+      "explanation": "Spread (...) cria um shallow copy. Atribuição direta (const novo = payload) compartilha a mesma referência; mutar 'novo' mutaria o original. JSON.parse espera string, não objeto."
+    },
+    {
+      "question": "Qual comando captura a URL de rede de uma chamada XHR em um teste de UI para validar o request enviado?",
+      "options": ["page.waitForSelector()", "page.route() ou o request listener (page.on('request'))", "page.click()", "page.screenshot()"],
+      "answer": 1,
+      "explanation": "page.route() intercepta e pode inspecionar/modificar requests; page.on('request') apenas observa. Assim você valida payload, headers e URL exatamente como o front envia."
+    },
+    {
+      "question": "O que a instrução 'test.describe.configure({ mode: 'parallel' })' faz no Playwright?",
+      "options": ["Executa os testes em ordem alfabética", "Executa os testes do bloco em paralelo, cada um em worker próprio", "Desativa a execução de testes", "Define o timeout global em paralelo"],
+      "answer": 1,
+      "explanation": "Define execução paralela por bloco de describe, aumentando velocidade da suíte. Cada worker roda isolado; por isso testes não podem depender de estado compartilhado."
+    },
+    {
+      "question": "Em um teste de API com Node, qual a melhor forma de validar o schema de uma resposta?",
+      "options": ["Comparar a string exata da resposta", "Usar uma biblioteca de validação de schema (ex.: zod ou joi) e assertar que o parse não lança erro", "Contar o número de chaves", "Confiar apenas no status code"],
+      "answer": 1,
+      "explanation": "Schema validation valida tipos e campos obrigatórios de forma robusta e legível, cobrindo contrato mesmo quando valores variam. Status code sozinho não valida o corpo."
+    },
+    {
+      "question": "Qual estrutura de dados JavaScript é a escolha natural para montar um payload JSON antes de enviar via request?",
+      "options": ["Array", "Objeto (object literal) que será serializado com JSON.stringify", "Set", "Map sem chaves"],
+      "answer": 1,
+      "explanation": "Objetos literais representam dados chave-valor e JSON.stringify os converte no payload. Arrays são para listas; Map/Set têm serialização não padrão."
+    },
+    {
+      "question": "Por que usar locators por papel (getByRole) é mais robusto que CSS classes em automação E2E?",
+      "options": ["É mais rápido em performance", "É semântico e estável — acessibilidade e papel da UI mudam menos que classes de estilização", "Não precisa de import", "Funciona apenas em Cypress"],
+      "answer": 1,
+      "explanation": "getByRole usa a semântica acessível da UI, que muda menos que classes CSS (frequentemente alteradas em refactors de estilo). Resulta em testes mais estáveis e legíveis."
+    },
+    {
+      "question": "Qual prática reduz testes flaky causados por timing em testes com Playwright?",
+      "options": ["Adicionar page.waitForTimeout(5000) em todos os passos", "Confiar no auto-wait e usar assertions Web-first que aguardam o estado", "Rodar a suíte em modo headful sempre", "Duplicar o clique para garantir"],
+      "answer": 1,
+      "explanation": "Playwright já aguarda ações; Web-first assertions (toBeVisible, toHaveText) esperam a condição. Sleeps fixos criam janelas de flakiness e tornam a suíte lenta."
+    }
+  ]
+}
