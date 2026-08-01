@@ -2,8 +2,9 @@
 
 ## The Ultimate Interview Preparation Platform for QA Automation Engineers
 
-**Version:** 1.0
+**Version:** 2.0
 **Author:** Anderson Vinicius dos Santos Pereira
+**Repo:** https://github.com/andersonloko08/simulado-qa
 
 ---
 
@@ -102,7 +103,7 @@ Endpoints da API web: `GET/POST /api/questions`, `PUT/DELETE /api/questions/{id}
 ## ✨ Principais Funcionalidades
 
 - **Dashboard:** visão geral da preparação com barras de progresso, streak de estudo, áreas fracas e fortes e módulo recomendado.
-- **Módulos Técnicos (15):** API, SQL, Python, Robot Framework, Playwright, Git, CI/CD, Docker, Kubernetes, SAP, Agile, BDD, Testing, Security e Performance. Estrutura padronizada: teoria, exemplos, erros comuns, exemplo de projeto real, questões de entrevista (com resposta esperada, follow-ups e versão em inglês), desafios e quiz.
+- **Módulos Técnicos (16):** API, SQL, Python, JavaScript, Robot Framework, Playwright, Git, CI/CD, Docker, Kubernetes, SAP, Agile, BDD, Testing, Security e Performance. Estrutura padronizada: teoria, exemplos, erros comuns, exemplo de projeto real, questões de entrevista (com resposta esperada, follow-ups e versão em inglês), desafios e quiz.
 - **Mock Interview Engine:** o sistema vira o entrevistador. Pergunta aparece, timer inicia, o candidato responde e o sistema revela pontos fortes, pontos faltantes, perspectiva técnica e de negócio.
 - **Career Engine / Story Builder:** cada experiência profissional vira uma história reutilizável de entrevista (Problema → Ação → Resultado → Valor de negócio).
 - **Evidence Bank:** banco de evidências por tecnologia — projetos, falhas, sucessos, lições aprendidas e impacto no negócio.
@@ -128,6 +129,16 @@ Endpoints da API web: `GET/POST /api/questions`, `PUT/DELETE /api/questions/{id}
 
 > Nota: como a plataforma carrega dados via `fetch` de arquivos JSON, o uso de um servidor local simples (`python -m http.server 8000`) é recomendado, ou abrir os arquivos de forma que o fetch seja permitido.
 
+## 🌐 GitHub Pages
+
+O projeto é compatível com GitHub Pages (estático, sem backend). Para publicar:
+
+1. Subir o repositório para o GitHub.
+2. Em **Settings → Pages**, selecionar a branch `simulado-qa` (ou `main`) na raiz (`/`).
+3. O `.nojekyll` já está incluído para evitar processamento Jekyll.
+
+URL publicada: `https://andersonloko08.github.io/simulado-qa`
+
 ## 📚 Módulos Técnicos
 
 API | SQL | Python | JavaScript | Robot Framework | Playwright | Git | CI/CD | Docker | Kubernetes | SAP | Agile | BDD | Testing | Security | Performance
@@ -139,12 +150,13 @@ Natixis | KLx | Cardif | Siemens | Hitachi Rail
 ## 🛤 Roadmap de Desenvolvimento
 
 - **Fase 1 — Fundação:** layout, navegação, dashboard, módulos.
-- **Fase 2 — Conteúdo:** QA, API, SQL, Robot, Python.
+- **Fase 2 — Conteúdo:** QA, API, SQL, Robot, Python, JavaScript.
 - **Fase 3 — Career Engine:** resume parser, Story Builder, Evidence Bank.
 - **Fase 4 — Empresas:** playbooks das 5 empresas.
 - **Fase 5 — Interview Engine:** questões, timer, avaliação, revisão adaptativa.
 - **Fase 6 — Inglês:** entrevista técnica, RH, vocabulário.
-- **Fase 7 — IA (futuro):** simulador de entrevista, recomendações personalizadas, análise de fraquezas.
+- **Fase 7 — Multi-idioma:** banco de questões em PT-BR, PT-PT, EN-US e EN-UK + QA Editor Python (API/CLI/GUI/Web).
+- **Fase 8 — IA (futuro):** simulador de entrevista, recomendações personalizadas, análise de fraquezas.
 
 ## ⚖️ Principio Central
 
