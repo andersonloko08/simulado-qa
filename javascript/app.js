@@ -7,7 +7,6 @@ const THEME_KEY = 'theme';
 
 // ---------- LANGUAGE / I18N ----------
 const LANG_KEY = 'lang';
-const ENG_VARIANT_KEY = 'eng_variant';
 const I18N_PATH = 'json/i18n.json';
 
 // ---------- STORAGE LAYER (COOKIE + perfil) ----------
@@ -23,9 +22,9 @@ const COOKIE_PREFIX = 'interviewops_';
 const COOKIE_DAYS = 365;
 const COOKIE_MAX_CHARS = 3500;
 // Chaves que NÃO são por-perfil (preferências e configuração).
-const GLOBAL_KEYS = new Set(['lang', 'eng_variant', 'theme', 'active_profile', 'profiles', 'consent']);
+const GLOBAL_KEYS = new Set(['lang', 'theme', 'active_profile', 'profiles', 'consent']);
 // Chaves não-essenciais: só persistem após consentimento 'accepted'.
-const ESSENTIAL_KEYS = new Set(['lang', 'eng_variant', 'theme', 'active_profile', 'profiles', 'consent']);
+const ESSENTIAL_KEYS = new Set(['lang', 'theme', 'active_profile', 'profiles', 'consent']);
 
 let STORE_CACHE = {};
 
@@ -204,88 +203,55 @@ window.getActiveProfile = getActiveProfile;
 window.getProfiles = getProfiles;
 window.setActiveProfile = setActiveProfile;
 
-const LANGS = ['pt-br', 'pt-pt', 'en-us', 'en-uk'];
+// ---------- IDIOMAS SUPORTADOS ----------
+// Para adicionar um novo idioma, veja I18N.md.
+const LANGS = ['pt-br', 'en-us'];
 const LANG_NAMES = {
     'pt-br': 'Português (BR)',
-    'pt-pt': 'Português (PT)',
-    'en-us': 'English (US)',
-    'en-uk': 'English (UK)'
+    'en-us': 'English (US)'
 };
-
-// Categorias cujo conteúdo é 'sobre inglês' (usam a variante de inglês escolhida).
-const ENGLISH_CATEGORIES = ['English', 'english'];
 
 let I18N = { strings: {}, questions: {} };
 let CURRENT_LANG = 'pt-br';
-let CURRENT_ENG_VARIANT = 'en-us';
 
 function getSavedLang() {
     try { return storeGet(LANG_KEY) || 'pt-br'; } catch (e) { return 'pt-br'; }
 }
 
-function getSavedEngVariant() {
-    try { return storeGet(ENG_VARIANT_KEY) || 'en-us'; } catch (e) { return 'en-us'; }
-}
-
 function setLang(lang) {
     if (!LANGS.includes(lang)) return;
     CURRENT_LANG = lang;
-    try {
-        storeSet(LANG_KEY, lang);
-        if (lang === 'en-us') { setEngVariant('en-us'); }
-        if (lang === 'en-uk') { setEngVariant('en-uk'); }
-    } catch (e) {}
-}
-
-function setEngVariant(variant) {
-    if (!['en-us', 'en-uk'].includes(variant)) return;
-    CURRENT_ENG_VARIANT = variant;
-    try { storeSet(ENG_VARIANT_KEY, variant); } catch (e) {}
-}
-
-// Idioma efetivo para uma determinada questão/categoria.
-// Regra do usuário:
-//   - EN-US selecionado -> tudo US (inclui conteúdo 'English').
-//   - EN-UK selecionado -> tudo UK.
-//   - PT-BR / PT-PT    -> UI em PT; conteúdo 'English' usa a variante escolhida (US/UK).
-function resolveLang(category) {
-    if (CURRENT_LANG === 'en-us' || CURRENT_LANG === 'en-uk') return CURRENT_LANG;
-    if (ENGLISH_CATEGORIES.includes(category)) return CURRENT_ENG_VARIANT;
-    return CURRENT_LANG;
+    try { storeSet(LANG_KEY, lang); } catch (e) {}
 }
 
 // Resolve o conteúdo traduzido de um objeto com chaves por idioma.
-function l(obj, category) {
+function l(obj) {
     if (!obj) return '';
-    const lang = resolveLang(category);
-    if (obj[lang]) return obj[lang];
-    if (obj['en-us']) return obj['en-us'];
-    return obj['pt-br'] || '';
+    if (obj[CURRENT_LANG]) return obj[CURRENT_LANG];
+    return obj['pt-br'] || obj['en-us'] || '';
 }
+
+// Compatibilidade: retorna o idioma atual (era usado para variantes EN).
+function resolveLang() { return CURRENT_LANG; }
 
 // Tradução de strings de interface.
 function t(key) {
-    const table = (I18N.strings && I18N.strings[CURRENT_LANG]) || {};
-    return table[key] || (I18N.strings && I18N.strings['pt-br'] && I18N.strings['pt-br'][key]) || key;
+    const table = (I18N.lang && I18N.lang[CURRENT_LANG]) || {};
+    return table[key] || (I18N.lang && I18N.lang['pt-br'] && I18N.lang['pt-br'][key]) || key;
 }
 
 async function initI18n() {
-    // Define o idioma de forma síncrona ANTES de qualquer await, para que o
-    // conteúdo dinâmico (l()/resolveLang()) já use o idioma salvo na 1ª renderização.
     CURRENT_LANG = getSavedLang();
-    CURRENT_ENG_VARIANT = getSavedEngVariant();
-    if (CURRENT_LANG === 'en-us') CURRENT_ENG_VARIANT = 'en-us';
-    if (CURRENT_LANG === 'en-uk') CURRENT_ENG_VARIANT = 'en-uk';
     try {
         I18N = await loadJSON(I18N_PATH);
     } catch (e) {
-        I18N = { strings: {}, questions: {} };
+        I18N = { lang: {} };
     }
     renderLangSelector();
     applyTranslations();
 }
 
-// Insere o seletor de idioma na topbar (chamado em todas as páginas).
+// Seletor de idioma na topbar.
 function renderLangSelector() {
     const actions = document.querySelector('.topbar-actions');
     if (!actions || document.getElementById('lang-select')) return;
@@ -303,20 +269,16 @@ function renderLangSelector() {
     const select = document.getElementById('lang-select');
     select.addEventListener('change', () => {
         const prevLang = CURRENT_LANG;
-        const prevVariant = CURRENT_ENG_VARIANT;
         setLang(select.value);
-        // Se PT selecionado, pergunta a variante de inglês
-        if (select.value === 'pt-br' || select.value === 'pt-pt') {
-            const variant = prompt(t('choose_eng_variant') || 'Escolha a variante de inglês para conteúdo "English" (US ou UK):', CURRENT_ENG_VARIANT === 'en-uk' ? 'uk' : 'us');
-            setEngVariant(String(variant || 'us').toLowerCase().startsWith('uk') ? 'en-uk' : 'en-us');
-        }
         applyTranslations();
-        // Recarrega a página para re-renderizar TODO o conteúdo dinâmico
-        // (conceitos, questões, quiz, mock) no novo idioma/variante.
-        if (prevLang !== CURRENT_LANG || prevVariant !== CURRENT_ENG_VARIANT) {
-            setTimeout(() => location.reload(), 50);
-        } else if (window.onLangChange) {
-            window.onLangChange(CURRENT_LANG);
+        // Re-render: usa translateContent em cada página para texto dinâmico.
+        // Se não houver translateContent, recarrega a página (fallback).
+        if (prevLang !== CURRENT_LANG) {
+            if (typeof window.translateContent === 'function') {
+                window.translateContent();
+            } else {
+                setTimeout(() => location.reload(), 50);
+            }
         }
     });
 }
@@ -329,11 +291,8 @@ function applyTranslations() {
         if (el.hasAttribute('data-i18n-html')) {
             el.innerHTML = val;
         } else if (el.childElementCount > 0) {
-            // preserva elementos filhos (ex.: ícones na nav); traduz só o texto solto
             const nodes = Array.from(el.childNodes).filter(n => n.nodeType === Node.TEXT_NODE && n.textContent.trim());
-            if (nodes.length) {
-                nodes[0].textContent = ' ' + val;
-            }
+            if (nodes.length) { nodes[0].textContent = ' ' + val; }
         } else {
             el.textContent = val;
         }
@@ -344,6 +303,7 @@ function applyTranslations() {
 window.t = t;
 window.l = l;
 window.resolveLang = resolveLang;
+window.translateContent = null;
 
 // ---------- PERFIL (seletor na topbar) ----------
 function renderProfileSelector() {
@@ -428,7 +388,6 @@ function initConsentBanner() {
     });
 }
 window.setLang = setLang;
-window.setEngVariant = setEngVariant;
 window.getSavedLang = getSavedLang;
 
 // ---------- THEME MANAGEMENT ----------
