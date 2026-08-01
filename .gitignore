@@ -17,3 +17,6 @@ node_modules/
 # Python
 __pycache__/
 *.py[cod]
+
+# Batches intermediários de geração de quiz
+json/batches/

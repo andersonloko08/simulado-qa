@@ -1,172 +1,170 @@
 {
-    "id": "docker",
-    "title": "Docker",
-    "icon": "fa-dharmachakra",
-    "level": "Intermediário",
-    "duration": "1-2 semanas",
-    "shortDescription": "Imagens, containers, Dockerfile e compose para testes.",
-    "description": "Docker é essencial para ambientes de teste reproduzíveis. Este módulo cobre imagens, containers, Dockerfile, docker-compose para subir dependências de teste e como executar testes dentro de containers.",
-    "topics": ["Imagens", "Compose", "Testes"],
-    "concepts": [
+  "id": "docker",
+  "title": "Docker",
+  "icon": "fa-dharmachakra",
+  "level": "Intermediário",
+  "duration": "1-2 semanas",
+  "shortDescription": "Imagens, containers, Dockerfile e compose para testes.",
+  "description": "Docker é essencial para ambientes de teste reproduzíveis. Este módulo cobre imagens, containers, Dockerfile, docker-compose para subir dependências de teste e como executar testes dentro de containers.",
+  "topics": [
+    "Imagens",
+    "Compose",
+    "Testes"
+  ],
+  "concepts": [
+    {
+      "title": "Imagens & Containers",
+      "theory": "Uma imagem é um template imutável com o sistema de arquivos e configuração; um container é uma instância em execução da imagem. Dockerfile descreve como construir a imagem: FROM (base), RUN (comandos), COPY (arquivos), WORKDIR, ENTRYPOINT/CMD, EXPOSE. Imagens são compostas de camadas (layer cache). Containers são efêmeros e isolados. Comandos essenciais: docker build, run, ps, images, exec, logs, stop.",
+      "examples": [
+        "docker build -t meu-teste .",
+        "docker run -p 8080:80 -d nginx",
+        "docker exec -it container bash",
+        "docker logs -f container"
+      ],
+      "commonMistakes": [
+        "Não usar multi-stage builds (imagens gigantes).",
+        "Rodar como root no container.",
+        "Não definir versão da imagem base (imutabilidade).",
+        "Esquecer de remover containers/volumes antigos."
+      ],
+      "projectExample": "Para testes de API, criamos uma imagem com a suíte e rodávamos containers efêmeros em paralelo, cada um apontando para um banco isolado. Isso permitiu execução paralela determinística sem conflito de dados.",
+      "interviewQuestions": [
         {
-            "title": "Imagens & Containers",
-            "theory": "Uma imagem é um template imutável com o sistema de arquivos e configuração; um container é uma instância em execução da imagem. Dockerfile descreve como construir a imagem: FROM (base), RUN (comandos), COPY (arquivos), WORKDIR, ENTRYPOINT/CMD, EXPOSE. Imagens são compostas de camadas (layer cache). Containers são efêmeros e isolados. Comandos essenciais: docker build, run, ps, images, exec, logs, stop.",
-            "examples": [
-                "docker build -t meu-teste .",
-                "docker run -p 8080:80 -d nginx",
-                "docker exec -it container bash",
-                "docker logs -f container"
-            ],
-            "commonMistakes": [
-                "Não usar multi-stage builds (imagens gigantes).",
-                "Rodar como root no container.",
-                "Não definir versão da imagem base (imutabilidade).",
-                "Esquecer de remover containers/volumes antigos."
-            ],
-            "projectExample": "Para testes de API, criamos uma imagem com a suíte e rodávamos containers efêmeros em paralelo, cada um apontando para um banco isolado. Isso permitiu execução paralela determinística sem conflito de dados.",
-            "interviewQuestions": [
-                {
-                    "question": "Qual a diferença entre imagem e container?",
-                    "difficulty": "Fácil",
-                    "expectedAnswer": "Uma imagem é um template imutável contendo código, bibliotecas e configuração — como um pacote de instalação. Um container é uma instância em execução da imagem, com isolamento de processos, rede e filesystem. Pode-se criar muitos containers a partir de uma única imagem. Como QA, uso imagens para garantir o mesmo ambiente em qualquer lugar.",
-                    "followUps": [
-                        "O que são camadas de uma imagem?",
-                        "Containers persistem dados por padrão?"
-                    ],
-                    "mistakes": [
-                        "Confundir os dois conceitos.",
-                        "Não citar efemeridade/isolamento."
-                    ],
-                    "english": "An image is an immutable template with code, libraries and configuration. A container is a running instance of that image, isolated in processes, network and filesystem. You can create many containers from one image, which guarantees a consistent environment everywhere."
-                },
-                {
-                    "question": "Como você usa Docker para garantir ambientes de teste consistentes?",
-                    "difficulty": "Intermediária",
-                    "expectedAnswer": "Construo uma imagem com a versão exata das dependências (runtime, bibliotecas, navegadores), versiono a imagem com tag/checksum, e executo os testes em containers efêmeros que sobem no CI e são descartados após a execução. Como a imagem é imutável, todos rodam exatamente o mesmo ambiente, eliminando o clássico 'na minha máquina funciona'. Também subo dependências (bancos) via compose.",
-                    "followUps": [
-                        "Como você evita o problema de ambientes divergentes?",
-                        "Como executa testes em paralelo com containers?"
-                    ],
-                    "mistakes": [
-                        "Instalar dependências na máquina local em vez de imagem.",
-                        "Não versionar a imagem."
-                    ],
-                    "english": "I build an image with the exact dependency versions, tag it, and run tests in ephemeral containers that start in CI and are discarded after execution. Because the image is immutable, everyone runs exactly the same environment, eliminating environment divergence."
-                }
-            ],
-            "challenges": [
-                "Escreva um Dockerfile multi-stage para uma imagem de automação de testes Python.",
-                "Liste os comandos para executar uma suíte dentro de um container com logs."
-            ]
+          "question": "Qual a diferença entre imagem e container?",
+          "difficulty": "Fácil",
+          "expectedAnswer": "Uma imagem é um template imutável contendo código, bibliotecas e configuração — como um pacote de instalação. Um container é uma instância em execução da imagem, com isolamento de processos, rede e filesystem. Pode-se criar muitos containers a partir de uma única imagem. Como QA, uso imagens para garantir o mesmo ambiente em qualquer lugar.",
+          "followUps": [
+            "O que são camadas de uma imagem?",
+            "Containers persistem dados por padrão?"
+          ],
+          "mistakes": [
+            "Confundir os dois conceitos.",
+            "Não citar efemeridade/isolamento."
+          ],
+          "english": "An image is an immutable template with code, libraries and configuration. A container is a running instance of that image, isolated in processes, network and filesystem. You can create many containers from one image, which guarantees a consistent environment everywhere."
         },
         {
-            "title": "Docker Compose & Serviços de Teste",
-            "theory": "Docker Compose orquestra múltiplos containers em um projeto (docker-compose.yml): define services, networks, volumes e ports. Para QA, o uso clássico é subir o ambiente de teste: banco de dados, aplicação, message broker, e ferramentas de mock. Comandos: docker compose up, down, logs, ps. Health checks (condition: service_healthy) garantem que o serviço está pronto antes dos testes.",
-            "examples": [
-                "services: db: image: postgres:16, healthcheck: pg_isready",
-                "services: app: build: ., ports: '8080:8080', depends_on: [db]",
-                "docker compose up -d",
-                "docker compose down -v"
-            ],
-            "commonMistakes": [
-                "Não usar health checks (testes rodam antes do banco estar pronto).",
-                "Mapear portas em conflito.",
-                "Persistir estado em volumes entre execuções sem limpar.",
-                "Misturar configuração de prod com a de teste no mesmo compose."
-            ],
-            "projectExample": "Em um projeto de integração, subimos Postgres, Redis e a aplicação via compose com health checks. O teste esperava o banco saudável, rodava a migração e executava a suíte. O teardown (docker compose down -v) limpava tudo, garantindo estado limpo.",
-            "interviewQuestions": [
-                {
-                    "question": "Como você usa Docker Compose para preparar um ambiente de teste de integração?",
-                    "difficulty": "Intermediária",
-                    "expectedAnswer": "Defino no compose os serviços necessários: banco de dados, aplicação e dependências (broker, mocks), com health checks para garantir prontidão. O pipeline sobe o ambiente com up -d, espera os health checks, roda as migrações e executa a suíte, depois limpa com down -v. Isso dá um ambiente de integração reproduzível e isolado para cada execução.",
-                    "followUps": [
-                        "O que é um healthcheck e por que é importante?",
-                        "Como você isola o ambiente entre execuções?"
-                    ],
-                    "mistakes": [
-                        "Não citar health checks.",
-                        "Não limpar estado entre execuções."
-                    ],
-                    "english": "I define services like database, application and dependencies with health checks to guarantee readiness. The pipeline starts the environment with up -d, waits for health checks, runs migrations and the suite, then cleans up with down -v. This gives a reproducible, isolated integration environment per run."
-                },
-                {
-                    "question": "Como você garante que os testes só rodem quando os serviços de teste estiverem prontos?",
-                    "difficulty": "Intermediária",
-                    "expectedAnswer": "Usando health checks no compose (como pg_isready para Postgres) com condition: service_healthy nos depends_on. Assim, os testes esperam o banco aceitar conexões antes de começar. Além disso, no código de testes, configuro retry de conexão com timeout na inicialização. Isso evita a corrida clássica entre 'banco subindo' e 'testes rodando'.",
-                    "followUps": [
-                        "E se um serviço não tiver healthcheck nativo?",
-                        "Como você configura o timeout de espera?"
-                    ],
-                    "mistakes": [
-                        "Depender de sleep para esperar o serviço.",
-                        "Não usar healthcheck."
-                    ],
-                    "english": "Using health checks in compose with service_healthy conditions in depends_on, so tests wait for the database to accept connections. I also configure connection retry with timeout in the test bootstrap to avoid the classic race between services starting and tests running."
-                }
-            ],
-            "challenges": [
-                "Escreva um docker-compose.yml com banco e aplicação, com healthcheck no banco.",
-                "Proponha o fluxo de setup/teardown de um ambiente de teste efêmero no CI."
-            ]
-        },
-        {
-            "title": "Containers no CI & Boas Práticas",
-            "theory": "Rodar testes no CI dentro de containers: os runners executam a imagem com a suíte, garantindo reprodutibilidade. Boas práticas: imagem base leve e pinada, multi-stage para reduzir tamanho, segredos via variáveis de ambiente (nunca na imagem), .dockerignore para não copiar outputs/dependências desnecessárias, e uso de cache de camadas para acelerar build. Também: containers para serviços (bancos) que são descartados após o job.",
-            "examples": [
-                ".dockerignore: results/, node_modules/, .env",
-                "CI: docker build -t qa-suite . && docker run --env-file=.env qa-suite",
-                "Multi-stage: estágio de build + estágio de runtime leve",
-                "Cache: camadas estáveis primeiro (requirements.txt) antes do código"
-            ],
-            "commonMistakes": [
-                "Copiar secrets para a imagem.",
-                "Imagem gigante sem multi-stage.",
-                "Não usar .dockerignore.",
-                "Quebrar o cache de camadas (COPY de código antes das dependências)."
-            ],
-            "projectExample": "Num pipeline GitHub Actions, o job de testes construía a imagem da suíte (com cache de camadas) e executava os testes em container com variáveis de ambiente via secrets do CI. O tempo de build caiu de 8 para 2 minutos graças ao cache bem ordenado.",
-            "interviewQuestions": [
-                {
-                    "question": "Quais boas práticas você segue ao criar imagens Docker para testes?",
-                    "difficulty": "Intermediária",
-                    "expectedAnswer": "Imagem base pinada e leve; multi-stage builds para reduzir o tamanho final; .dockerignore para excluir outputs e dependências; ordenar COPY para aproveitar o cache de camadas (dependências antes do código); nunca copiar secrets para a imagem — usar variáveis de ambiente/secrets no runtime; e tag imutável da imagem para reprodutibilidade. Rodar como usuário não-root quando possível.",
-                    "followUps": [
-                        "Como o cache de camadas acelera o build?",
-                        "Por que não colocar secrets na imagem?"
-                    ],
-                    "mistakes": [
-                        "Não citar multi-stage ou .dockerignore.",
-                        "Não mencionar cache de camadas."
-                    ],
-                    "english": "Pinned and lightweight base image, multi-stage builds, .dockerignore to exclude outputs and dependencies, ordered COPYs to leverage layer caching, never copying secrets into the image, and immutable image tags for reproducibility. Run as non-root when possible."
-                },
-                {
-                    "question": "Como você evita colocar segredos na imagem Docker?",
-                    "difficulty": "Intermediária",
-                    "expectedAnswer": "Nunca passo secrets por argumentos de build embutidos ou os escrevo no Dockerfile. Uso variáveis de ambiente injetadas no runtime (docker run --env / --env-file) alimentadas por secrets do CI (GitHub Actions secrets, Vault), e .env no .gitignore/.dockerignore. Também evito camadas que copiem arquivos de credenciais. Se necessário no build, uso secrets do BuildKit, que não persistem em camadas.",
-                    "followUps": [
-                        "O que é BuildKit secrets?",
-                        "Como detectar que um secret foi incluído na imagem?"
-                    ],
-                    "mistakes": [
-                        "ARGS de build com secrets (ficam na história das camadas).",
-                        "Comitar .env."
-                    ],
-                    "english": "Never embed secrets in the Dockerfile or build arguments. I inject environment variables at runtime from CI secrets, keep .env out of git and the image, and use BuildKit secrets when needed during build since they do not persist in layers."
-                }
-            ],
-            "challenges": [
-                "Escreva um .dockerignore e um Dockerfile multi-stage para uma suíte de testes.",
-                "Proponha o fluxo de execução de testes em container no CI com secrets."
-            ]
+          "question": "Como você usa Docker para garantir ambientes de teste consistentes?",
+          "difficulty": "Intermediária",
+          "expectedAnswer": "Construo uma imagem com a versão exata das dependências (runtime, bibliotecas, navegadores), versiono a imagem com tag/checksum, e executo os testes em containers efêmeros que sobem no CI e são descartados após a execução. Como a imagem é imutável, todos rodam exatamente o mesmo ambiente, eliminando o clássico 'na minha máquina funciona'. Também subo dependências (bancos) via compose.",
+          "followUps": [
+            "Como você evita o problema de ambientes divergentes?",
+            "Como executa testes em paralelo com containers?"
+          ],
+          "mistakes": [
+            "Instalar dependências na máquina local em vez de imagem.",
+            "Não versionar a imagem."
+          ],
+          "english": "I build an image with the exact dependency versions, tag it, and run tests in ephemeral containers that start in CI and are discarded after execution. Because the image is immutable, everyone runs exactly the same environment, eliminating environment divergence."
         }
-    ],
-    "quiz": [
-        { "question": "Qual é o template imutável com código, bibliotecas e configuração?", "options": { "A": "Container", "B": "Imagem", "C": "Volume", "D": "Network" }, "answer": "B", "explanation": "Imagem é o template imutável; container é a instância em execução." },
-        { "question": "Qual comando constrói uma imagem a partir de um Dockerfile?", "options": { "A": "docker run", "B": "docker build", "C": "docker push", "D": "docker exec" }, "answer": "B", "explanation": "docker build -t nome . constrói a imagem a partir do Dockerfile no diretório." },
-        { "question": "Para subir múltiplos serviços (banco, app, broker), use:", "options": { "A": "docker run", "B": "docker compose up", "C": "docker build", "D": "docker logs" }, "answer": "B", "explanation": "Docker Compose orquestra múltiplos containers definidos no docker-compose.yml." },
-        { "question": "O que garante que um serviço do compose está pronto antes de os testes rodarem?", "options": { "A": "Sleep", "B": "Healthcheck", "C": "Port mapping", "D": "Volume" }, "answer": "B", "explanation": "Healthchecks (ex.: pg_isready) com service_healthy garantem prontidão." },
-        { "question": "Por que os secrets não devem ser passados como ARG de build?", "options": { "A": "São lentos", "B": "Ficam gravados nas camadas da imagem", "C": "Não funcionam", "D": "São públicos" }, "answer": "B", "explanation": "ARGs e arquivos copiados ficam no histórico das camadas, vazando o segredo." }
-    ]
+      ],
+      "challenges": [
+        "Escreva um Dockerfile multi-stage para uma imagem de automação de testes Python.",
+        "Liste os comandos para executar uma suíte dentro de um container com logs."
+      ]
+    },
+    {
+      "title": "Docker Compose & Serviços de Teste",
+      "theory": "Docker Compose orquestra múltiplos containers em um projeto (docker-compose.yml): define services, networks, volumes e ports. Para QA, o uso clássico é subir o ambiente de teste: banco de dados, aplicação, message broker, e ferramentas de mock. Comandos: docker compose up, down, logs, ps. Health checks (condition: service_healthy) garantem que o serviço está pronto antes dos testes.",
+      "examples": [
+        "services: db: image: postgres:16, healthcheck: pg_isready",
+        "services: app: build: ., ports: '8080:8080', depends_on: [db]",
+        "docker compose up -d",
+        "docker compose down -v"
+      ],
+      "commonMistakes": [
+        "Não usar health checks (testes rodam antes do banco estar pronto).",
+        "Mapear portas em conflito.",
+        "Persistir estado em volumes entre execuções sem limpar.",
+        "Misturar configuração de prod com a de teste no mesmo compose."
+      ],
+      "projectExample": "Em um projeto de integração, subimos Postgres, Redis e a aplicação via compose com health checks. O teste esperava o banco saudável, rodava a migração e executava a suíte. O teardown (docker compose down -v) limpava tudo, garantindo estado limpo.",
+      "interviewQuestions": [
+        {
+          "question": "Como você usa Docker Compose para preparar um ambiente de teste de integração?",
+          "difficulty": "Intermediária",
+          "expectedAnswer": "Defino no compose os serviços necessários: banco de dados, aplicação e dependências (broker, mocks), com health checks para garantir prontidão. O pipeline sobe o ambiente com up -d, espera os health checks, roda as migrações e executa a suíte, depois limpa com down -v. Isso dá um ambiente de integração reproduzível e isolado para cada execução.",
+          "followUps": [
+            "O que é um healthcheck e por que é importante?",
+            "Como você isola o ambiente entre execuções?"
+          ],
+          "mistakes": [
+            "Não citar health checks.",
+            "Não limpar estado entre execuções."
+          ],
+          "english": "I define services like database, application and dependencies with health checks to guarantee readiness. The pipeline starts the environment with up -d, waits for health checks, runs migrations and the suite, then cleans up with down -v. This gives a reproducible, isolated integration environment per run."
+        },
+        {
+          "question": "Como você garante que os testes só rodem quando os serviços de teste estiverem prontos?",
+          "difficulty": "Intermediária",
+          "expectedAnswer": "Usando health checks no compose (como pg_isready para Postgres) com condition: service_healthy nos depends_on. Assim, os testes esperam o banco aceitar conexões antes de começar. Além disso, no código de testes, configuro retry de conexão com timeout na inicialização. Isso evita a corrida clássica entre 'banco subindo' e 'testes rodando'.",
+          "followUps": [
+            "E se um serviço não tiver healthcheck nativo?",
+            "Como você configura o timeout de espera?"
+          ],
+          "mistakes": [
+            "Depender de sleep para esperar o serviço.",
+            "Não usar healthcheck."
+          ],
+          "english": "Using health checks in compose with service_healthy conditions in depends_on, so tests wait for the database to accept connections. I also configure connection retry with timeout in the test bootstrap to avoid the classic race between services starting and tests running."
+        }
+      ],
+      "challenges": [
+        "Escreva um docker-compose.yml com banco e aplicação, com healthcheck no banco.",
+        "Proponha o fluxo de setup/teardown de um ambiente de teste efêmero no CI."
+      ]
+    },
+    {
+      "title": "Containers no CI & Boas Práticas",
+      "theory": "Rodar testes no CI dentro de containers: os runners executam a imagem com a suíte, garantindo reprodutibilidade. Boas práticas: imagem base leve e pinada, multi-stage para reduzir tamanho, segredos via variáveis de ambiente (nunca na imagem), .dockerignore para não copiar outputs/dependências desnecessárias, e uso de cache de camadas para acelerar build. Também: containers para serviços (bancos) que são descartados após o job.",
+      "examples": [
+        ".dockerignore: results/, node_modules/, .env",
+        "CI: docker build -t qa-suite . && docker run --env-file=.env qa-suite",
+        "Multi-stage: estágio de build + estágio de runtime leve",
+        "Cache: camadas estáveis primeiro (requirements.txt) antes do código"
+      ],
+      "commonMistakes": [
+        "Copiar secrets para a imagem.",
+        "Imagem gigante sem multi-stage.",
+        "Não usar .dockerignore.",
+        "Quebrar o cache de camadas (COPY de código antes das dependências)."
+      ],
+      "projectExample": "Num pipeline GitHub Actions, o job de testes construía a imagem da suíte (com cache de camadas) e executava os testes em container com variáveis de ambiente via secrets do CI. O tempo de build caiu de 8 para 2 minutos graças ao cache bem ordenado.",
+      "interviewQuestions": [
+        {
+          "question": "Quais boas práticas você segue ao criar imagens Docker para testes?",
+          "difficulty": "Intermediária",
+          "expectedAnswer": "Imagem base pinada e leve; multi-stage builds para reduzir o tamanho final; .dockerignore para excluir outputs e dependências; ordenar COPY para aproveitar o cache de camadas (dependências antes do código); nunca copiar secrets para a imagem — usar variáveis de ambiente/secrets no runtime; e tag imutável da imagem para reprodutibilidade. Rodar como usuário não-root quando possível.",
+          "followUps": [
+            "Como o cache de camadas acelera o build?",
+            "Por que não colocar secrets na imagem?"
+          ],
+          "mistakes": [
+            "Não citar multi-stage ou .dockerignore.",
+            "Não mencionar cache de camadas."
+          ],
+          "english": "Pinned and lightweight base image, multi-stage builds, .dockerignore to exclude outputs and dependencies, ordered COPYs to leverage layer caching, never copying secrets into the image, and immutable image tags for reproducibility. Run as non-root when possible."
+        },
+        {
+          "question": "Como você evita colocar segredos na imagem Docker?",
+          "difficulty": "Intermediária",
+          "expectedAnswer": "Nunca passo secrets por argumentos de build embutidos ou os escrevo no Dockerfile. Uso variáveis de ambiente injetadas no runtime (docker run --env / --env-file) alimentadas por secrets do CI (GitHub Actions secrets, Vault), e .env no .gitignore/.dockerignore. Também evito camadas que copiem arquivos de credenciais. Se necessário no build, uso secrets do BuildKit, que não persistem em camadas.",
+          "followUps": [
+            "O que é BuildKit secrets?",
+            "Como detectar que um secret foi incluído na imagem?"
+          ],
+          "mistakes": [
+            "ARGS de build com secrets (ficam na história das camadas).",
+            "Comitar .env."
+          ],
+          "english": "Never embed secrets in the Dockerfile or build arguments. I inject environment variables at runtime from CI secrets, keep .env out of git and the image, and use BuildKit secrets when needed during build since they do not persist in layers."
+        }
+      ],
+      "challenges": [
+        "Escreva um .dockerignore e um Dockerfile multi-stage para uma suíte de testes.",
+        "Proponha o fluxo de execução de testes em container no CI com secrets."
+      ]
+    }
+  ],
+  "quizCategory": "Docker"
 }

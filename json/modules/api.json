@@ -1,226 +1,225 @@
 {
-    "id": "api",
-    "title": "API Testing & REST",
-    "icon": "fa-plug",
-    "level": "Avançado",
-    "duration": "2-3 semanas",
-    "shortDescription": "REST, HTTP, autenticação, contract testing e boas práticas.",
-    "description": "Testes de API são o coração de qualquer estratégia de QA moderna em bancos e seguradoras. Este módulo cobre fundamentos de REST, HTTP, autenticação, contratos e como construir uma estratégia sólida de testes de API.",
-    "topics": ["REST", "HTTP", "Auth", "Contratos"],
-    "concepts": [
+  "id": "api",
+  "title": "API Testing & REST",
+  "icon": "fa-plug",
+  "level": "Avançado",
+  "duration": "2-3 semanas",
+  "shortDescription": "REST, HTTP, autenticação, contract testing e boas práticas.",
+  "description": "Testes de API são o coração de qualquer estratégia de QA moderna em bancos e seguradoras. Este módulo cobre fundamentos de REST, HTTP, autenticação, contratos e como construir uma estratégia sólida de testes de API.",
+  "topics": [
+    "REST",
+    "HTTP",
+    "Auth",
+    "Contratos"
+  ],
+  "concepts": [
+    {
+      "title": "REST Fundamentals",
+      "theory": "REST (Representational State Transfer) é um estilo arquitetural baseado em recursos, que são identificados por URIs. O cliente interage com esses recursos por meio de verbos HTTP. As principais características de uma API REST: arquitetura cliente-servidor, statelessness (o servidor não guarda estado do cliente entre requisições), cacheabilidade, interface uniforme (identificação de recursos, representação, mensagens autodescritivas e HATEOAS) e sistema em camadas. Uma API RESTful usa os verbos de forma coerente com a semântica da operação e retorna status codes apropriados.",
+      "examples": [
+        "GET /api/v1/orders -> busca a lista de pedidos (sem efeito colateral)",
+        "POST /api/v1/orders -> cria um novo pedido (corpo contém o payload)",
+        "PUT /api/v1/orders/123 -> substitui o recurso 123 inteiro",
+        "PATCH /api/v1/orders/123 -> atualização parcial do recurso",
+        "DELETE /api/v1/orders/123 -> remove o recurso"
+      ],
+      "commonMistakes": [
+        "Usar POST para operações de leitura ou usar GET para operações que alteram estado.",
+        "Não utilizar status codes semânticos (ex.: retornar 200 para tudo).",
+        "Ignorar a diferença entre idempotência: PUT e DELETE são idempotentes, POST não é.",
+        "Confundir PUT (substituição) com PATCH (atualização parcial)."
+      ],
+      "projectExample": "Em um projeto de automação de API para uma fintech, precisávamos validar a criação de ordens de pagamento. Criamos uma suíte com o contrato do recurso /payments: verificávamos o status 201 na criação, o retorno do id gerado, e a consistência do GET subsequente. Isso permitiu detectar um bug em que a API retornava 200 em vez de 201 para criação, quebrando a semântica do contrato. O caso virou um teste de regressão permanente.",
+      "interviewQuestions": [
         {
-            "title": "REST Fundamentals",
-            "theory": "REST (Representational State Transfer) é um estilo arquitetural baseado em recursos, que são identificados por URIs. O cliente interage com esses recursos por meio de verbos HTTP. As principais características de uma API REST: arquitetura cliente-servidor, statelessness (o servidor não guarda estado do cliente entre requisições), cacheabilidade, interface uniforme (identificação de recursos, representação, mensagens autodescritivas e HATEOAS) e sistema em camadas. Uma API RESTful usa os verbos de forma coerente com a semântica da operação e retorna status codes apropriados.",
-            "examples": [
-                "GET /api/v1/orders -> busca a lista de pedidos (sem efeito colateral)",
-                "POST /api/v1/orders -> cria um novo pedido (corpo contém o payload)",
-                "PUT /api/v1/orders/123 -> substitui o recurso 123 inteiro",
-                "PATCH /api/v1/orders/123 -> atualização parcial do recurso",
-                "DELETE /api/v1/orders/123 -> remove o recurso"
-            ],
-            "commonMistakes": [
-                "Usar POST para operações de leitura ou usar GET para operações que alteram estado.",
-                "Não utilizar status codes semânticos (ex.: retornar 200 para tudo).",
-                "Ignorar a diferença entre idempotência: PUT e DELETE são idempotentes, POST não é.",
-                "Confundir PUT (substituição) com PATCH (atualização parcial)."
-            ],
-            "projectExample": "Em um projeto de automação de API para uma fintech, precisávamos validar a criação de ordens de pagamento. Criamos uma suíte com o contrato do recurso /payments: verificávamos o status 201 na criação, o retorno do id gerado, e a consistência do GET subsequente. Isso permitiu detectar um bug em que a API retornava 200 em vez de 201 para criação, quebrando a semântica do contrato. O caso virou um teste de regressão permanente.",
-            "interviewQuestions": [
-                {
-                    "question": "Explique a diferença entre os métodos HTTP GET, POST, PUT, PATCH e DELETE.",
-                    "difficulty": "Média",
-                    "expectedAnswer": "GET é usado para recuperar dados e deve ser idempotente e sem efeitos colaterais. POST cria um recurso e não é idempotente (pode criar múltiplos recursos se repetido). PUT substitui integralmente um recurso existente e é idempotente. PATCH aplica uma atualização parcial. DELETE remove um recurso e é idempotente. Um QA deve validar não apenas a funcionalidade, mas o uso correto da semântica do verbo no contrato da API.",
-                    "followUps": [
-                        "O que acontece se você chamar POST duas vezes com o mesmo payload?",
-                        "Por que PUT é idempotente e POST não é?",
-                        "Como você testaria idempotência na prática?"
-                    ],
-                    "mistakes": [
-                        "Responder apenas a definição, sem conectar com casos de teste.",
-                        "Não mencionar idempotência.",
-                        "Não dar um exemplo real de quando isso causou problema."
-                    ],
-                    "english": "GET is used to retrieve data and must be idempotent and side-effect free. POST creates a resource and is not idempotent. PUT fully replaces an existing resource. PATCH applies a partial update, and DELETE removes a resource. As a QA engineer I always verify that the API contract follows the correct semantics for each verb."
-                },
-                {
-                    "question": "O que é um endpoint RESTful bem projetado do ponto de vista de testabilidade?",
-                    "difficulty": "Média",
-                    "expectedAnswer": "Um endpoint bem projetado é testável quando: tem URIs claras baseadas em recursos, usa verbos corretos, retorna status codes semânticos, tem respostas de erro estruturadas (código, mensagem, trace id), é idempotente quando esperado, e permite configurar ambientes (base URL, dados de teste). Isso facilita criar casos de teste determinísticos, automatizar e debugar falhas.",
-                    "followUps": [
-                        "Como você estrutura o teste de respostas de erro?",
-                        "Qual a importância de um schema de erro padronizado?"
-                    ],
-                    "mistakes": [
-                        "Falar apenas de design, não de como testar.",
-                        "Não citar mensagens de erro estruturadas."
-                    ],
-                    "english": "A well-designed RESTful endpoint is testable when it has clear resource-based URIs, correct verbs, semantic status codes, structured error responses, and predictable behavior. This makes automation deterministic and debugging faster."
-                }
-            ],
-            "challenges": [
-                "Escreva casos de teste para o recurso /customers cobrindo os verbos principais e todos os status codes possíveis.",
-                "Desenhe um cenário de idempotência para uma operação POST de criação de pagamento."
-            ]
+          "question": "Explique a diferença entre os métodos HTTP GET, POST, PUT, PATCH e DELETE.",
+          "difficulty": "Média",
+          "expectedAnswer": "GET é usado para recuperar dados e deve ser idempotente e sem efeitos colaterais. POST cria um recurso e não é idempotente (pode criar múltiplos recursos se repetido). PUT substitui integralmente um recurso existente e é idempotente. PATCH aplica uma atualização parcial. DELETE remove um recurso e é idempotente. Um QA deve validar não apenas a funcionalidade, mas o uso correto da semântica do verbo no contrato da API.",
+          "followUps": [
+            "O que acontece se você chamar POST duas vezes com o mesmo payload?",
+            "Por que PUT é idempotente e POST não é?",
+            "Como você testaria idempotência na prática?"
+          ],
+          "mistakes": [
+            "Responder apenas a definição, sem conectar com casos de teste.",
+            "Não mencionar idempotência.",
+            "Não dar um exemplo real de quando isso causou problema."
+          ],
+          "english": "GET is used to retrieve data and must be idempotent and side-effect free. POST creates a resource and is not idempotent. PUT fully replaces an existing resource. PATCH applies a partial update, and DELETE removes a resource. As a QA engineer I always verify that the API contract follows the correct semantics for each verb."
         },
         {
-            "title": "HTTP Status Codes & Headers",
-            "theory": "Status codes informam o resultado da requisição. Faixas: 1xx informativo, 2xx sucesso (200 OK, 201 Created, 204 No Content), 3xx redirecionamento (301, 304 Not Modified), 4xx erro do cliente (400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found, 409 Conflict, 422 Unprocessable Entity) e 5xx erro do servidor (500, 502 Bad Gateway, 503 Service Unavailable, 504 Gateway Timeout). Headers importantes: Content-Type, Accept, Authorization, Cache-Control, Rate-Limit-*, X-Request-Id (traceability). Um QA deve validar que a API retorna o status correto, headers de segurança (CSP, HSTS) e capacidade de rastreabilidade.",
-            "examples": [
-                "POST /login com credenciais inválidas -> 401 Unauthorized (não 200 com corpo de erro)",
-                "POST /users com payload inválido -> 400 ou 422, não 500",
-                "DELETE bem-sucedido -> 204 No Content, sem corpo",
-                "Validação de negócio quebrada -> 409 Conflict (ex.: duplicidade)"
-            ],
-            "commonMistakes": [
-                "Confundir 401 (não autenticado) com 403 (autenticado mas sem permissão).",
-                "Aceitar 200 como resposta para erro de negócio.",
-                "Não validar o header Content-Type correto nas respostas.",
-                "Não verificar rate limiting e headers de cache."
-            ],
-            "projectExample": "Testando uma API de crédito, o time recebia erros de negócio (limite insuficiente) como 200 com código de erro no corpo. Isso quebrava o monitoramento de integração com o front. Documentamos o problema e o time de API passou a retornar 422 para falhas de validação de negócio, permitindo que nossa automação distinguisse erro técnico de erro de negócio automaticamente.",
-            "interviewQuestions": [
-                {
-                    "question": "Qual a diferença entre 401 Unauthorized e 403 Forbidden?",
-                    "difficulty": "Fácil",
-                    "expectedAnswer": "401 significa que a requisição não foi autenticada (credenciais ausentes, inválidas ou expiradas) e normalmente inclui um header WWW-Authenticate indicando como autenticar. 403 significa que o cliente foi autenticado, mas não tem permissão para acessar o recurso. Como QA, testes de autorização devem validar que usuários autenticados sem o papel adequado recebem 403, e não 401.",
-                    "followUps": [
-                        "Como você testa controle de acesso baseado em perfis?",
-                        "O que é o header WWW-Authenticate?"
-                    ],
-                    "mistakes": [
-                        "Inverter os dois conceitos.",
-                        "Não conectar com testes de RBAC."
-                    ],
-                    "english": "401 means the request is not authenticated. 403 means the client is authenticated but not authorized. In authorization tests I always verify that a user without the proper role receives 403, not 401."
-                },
-                {
-                    "question": "Por que é importante validar headers de resposta em testes de API, e quais você valida?",
-                    "difficulty": "Intermediária",
-                    "expectedAnswer": "Headers de resposta impactam segurança, cache e debuggability. Eu valido: Content-Type (garantindo o formato esperado), Cache-Control (política de cache), headers de segurança como Content-Security-Policy e X-Content-Type-Options, e X-Request-Id para correlação de logs em incidentes. Também valido headers de rate limiting (Rate-Limit-Remaining) quando aplicável, para garantir que o cliente seja informado antes de atingir o limite.",
-                    "followUps": [
-                        "Como você usa o X-Request-Id na investigação de falhas?",
-                        "O que acontece se a API não setar Cache-Control?"
-                    ],
-                    "mistakes": [
-                        "Listar headers sem explicar o impacto no negócio/segurança.",
-                        "Esquecer de mencionar rate limiting."
-                    ],
-                    "english": "Response headers impact security, caching and debuggability. I validate Content-Type, Cache-Control, security headers and X-Request-Id for log correlation during incidents."
-                }
-            ],
-            "challenges": [
-                "Liste 3 cenários em que 409 Conflict é a resposta correta.",
-                "Crie uma checklist de validação de headers para uma API nova."
-            ]
-        },
-        {
-            "title": "Autenticação & Autorização em APIs",
-            "theory": "Autenticação valida quem é o usuário; autorização valida o que ele pode fazer. Mecanismos comuns: Basic Auth (usuário/senha em base64 — inseguro em produção), API Keys, OAuth 2.0 (Authorization Code, Client Credentials, Password), JWT (JSON Web Tokens — assinado, com claims e expiração). Em bancos e seguradoras, é comum OAuth 2.0 com Client Credentials para integração M2M e Authorization Code para usuários finais. Um QA precisa testar: fluxos de token válido, token expirado, token inválido/adulterado, ausência de token, escopos (scopes), e comportamento em refresh token.",
-            "examples": [
-                "Fluxo Client Credentials: POST /oauth/token com client_id/client_secret -> retorna access_token",
-                "Chamada sem token -> 401 Unauthorized",
-                "Token expirado -> 401 com erro específico (invalid_token)",
-                "Token válido mas sem scope para o recurso -> 403 Forbidden"
-            ],
-            "commonMistakes": [
-                "Testar apenas o happy path (token válido).",
-                "Não testar expiração e refresh de token.",
-                "Confundir testes de autenticação com autorização.",
-                "Ignorar scopes/permissões no caso de teste."
-            ],
-            "projectExample": "Em um projeto de seguradora, a API de cotação exigia token OAuth2 com scope específico. Durante a automação, o token gerado no fluxo de testes não tinha o scope necessário, e os testes falhavam esporadicamente. Identificamos que o grant usado (Client Credentials) devia ser configurado com o scope correto no client de testes. Documentamos o fluxo e criamos um helper de autenticação reutilizável que renova o token automaticamente.",
-            "interviewQuestions": [
-                {
-                    "question": "Explique como você testaria autenticação JWT em uma API.",
-                    "difficulty": "Avançada",
-                    "expectedAnswer": "Eu cobriria: (1) token válido retorna 200 e autoriza a operação; (2) token ausente retorna 401; (3) token expirado retorna 401 e dispara o fluxo de refresh se existir; (4) token adulterado (assinatura inválida) é rejeitado; (5) claims (role, scope) controlam a autorização, então usuários com scopes diferentes devem ter respostas 403 onde não têm permissão. Também validaria a expiração real do token no servidor, e não apenas no client.",
-                    "followUps": [
-                        "O que acontece se você altera um claim do JWT?",
-                        "Como testar o fluxo de refresh token?",
-                        "Quais riscos de segurança existem em armazenar JWT?"
-                    ],
-                    "mistakes": [
-                        "Testar apenas token válido e esquecer os cenários negativos.",
-                        "Não mencionar validação de assinatura."
-                    ],
-                    "english": "I would test a valid token returns 200, a missing token returns 401, an expired token is rejected and triggers refresh, a tampered token with an invalid signature is rejected, and different scopes result in 403 where the user lacks permission."
-                },
-                {
-                    "question": "OAuth 2.0: quando usar Client Credentials vs Authorization Code?",
-                    "difficulty": "Avançada",
-                    "expectedAnswer": "Client Credentials é para comunicação servidor-a-servidor (M2M), onde a aplicação age por conta própria sem usuário. Authorization Code é para cenários com usuário final, onde há consentimento e um redirect com code trocado por token. Em testes, isso importa porque define como obter o token: no M2M usamos credenciais de serviço; no Authorization Code precisamos simular o login do usuário. Um QA deve saber configurar ambos os fluxos e saber qual usar em cada contexto de integração.",
-                    "followUps": [
-                        "Como você automatiza o fluxo Authorization Code com UI?",
-                        "O que é PKCE e quando é exigido?"
-                    ],
-                    "mistakes": [
-                        "Não saber a diferença entre M2M e fluxo com usuário.",
-                        "Ignorar PKCE em mobile/SPA."
-                    ],
-                    "english": "Client Credentials is for machine-to-machine communication without a user. Authorization Code involves a user and requires a redirect. This determines how you obtain tokens in test automation."
-                }
-            ],
-            "challenges": [
-                "Crie uma matriz de testes de autorização para 3 papéis (admin, operador, leitor) e 3 recursos.",
-                "Explique como você faria um teste que valida a expiração de token sem esperar o tempo real."
-            ]
-        },
-        {
-            "title": "Contract Testing & Estratégia de Testes de API",
-            "theory": "Contract testing garante que o provedor e o consumidor de uma API concordam com o contrato (schemas, headers, payloads) sem depender de testes E2E frágeis. Ferramentas como Pact (consumer-driven) e Spring Cloud Contract são comuns. A estratégia de testes de API normalmente segue a pirâmide: muitos testes de contrato e unitários, alguns testes de integração/funcionais (via Postman/Newman, RestAssured, Karate, Robot Framework), e poucos E2E. Testes de API devem cobrir: validação de contrato, casos de erro, edge cases, autenticação, performance básica e contratos de versionamento.",
-            "examples": [
-                "Pact consumer: o consumidor define o contrato esperado e o provider valida contra esse contrato no CI",
-                "Newman (Postman CLI): executa collection de testes de API em pipeline CI/CD",
-                "Karate: framework que combina BDD e testes de API com validação de schema nativa"
-            ],
-            "commonMistakes": [
-                "Fazer apenas testes E2E e negligenciar contract testing.",
-                "Hardcodar payloads completos sem validação de schema.",
-                "Não versionar o contrato (breaking changes sem aviso).",
-                "Não incluir testes de API no pipeline CI/CD."
-            ],
-            "projectExample": "Em um consórcio entre bancos, a integração com parceiros usava contratos OpenAPI. Configuramos validação de contrato no pipeline com schemas de request/response versionados. Quando um parceiro mudou o campo obrigatório no request, o contrato quebrou no CI antes do deploy, evitando incidente em produção. Essa foi uma evidência forte de engenharia para uma entrevista.",
-            "interviewQuestions": [
-                {
-                    "question": "O que é contract testing e como ele se diferencia de testes de integração?",
-                    "difficulty": "Avançada",
-                    "expectedAnswer": "Contract testing valida que provedor e consumidor concordam com o contrato da API (schemas, campos obrigatórios, tipos) de forma isolada e rápida, sem ambiente completo. Teste de integração valida o comportamento real entre sistemas rodando juntos. Contract tests são mais baratos, rápidos e determinísticos; integram o consumer-driven flow onde o consumidor publica o contrato e o provider valida contra ele no CI. Usamos os dois: contracts no CI e um conjunto menor de testes de integração para validar fluxos críticos.",
-                    "followUps": [
-                        "Conte uma situação real em que contract testing evitou um problema.",
-                        "Qual o papel do consumer nesse modelo?"
-                    ],
-                    "mistakes": [
-                        "Confundir contract testing com teste de integração.",
-                        "Não citar um caso real."
-                    ],
-                    "english": "Contract testing verifies that provider and consumer agree on the API contract in isolation, quickly and deterministically. Integration testing verifies real behavior between systems. We use contracts in CI and a smaller set of integration tests for critical flows."
-                },
-                {
-                    "question": "Como você estrutura uma suíte de testes de API do zero?",
-                    "difficulty": "Intermediária",
-                    "expectedAnswer": "Eu estruturaria em camadas: (1) smoke tests (health check e endpoints críticos); (2) testes funcionais por recurso, cobrindo happy path, erros e edge cases; (3) testes de contrato (schemas); (4) testes de autenticação e autorização; (5) testes negativos (rate limit, payload inválido); (6) testes de regressão no CI. Organização por recurso/business capability, dados de teste controlados (seeds) e helpers de autenticação reutilizáveis. Rodaria por camada no pipeline: smoke a cada deploy, completos em nightly ou PR.",
-                    "followUps": [
-                        "Como você trata dados de teste em APIs?",
-                        "Como decide o que é smoke vs funcional?"
-                    ],
-                    "mistakes": [
-                        "Plano teórico sem camadas.",
-                        "Não mencionar dados de teste e CI."
-                    ],
-                    "english": "I would structure the suite in layers: smoke tests, functional tests per resource, contract tests, auth tests, negative tests, and CI regression. Organized by business capability with controlled test data and reusable auth helpers."
-                }
-            ],
-            "challenges": [
-                "Defina os testes smoke vs funcional vs regressão para o recurso /accounts de um banco.",
-                "Proponha como automatizar uma coleção Postman no CI com Newman."
-            ]
+          "question": "O que é um endpoint RESTful bem projetado do ponto de vista de testabilidade?",
+          "difficulty": "Média",
+          "expectedAnswer": "Um endpoint bem projetado é testável quando: tem URIs claras baseadas em recursos, usa verbos corretos, retorna status codes semânticos, tem respostas de erro estruturadas (código, mensagem, trace id), é idempotente quando esperado, e permite configurar ambientes (base URL, dados de teste). Isso facilita criar casos de teste determinísticos, automatizar e debugar falhas.",
+          "followUps": [
+            "Como você estrutura o teste de respostas de erro?",
+            "Qual a importância de um schema de erro padronizado?"
+          ],
+          "mistakes": [
+            "Falar apenas de design, não de como testar.",
+            "Não citar mensagens de erro estruturadas."
+          ],
+          "english": "A well-designed RESTful endpoint is testable when it has clear resource-based URIs, correct verbs, semantic status codes, structured error responses, and predictable behavior. This makes automation deterministic and debugging faster."
         }
-    ],
-    "quiz": [
-        { "question": "Qual método HTTP deve ser usado para criar um novo recurso?", "options": { "A": "GET", "B": "PUT", "C": "POST", "D": "DELETE" }, "answer": "C", "explanation": "POST cria um novo recurso e não é idempotente. GET é leitura, PUT substitui e DELETE remove." },
-        { "question": "Uma requisição autenticada, mas sem permissão para o recurso, deve retornar:", "options": { "A": "401 Unauthorized", "B": "403 Forbidden", "C": "404 Not Found", "D": "422 Unprocessable Entity" }, "answer": "B", "explanation": "403 indica que o cliente foi autenticado, mas não tem permissão. 401 é falha de autenticação." },
-        { "question": "Qual é a diferença entre PUT e PATCH?", "options": { "A": "Não há diferença", "B": "PUT substitui o recurso inteiro; PATCH faz atualização parcial", "C": "PUT é usado para leitura; PATCH para criação", "D": "PATCH é sempre idempotente; PUT nunca é" }, "answer": "B", "explanation": "PUT substitui integralmente o recurso; PATCH aplica alteração parcial. Ambos existem para semânticas diferentes." },
-        { "question": "No OAuth 2.0, qual fluxo é mais adequado para integrações servidor-a-servidor (M2M)?", "options": { "A": "Authorization Code", "B": "Client Credentials", "C": "Implicit Flow", "D": "Password Grant" }, "answer": "B", "explanation": "Client Credentials é projetado para cenários sem usuário, típico de integrações M2M." },
-        { "question": "O que o contract testing valida?", "options": { "A": "A performance da API sob carga", "B": "Que provedor e consumidor concordam com o contrato (schemas, tipos, campos)", "C": "Que a interface de usuário funciona", "D": "Que o banco de dados está normalizado" }, "answer": "B", "explanation": "Contract testing valida o acordo entre provedor e consumidor, isoladamente e rápido." }
-    ]
+      ],
+      "challenges": [
+        "Escreva casos de teste para o recurso /customers cobrindo os verbos principais e todos os status codes possíveis.",
+        "Desenhe um cenário de idempotência para uma operação POST de criação de pagamento."
+      ]
+    },
+    {
+      "title": "HTTP Status Codes & Headers",
+      "theory": "Status codes informam o resultado da requisição. Faixas: 1xx informativo, 2xx sucesso (200 OK, 201 Created, 204 No Content), 3xx redirecionamento (301, 304 Not Modified), 4xx erro do cliente (400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found, 409 Conflict, 422 Unprocessable Entity) e 5xx erro do servidor (500, 502 Bad Gateway, 503 Service Unavailable, 504 Gateway Timeout). Headers importantes: Content-Type, Accept, Authorization, Cache-Control, Rate-Limit-*, X-Request-Id (traceability). Um QA deve validar que a API retorna o status correto, headers de segurança (CSP, HSTS) e capacidade de rastreabilidade.",
+      "examples": [
+        "POST /login com credenciais inválidas -> 401 Unauthorized (não 200 com corpo de erro)",
+        "POST /users com payload inválido -> 400 ou 422, não 500",
+        "DELETE bem-sucedido -> 204 No Content, sem corpo",
+        "Validação de negócio quebrada -> 409 Conflict (ex.: duplicidade)"
+      ],
+      "commonMistakes": [
+        "Confundir 401 (não autenticado) com 403 (autenticado mas sem permissão).",
+        "Aceitar 200 como resposta para erro de negócio.",
+        "Não validar o header Content-Type correto nas respostas.",
+        "Não verificar rate limiting e headers de cache."
+      ],
+      "projectExample": "Testando uma API de crédito, o time recebia erros de negócio (limite insuficiente) como 200 com código de erro no corpo. Isso quebrava o monitoramento de integração com o front. Documentamos o problema e o time de API passou a retornar 422 para falhas de validação de negócio, permitindo que nossa automação distinguisse erro técnico de erro de negócio automaticamente.",
+      "interviewQuestions": [
+        {
+          "question": "Qual a diferença entre 401 Unauthorized e 403 Forbidden?",
+          "difficulty": "Fácil",
+          "expectedAnswer": "401 significa que a requisição não foi autenticada (credenciais ausentes, inválidas ou expiradas) e normalmente inclui um header WWW-Authenticate indicando como autenticar. 403 significa que o cliente foi autenticado, mas não tem permissão para acessar o recurso. Como QA, testes de autorização devem validar que usuários autenticados sem o papel adequado recebem 403, e não 401.",
+          "followUps": [
+            "Como você testa controle de acesso baseado em perfis?",
+            "O que é o header WWW-Authenticate?"
+          ],
+          "mistakes": [
+            "Inverter os dois conceitos.",
+            "Não conectar com testes de RBAC."
+          ],
+          "english": "401 means the request is not authenticated. 403 means the client is authenticated but not authorized. In authorization tests I always verify that a user without the proper role receives 403, not 401."
+        },
+        {
+          "question": "Por que é importante validar headers de resposta em testes de API, e quais você valida?",
+          "difficulty": "Intermediária",
+          "expectedAnswer": "Headers de resposta impactam segurança, cache e debuggability. Eu valido: Content-Type (garantindo o formato esperado), Cache-Control (política de cache), headers de segurança como Content-Security-Policy e X-Content-Type-Options, e X-Request-Id para correlação de logs em incidentes. Também valido headers de rate limiting (Rate-Limit-Remaining) quando aplicável, para garantir que o cliente seja informado antes de atingir o limite.",
+          "followUps": [
+            "Como você usa o X-Request-Id na investigação de falhas?",
+            "O que acontece se a API não setar Cache-Control?"
+          ],
+          "mistakes": [
+            "Listar headers sem explicar o impacto no negócio/segurança.",
+            "Esquecer de mencionar rate limiting."
+          ],
+          "english": "Response headers impact security, caching and debuggability. I validate Content-Type, Cache-Control, security headers and X-Request-Id for log correlation during incidents."
+        }
+      ],
+      "challenges": [
+        "Liste 3 cenários em que 409 Conflict é a resposta correta.",
+        "Crie uma checklist de validação de headers para uma API nova."
+      ]
+    },
+    {
+      "title": "Autenticação & Autorização em APIs",
+      "theory": "Autenticação valida quem é o usuário; autorização valida o que ele pode fazer. Mecanismos comuns: Basic Auth (usuário/senha em base64 — inseguro em produção), API Keys, OAuth 2.0 (Authorization Code, Client Credentials, Password), JWT (JSON Web Tokens — assinado, com claims e expiração). Em bancos e seguradoras, é comum OAuth 2.0 com Client Credentials para integração M2M e Authorization Code para usuários finais. Um QA precisa testar: fluxos de token válido, token expirado, token inválido/adulterado, ausência de token, escopos (scopes), e comportamento em refresh token.",
+      "examples": [
+        "Fluxo Client Credentials: POST /oauth/token com client_id/client_secret -> retorna access_token",
+        "Chamada sem token -> 401 Unauthorized",
+        "Token expirado -> 401 com erro específico (invalid_token)",
+        "Token válido mas sem scope para o recurso -> 403 Forbidden"
+      ],
+      "commonMistakes": [
+        "Testar apenas o happy path (token válido).",
+        "Não testar expiração e refresh de token.",
+        "Confundir testes de autenticação com autorização.",
+        "Ignorar scopes/permissões no caso de teste."
+      ],
+      "projectExample": "Em um projeto de seguradora, a API de cotação exigia token OAuth2 com scope específico. Durante a automação, o token gerado no fluxo de testes não tinha o scope necessário, e os testes falhavam esporadicamente. Identificamos que o grant usado (Client Credentials) devia ser configurado com o scope correto no client de testes. Documentamos o fluxo e criamos um helper de autenticação reutilizável que renova o token automaticamente.",
+      "interviewQuestions": [
+        {
+          "question": "Explique como você testaria autenticação JWT em uma API.",
+          "difficulty": "Avançada",
+          "expectedAnswer": "Eu cobriria: (1) token válido retorna 200 e autoriza a operação; (2) token ausente retorna 401; (3) token expirado retorna 401 e dispara o fluxo de refresh se existir; (4) token adulterado (assinatura inválida) é rejeitado; (5) claims (role, scope) controlam a autorização, então usuários com scopes diferentes devem ter respostas 403 onde não têm permissão. Também validaria a expiração real do token no servidor, e não apenas no client.",
+          "followUps": [
+            "O que acontece se você altera um claim do JWT?",
+            "Como testar o fluxo de refresh token?",
+            "Quais riscos de segurança existem em armazenar JWT?"
+          ],
+          "mistakes": [
+            "Testar apenas token válido e esquecer os cenários negativos.",
+            "Não mencionar validação de assinatura."
+          ],
+          "english": "I would test a valid token returns 200, a missing token returns 401, an expired token is rejected and triggers refresh, a tampered token with an invalid signature is rejected, and different scopes result in 403 where the user lacks permission."
+        },
+        {
+          "question": "OAuth 2.0: quando usar Client Credentials vs Authorization Code?",
+          "difficulty": "Avançada",
+          "expectedAnswer": "Client Credentials é para comunicação servidor-a-servidor (M2M), onde a aplicação age por conta própria sem usuário. Authorization Code é para cenários com usuário final, onde há consentimento e um redirect com code trocado por token. Em testes, isso importa porque define como obter o token: no M2M usamos credenciais de serviço; no Authorization Code precisamos simular o login do usuário. Um QA deve saber configurar ambos os fluxos e saber qual usar em cada contexto de integração.",
+          "followUps": [
+            "Como você automatiza o fluxo Authorization Code com UI?",
+            "O que é PKCE e quando é exigido?"
+          ],
+          "mistakes": [
+            "Não saber a diferença entre M2M e fluxo com usuário.",
+            "Ignorar PKCE em mobile/SPA."
+          ],
+          "english": "Client Credentials is for machine-to-machine communication without a user. Authorization Code involves a user and requires a redirect. This determines how you obtain tokens in test automation."
+        }
+      ],
+      "challenges": [
+        "Crie uma matriz de testes de autorização para 3 papéis (admin, operador, leitor) e 3 recursos.",
+        "Explique como você faria um teste que valida a expiração de token sem esperar o tempo real."
+      ]
+    },
+    {
+      "title": "Contract Testing & Estratégia de Testes de API",
+      "theory": "Contract testing garante que o provedor e o consumidor de uma API concordam com o contrato (schemas, headers, payloads) sem depender de testes E2E frágeis. Ferramentas como Pact (consumer-driven) e Spring Cloud Contract são comuns. A estratégia de testes de API normalmente segue a pirâmide: muitos testes de contrato e unitários, alguns testes de integração/funcionais (via Postman/Newman, RestAssured, Karate, Robot Framework), e poucos E2E. Testes de API devem cobrir: validação de contrato, casos de erro, edge cases, autenticação, performance básica e contratos de versionamento.",
+      "examples": [
+        "Pact consumer: o consumidor define o contrato esperado e o provider valida contra esse contrato no CI",
+        "Newman (Postman CLI): executa collection de testes de API em pipeline CI/CD",
+        "Karate: framework que combina BDD e testes de API com validação de schema nativa"
+      ],
+      "commonMistakes": [
+        "Fazer apenas testes E2E e negligenciar contract testing.",
+        "Hardcodar payloads completos sem validação de schema.",
+        "Não versionar o contrato (breaking changes sem aviso).",
+        "Não incluir testes de API no pipeline CI/CD."
+      ],
+      "projectExample": "Em um consórcio entre bancos, a integração com parceiros usava contratos OpenAPI. Configuramos validação de contrato no pipeline com schemas de request/response versionados. Quando um parceiro mudou o campo obrigatório no request, o contrato quebrou no CI antes do deploy, evitando incidente em produção. Essa foi uma evidência forte de engenharia para uma entrevista.",
+      "interviewQuestions": [
+        {
+          "question": "O que é contract testing e como ele se diferencia de testes de integração?",
+          "difficulty": "Avançada",
+          "expectedAnswer": "Contract testing valida que provedor e consumidor concordam com o contrato da API (schemas, campos obrigatórios, tipos) de forma isolada e rápida, sem ambiente completo. Teste de integração valida o comportamento real entre sistemas rodando juntos. Contract tests são mais baratos, rápidos e determinísticos; integram o consumer-driven flow onde o consumidor publica o contrato e o provider valida contra ele no CI. Usamos os dois: contracts no CI e um conjunto menor de testes de integração para validar fluxos críticos.",
+          "followUps": [
+            "Conte uma situação real em que contract testing evitou um problema.",
+            "Qual o papel do consumer nesse modelo?"
+          ],
+          "mistakes": [
+            "Confundir contract testing com teste de integração.",
+            "Não citar um caso real."
+          ],
+          "english": "Contract testing verifies that provider and consumer agree on the API contract in isolation, quickly and deterministically. Integration testing verifies real behavior between systems. We use contracts in CI and a smaller set of integration tests for critical flows."
+        },
+        {
+          "question": "Como você estrutura uma suíte de testes de API do zero?",
+          "difficulty": "Intermediária",
+          "expectedAnswer": "Eu estruturaria em camadas: (1) smoke tests (health check e endpoints críticos); (2) testes funcionais por recurso, cobrindo happy path, erros e edge cases; (3) testes de contrato (schemas); (4) testes de autenticação e autorização; (5) testes negativos (rate limit, payload inválido); (6) testes de regressão no CI. Organização por recurso/business capability, dados de teste controlados (seeds) e helpers de autenticação reutilizáveis. Rodaria por camada no pipeline: smoke a cada deploy, completos em nightly ou PR.",
+          "followUps": [
+            "Como você trata dados de teste em APIs?",
+            "Como decide o que é smoke vs funcional?"
+          ],
+          "mistakes": [
+            "Plano teórico sem camadas.",
+            "Não mencionar dados de teste e CI."
+          ],
+          "english": "I would structure the suite in layers: smoke tests, functional tests per resource, contract tests, auth tests, negative tests, and CI regression. Organized by business capability with controlled test data and reusable auth helpers."
+        }
+      ],
+      "challenges": [
+        "Defina os testes smoke vs funcional vs regressão para o recurso /accounts de um banco.",
+        "Proponha como automatizar uma coleção Postman no CI com Newman."
+      ]
+    }
+  ],
+  "quizCategory": "API"
 }

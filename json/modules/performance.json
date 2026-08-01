@@ -1,172 +1,171 @@
 {
-    "id": "performance",
-    "title": "Performance Testing",
-    "icon": "fa-gauge-high",
-    "level": "Avançado",
-    "duration": "2 semanas",
-    "shortDescription": "JMeter, k6, métricas e análise de resultados.",
-    "description": "Testes de carga, estresse e capacidade. Este módulo cobre tipos de teste de performance, métricas (latência, throughput, erros), ferramentas (JMeter, k6) e a análise de resultados para entrevistas técnicas.",
-    "topics": ["JMeter", "k6", "Métricas", "Análise"],
-    "concepts": [
+  "id": "performance",
+  "title": "Performance Testing",
+  "icon": "fa-gauge-high",
+  "level": "Avançado",
+  "duration": "2 semanas",
+  "shortDescription": "JMeter, k6, métricas e análise de resultados.",
+  "description": "Testes de carga, estresse e capacidade. Este módulo cobre tipos de teste de performance, métricas (latência, throughput, erros), ferramentas (JMeter, k6) e a análise de resultados para entrevistas técnicas.",
+  "topics": [
+    "JMeter",
+    "k6",
+    "Métricas",
+    "Análise"
+  ],
+  "concepts": [
+    {
+      "title": "Tipos de Teste de Performance & Métricas",
+      "theory": "Tipos: teste de carga (comportamento sob carga esperada), teste de estresse (além do limite, buscando o ponto de quebra), teste de capacidade (quanto o sistema aguenta), teste de pico (súbito aumento), teste de endurance/soak (período longo, busca de vazamento de memória) e teste de latência. Métricas principais: latência/response time (p50, p90, p99), throughput (transações por segundo), erro rate, e utilização de recursos (CPU, memória, rede, I/O).",
+      "examples": [
+        "p95 de 2s: 95% das requisições respondem em até 2 segundos",
+        "Throughput: 500 tps (transações por segundo)",
+        "Teste de estresse: 3x a carga esperada até a resposta degradar",
+        "Endurance: carga média por 8 horas para detectar memory leak"
+      ],
+      "commonMistakes": [
+        "Confundir carga, estresse e capacidade.",
+        "Analisar apenas a média (média mascara os outliers — usar percentis).",
+        "Não testar em ambiente representativo.",
+        "Focar só na resposta, ignorando erros e recursos."
+      ],
+      "projectExample": "Um teste de carga numa API de cotação mostrou p95 aceitável, mas p99 degradado por garbage collection. Analisando os percentis e o monitoramento de memória, o time ajustou os recursos do container e o p99 caiu de 8s para 2s.",
+      "interviewQuestions": [
         {
-            "title": "Tipos de Teste de Performance & Métricas",
-            "theory": "Tipos: teste de carga (comportamento sob carga esperada), teste de estresse (além do limite, buscando o ponto de quebra), teste de capacidade (quanto o sistema aguenta), teste de pico (súbito aumento), teste de endurance/soak (período longo, busca de vazamento de memória) e teste de latência. Métricas principais: latência/response time (p50, p90, p99), throughput (transações por segundo), erro rate, e utilização de recursos (CPU, memória, rede, I/O).",
-            "examples": [
-                "p95 de 2s: 95% das requisições respondem em até 2 segundos",
-                "Throughput: 500 tps (transações por segundo)",
-                "Teste de estresse: 3x a carga esperada até a resposta degradar",
-                "Endurance: carga média por 8 horas para detectar memory leak"
-            ],
-            "commonMistakes": [
-                "Confundir carga, estresse e capacidade.",
-                "Analisar apenas a média (média mascara os outliers — usar percentis).",
-                "Não testar em ambiente representativo.",
-                "Focar só na resposta, ignorando erros e recursos."
-            ],
-            "projectExample": "Um teste de carga numa API de cotação mostrou p95 aceitável, mas p99 degradado por garbage collection. Analisando os percentis e o monitoramento de memória, o time ajustou os recursos do container e o p99 caiu de 8s para 2s.",
-            "interviewQuestions": [
-                {
-                    "question": "Qual a diferença entre teste de carga, estresse e capacidade?",
-                    "difficulty": "Fácil",
-                    "expectedAnswer": "Teste de carga valida o comportamento sob a carga esperada (condições normais/previstas). Teste de estresse aplica carga além dos limites para encontrar o ponto de quebra e como o sistema falha. Teste de capacidade identifica o máximo que o sistema suporta mantendo os SLAs. Juntos definem o limite operacional do sistema e seu comportamento próximo a ele.",
-                    "followUps": [
-                        "Qual é o objetivo do teste de endurance?",
-                        "Como você define a carga esperada?"
-                    ],
-                    "mistakes": [
-                        "Confundir os três tipos.",
-                        "Não saber definir a carga esperada."
-                    ],
-                    "english": "Load testing validates behavior under expected load. Stress testing applies load beyond limits to find the breaking point and how the system fails. Capacity testing identifies the maximum load the system supports while maintaining SLAs. Together they define the operational limits and behavior near them."
-                },
-                {
-                    "question": "Por que percentis (p50, p90, p99) são melhores que a média para analisar performance?",
-                    "difficulty": "Intermediária",
-                    "expectedAnswer": "A média pode mascarar a experiência real: alguns usuários com respostas muito lentas puxam a média para cima ou outliers rápidos a escondem. Percentis mostram a distribuição: p50 é a mediana, p90 cobre 90% dos casos e p99 captura o 'long tail' — os piores casos que afetam a experiência. Para SRE/QA, o p99 é o que determina a percepção de qualidade em sistemas de alta concorrência.",
-                    "followUps": [
-                        "O que significa 'long tail' em performance?",
-                        "Qual percentil você monitoraria para uma API crítica?"
-                    ],
-                    "mistakes": [
-                        "Basear conclusões só na média.",
-                        "Não conhecer os percentis."
-                    ],
-                    "english": "The average can mask the real experience because slow users pull it up or fast outliers hide it. Percentiles show the distribution: p50 is the median, p90 covers 90% of cases, and p99 captures the long tail, the worst cases affecting experience. For critical systems, p99 determines the perceived quality under high concurrency."
-                }
-            ],
-            "challenges": [
-                "Calcule e interprete p95 e p99 de uma distribuição de latências.",
-                "Defina os cenários de carga de uma API de pagamento (carga, pico, estresse)."
-            ]
+          "question": "Qual a diferença entre teste de carga, estresse e capacidade?",
+          "difficulty": "Fácil",
+          "expectedAnswer": "Teste de carga valida o comportamento sob a carga esperada (condições normais/previstas). Teste de estresse aplica carga além dos limites para encontrar o ponto de quebra e como o sistema falha. Teste de capacidade identifica o máximo que o sistema suporta mantendo os SLAs. Juntos definem o limite operacional do sistema e seu comportamento próximo a ele.",
+          "followUps": [
+            "Qual é o objetivo do teste de endurance?",
+            "Como você define a carga esperada?"
+          ],
+          "mistakes": [
+            "Confundir os três tipos.",
+            "Não saber definir a carga esperada."
+          ],
+          "english": "Load testing validates behavior under expected load. Stress testing applies load beyond limits to find the breaking point and how the system fails. Capacity testing identifies the maximum load the system supports while maintaining SLAs. Together they define the operational limits and behavior near them."
         },
         {
-            "title": "Ferramentas: JMeter & k6",
-            "theory": "JMeter: ferramenta Java clássica com interface gráfica, planos de teste (.jmx), Thread Groups, Samplers (HTTP), Listeners e relatórios. É usada em muitas empresas corporativas. k6: ferramenta moderna scriptada em JavaScript (Grafana), leve, ideal para CI, com métricas integradas e reports. Ambas testam HTTP/REST, WebSocket, gRPC. A escolha depende do ecossistema: JMeter para integração corporativa e compatibilidade; k6 para CI e código. Ambos geram resultados exportáveis (JTL, JSON, HTML).",
-            "examples": [
-                "k6: export default function () { const r = http.get('...'); check(r, { 'status 200': r.status === 200 }) }",
-                "JMeter: Thread Group com 100 usuários, ramp-up 60s, Loop Count",
-                "k6: execução via CLI 'k6 run script.js --vus 100 --duration 1m'",
-                "JMeter: agregado de relatórios (Average, 90% line, Error %)"
-            ],
-            "commonMistakes": [
-                "Não parametrizar dados (todos os usuários usam o mesmo login/payload).",
-                "Rodar teste na máquina local (resultado não representativo).",
-                "Não validar respostas (erros 500 contam como sucesso).",
-                "Ambiente de teste divergente do de produção."
-            ],
-            "projectExample": "Migramos os testes de carga de JMeter para k6 para rodar no CI: os cenários viraram código versionado, com check de métricas (p95 < 2s, erro < 0.1%). Cada release rodava um teste de fumaça de performance e o baseline de carga completo em nightly.",
-            "interviewQuestions": [
-                {
-                    "question": "JMeter vs k6: como você escolheria entre eles?",
-                    "difficulty": "Intermediária",
-                    "expectedAnswer": "JMeter é maduro, com UI e ampla compatibilidade corporativa, bom quando o time não programa ou há integrações existentes. k6 é scriptado em JavaScript, leve, versionável e excelente para CI/CD, com métricas integradas e baixo consumo de recursos. Escolheria k6 para times de engenharia que automatizam e precisam rodar no pipeline; JMeter quando o ecossistema/equipe já o utiliza ou exige a UI. Na prática, o objetivo é o mesmo: cenários representativos e métricas confiáveis.",
-                    "followUps": [
-                        "Qual é a vantagem de ter o teste como código?",
-                        "Como você roda k6 no CI?"
-                    ],
-                    "mistakes": [
-                        "Não conhecer as diferenças.",
-                        "Escolher sem contexto da equipe."
-                    ],
-                    "english": "JMeter is mature, GUI-based and widely used in corporate environments, good for non-programming teams or existing integrations. k6 is JavaScript-scripted, lightweight, versionable and excellent for CI/CD with built-in metrics. I would choose k6 for engineering teams automating in the pipeline, and JMeter when the ecosystem or team already uses it. The goal is the same: representative scenarios and reliable metrics."
-                },
-                {
-                    "question": "Como você evita que os resultados de um teste de carga não sejam representativos?",
-                    "difficulty": "Avançada",
-                    "expectedAnswer": "Garantindo: ambiente representativo (mesma infraestrutura e dados de produção, ou ambiente dedicado de performance), dados parametrizados e realistas (não todos os usuários usando o mesmo payload), validação de respostas (erros não contam como sucesso), execução a partir de locais/instâncias que não sejam o gargalo do próprio gerador, e monitoramento de servidor (CPU, memória, rede) para correlacionar com a resposta. Repito o cenário e comparo tendências, não um run isolado.",
-                    "followUps": [
-                        "O que fazer se o gerador de carga vira gargalo?",
-                        "Como você valida que os erros não estão inflando métricas?"
-                    ],
-                    "mistakes": [
-                        "Máquina local como gerador.",
-                        "Ignorar validação de respostas."
-                    ],
-                    "english": "By ensuring a representative environment with the same infrastructure and data profile, parametrized and realistic data, response validation so errors do not count as success, load generators that are not the bottleneck themselves, and server-side monitoring to correlate with latency. I repeat scenarios and compare trends rather than a single run."
-                }
-            ],
-            "challenges": [
-                "Escreva um script k6 básico com check de status e threshold de p95.",
-                "Liste os erros comuns que invalidam um teste de carga."
-            ]
-        },
-        {
-            "title": "Análise de Resultados & SLAs",
-            "theory": "Definir objetivos antes de rodar: SLAs/SLOs (latência p95, taxa de erro, throughput). Analisar: distribuição de latência por percentil, correlação com recursos (CPU, memória, banco, rede), erros (tipos, status codes), e pontos de saturação. O QA reporta em linguagem de negócio: 'a API suporta X tps com p95 de Y e 0.1% de erro; acima disso, a latência cresce'. Gargalos típicos: banco, rede, lock, GC, timeouts e capacidade de conexão.",
-            "examples": [
-                "SLA: p95 < 2s, erro < 0.1% para 500 tps",
-                "Análise: p95 degrada a partir de 700 tps por saturação de conexões de banco",
-                "Correlação: latência sobe quando CPU do container passa de 80%",
-                "Gargalo: pool de conexões esgotado gerando timeouts crescentes"
-            ],
-            "commonMistakes": [
-                "Rodar sem objetivos/limites definidos.",
-                "Não correlacionar métricas de aplicação com infra.",
-                "Ignorar o ponto de saturação (quando degrada).",
-                "Reportar tecnicismos sem valor de negócio."
-            ],
-            "projectExample": "Definimos o SLO de uma API de propostas (p95 < 1.5s, erro < 0.5%). O teste de capacidade encontrou o ponto de saturação em 900 tps, com degradação causada pelo pool de conexões do banco. O relatório em linguagem de negócio orientou o investimento em pool e índice.",
-            "interviewQuestions": [
-                {
-                    "question": "Como você define e valida SLAs de performance?",
-                    "difficulty": "Avançada",
-                    "expectedAnswer": "Com o time, defino SLAs medíveis em percentis e erros: latência (p50, p95, p99), taxa de erro e throughput esperado sob a carga definida. Depois automatizo cenários que validam esses limites (thresholds) rodando no CI e em campanhas de carga. Os testes falham quando o SLA é violado. Também acompanho tendências ao longo do tempo para detectar degradação gradual antes de quebrar o SLA.",
-                    "followUps": [
-                        "Quem define os SLAs?",
-                        "Como você detecta degradação gradual?"
-                    ],
-                    "mistakes": [
-                        "Rodar sem limites definidos.",
-                        "SLA sem percentis."
-                    ],
-                    "english": "With the team I define measurable SLAs in percentiles and errors: latency, error rate and throughput under defined load. I automate scenarios validating these limits as thresholds, running in CI and load campaigns. Tests fail when the SLA is violated. I also track trends to detect gradual degradation before it breaks the SLA."
-                },
-                {
-                    "question": "Como você identifica um gargalo em um resultado de teste de carga?",
-                    "difficulty": "Avançada",
-                    "expectedAnswer": "Correlacionando a resposta da aplicação com as métricas de infra: se a latência sobe enquanto CPU/memória/pool de conexões saturam, o gargalo está ali. Analiso: utilização de CPU (GC, compute), pool de conexões de banco (timeouts), I/O de disco/rede, locks e deadlocks no banco, e limites do servidor web. Também isolo camadas (API, banco, integrações) para localizar onde a degradação começa. O ponto de saturação (onde a curva muda de linear para exponencial) é o dado mais valioso.",
-                    "followUps": [
-                        "Como você isola o gargalo entre camadas?",
-                        "O que é o ponto de saturação?"
-                    ],
-                    "mistakes": [
-                        "Olhar só o response time.",
-                        "Não correlacionar com infra."
-                    ],
-                    "english": "By correlating application latency with infrastructure metrics: rising latency while CPU, memory or connection pools saturate points to the bottleneck. I analyze CPU and garbage collection, database connection pool timeouts, disk and network I/O, locks and deadlocks, and web server limits. The saturation point, where the curve goes from linear to exponential, is the most valuable data."
-                }
-            ],
-            "challenges": [
-                "Defina SLAs e thresholds para uma API de autenticação.",
-                "Descreva como você isolaria um gargalo entre API, banco e integração externa."
-            ]
+          "question": "Por que percentis (p50, p90, p99) são melhores que a média para analisar performance?",
+          "difficulty": "Intermediária",
+          "expectedAnswer": "A média pode mascarar a experiência real: alguns usuários com respostas muito lentas puxam a média para cima ou outliers rápidos a escondem. Percentis mostram a distribuição: p50 é a mediana, p90 cobre 90% dos casos e p99 captura o 'long tail' — os piores casos que afetam a experiência. Para SRE/QA, o p99 é o que determina a percepção de qualidade em sistemas de alta concorrência.",
+          "followUps": [
+            "O que significa 'long tail' em performance?",
+            "Qual percentil você monitoraria para uma API crítica?"
+          ],
+          "mistakes": [
+            "Basear conclusões só na média.",
+            "Não conhecer os percentis."
+          ],
+          "english": "The average can mask the real experience because slow users pull it up or fast outliers hide it. Percentiles show the distribution: p50 is the median, p90 covers 90% of cases, and p99 captures the long tail, the worst cases affecting experience. For critical systems, p99 determines the perceived quality under high concurrency."
         }
-    ],
-    "quiz": [
-        { "question": "Teste que aplica carga além do limite para achar o ponto de quebra:", "options": { "A": "Carga", "B": "Estresse", "C": "Capacidade", "D": "Endurance" }, "answer": "B", "explanation": "Estresse busca o ponto de quebra e como o sistema falha." },
-        { "question": "Por que usar p99 em vez de média?", "options": { "A": "A média mascara outliers", "B": "É mais simples", "C": "É mais rápida", "D": "Não importa" }, "answer": "A", "explanation": "A média esconde o long tail; p99 captura os piores casos." },
-        { "question": "Qual ferramenta de performance é scriptada em JavaScript e ideal para CI?", "options": { "A": "JMeter", "B": "k6", "C": "Postman", "D": "Selenium" }, "answer": "B", "explanation": "k6 é leve, scriptado e excelente para CI; JMeter é clássico com UI." },
-        { "question": "O que significa throughput em teste de carga?", "options": { "A": "O tempo de resposta", "B": "O número de transações processadas por segundo", "C": "A taxa de erro", "D": "O número de usuários" }, "answer": "B", "explanation": "Throughput mede transações por segundo (tps)." },
-        { "question": "Teste de endurance (soak) tem como objetivo principal:", "options": { "A": "Medir o pico", "B": "Detectar vazamento de memória ao longo do tempo", "C": "Quebrar o sistema", "D": "Validar funcionalidades" }, "answer": "B", "explanation": "Carga prolongada revela memory leaks e degradação gradual." }
-    ]
+      ],
+      "challenges": [
+        "Calcule e interprete p95 e p99 de uma distribuição de latências.",
+        "Defina os cenários de carga de uma API de pagamento (carga, pico, estresse)."
+      ]
+    },
+    {
+      "title": "Ferramentas: JMeter & k6",
+      "theory": "JMeter: ferramenta Java clássica com interface gráfica, planos de teste (.jmx), Thread Groups, Samplers (HTTP), Listeners e relatórios. É usada em muitas empresas corporativas. k6: ferramenta moderna scriptada em JavaScript (Grafana), leve, ideal para CI, com métricas integradas e reports. Ambas testam HTTP/REST, WebSocket, gRPC. A escolha depende do ecossistema: JMeter para integração corporativa e compatibilidade; k6 para CI e código. Ambos geram resultados exportáveis (JTL, JSON, HTML).",
+      "examples": [
+        "k6: export default function () { const r = http.get('...'); check(r, { 'status 200': r.status === 200 }) }",
+        "JMeter: Thread Group com 100 usuários, ramp-up 60s, Loop Count",
+        "k6: execução via CLI 'k6 run script.js --vus 100 --duration 1m'",
+        "JMeter: agregado de relatórios (Average, 90% line, Error %)"
+      ],
+      "commonMistakes": [
+        "Não parametrizar dados (todos os usuários usam o mesmo login/payload).",
+        "Rodar teste na máquina local (resultado não representativo).",
+        "Não validar respostas (erros 500 contam como sucesso).",
+        "Ambiente de teste divergente do de produção."
+      ],
+      "projectExample": "Migramos os testes de carga de JMeter para k6 para rodar no CI: os cenários viraram código versionado, com check de métricas (p95 < 2s, erro < 0.1%). Cada release rodava um teste de fumaça de performance e o baseline de carga completo em nightly.",
+      "interviewQuestions": [
+        {
+          "question": "JMeter vs k6: como você escolheria entre eles?",
+          "difficulty": "Intermediária",
+          "expectedAnswer": "JMeter é maduro, com UI e ampla compatibilidade corporativa, bom quando o time não programa ou há integrações existentes. k6 é scriptado em JavaScript, leve, versionável e excelente para CI/CD, com métricas integradas e baixo consumo de recursos. Escolheria k6 para times de engenharia que automatizam e precisam rodar no pipeline; JMeter quando o ecossistema/equipe já o utiliza ou exige a UI. Na prática, o objetivo é o mesmo: cenários representativos e métricas confiáveis.",
+          "followUps": [
+            "Qual é a vantagem de ter o teste como código?",
+            "Como você roda k6 no CI?"
+          ],
+          "mistakes": [
+            "Não conhecer as diferenças.",
+            "Escolher sem contexto da equipe."
+          ],
+          "english": "JMeter is mature, GUI-based and widely used in corporate environments, good for non-programming teams or existing integrations. k6 is JavaScript-scripted, lightweight, versionable and excellent for CI/CD with built-in metrics. I would choose k6 for engineering teams automating in the pipeline, and JMeter when the ecosystem or team already uses it. The goal is the same: representative scenarios and reliable metrics."
+        },
+        {
+          "question": "Como você evita que os resultados de um teste de carga não sejam representativos?",
+          "difficulty": "Avançada",
+          "expectedAnswer": "Garantindo: ambiente representativo (mesma infraestrutura e dados de produção, ou ambiente dedicado de performance), dados parametrizados e realistas (não todos os usuários usando o mesmo payload), validação de respostas (erros não contam como sucesso), execução a partir de locais/instâncias que não sejam o gargalo do próprio gerador, e monitoramento de servidor (CPU, memória, rede) para correlacionar com a resposta. Repito o cenário e comparo tendências, não um run isolado.",
+          "followUps": [
+            "O que fazer se o gerador de carga vira gargalo?",
+            "Como você valida que os erros não estão inflando métricas?"
+          ],
+          "mistakes": [
+            "Máquina local como gerador.",
+            "Ignorar validação de respostas."
+          ],
+          "english": "By ensuring a representative environment with the same infrastructure and data profile, parametrized and realistic data, response validation so errors do not count as success, load generators that are not the bottleneck themselves, and server-side monitoring to correlate with latency. I repeat scenarios and compare trends rather than a single run."
+        }
+      ],
+      "challenges": [
+        "Escreva um script k6 básico com check de status e threshold de p95.",
+        "Liste os erros comuns que invalidam um teste de carga."
+      ]
+    },
+    {
+      "title": "Análise de Resultados & SLAs",
+      "theory": "Definir objetivos antes de rodar: SLAs/SLOs (latência p95, taxa de erro, throughput). Analisar: distribuição de latência por percentil, correlação com recursos (CPU, memória, banco, rede), erros (tipos, status codes), e pontos de saturação. O QA reporta em linguagem de negócio: 'a API suporta X tps com p95 de Y e 0.1% de erro; acima disso, a latência cresce'. Gargalos típicos: banco, rede, lock, GC, timeouts e capacidade de conexão.",
+      "examples": [
+        "SLA: p95 < 2s, erro < 0.1% para 500 tps",
+        "Análise: p95 degrada a partir de 700 tps por saturação de conexões de banco",
+        "Correlação: latência sobe quando CPU do container passa de 80%",
+        "Gargalo: pool de conexões esgotado gerando timeouts crescentes"
+      ],
+      "commonMistakes": [
+        "Rodar sem objetivos/limites definidos.",
+        "Não correlacionar métricas de aplicação com infra.",
+        "Ignorar o ponto de saturação (quando degrada).",
+        "Reportar tecnicismos sem valor de negócio."
+      ],
+      "projectExample": "Definimos o SLO de uma API de propostas (p95 < 1.5s, erro < 0.5%). O teste de capacidade encontrou o ponto de saturação em 900 tps, com degradação causada pelo pool de conexões do banco. O relatório em linguagem de negócio orientou o investimento em pool e índice.",
+      "interviewQuestions": [
+        {
+          "question": "Como você define e valida SLAs de performance?",
+          "difficulty": "Avançada",
+          "expectedAnswer": "Com o time, defino SLAs medíveis em percentis e erros: latência (p50, p95, p99), taxa de erro e throughput esperado sob a carga definida. Depois automatizo cenários que validam esses limites (thresholds) rodando no CI e em campanhas de carga. Os testes falham quando o SLA é violado. Também acompanho tendências ao longo do tempo para detectar degradação gradual antes de quebrar o SLA.",
+          "followUps": [
+            "Quem define os SLAs?",
+            "Como você detecta degradação gradual?"
+          ],
+          "mistakes": [
+            "Rodar sem limites definidos.",
+            "SLA sem percentis."
+          ],
+          "english": "With the team I define measurable SLAs in percentiles and errors: latency, error rate and throughput under defined load. I automate scenarios validating these limits as thresholds, running in CI and load campaigns. Tests fail when the SLA is violated. I also track trends to detect gradual degradation before it breaks the SLA."
+        },
+        {
+          "question": "Como você identifica um gargalo em um resultado de teste de carga?",
+          "difficulty": "Avançada",
+          "expectedAnswer": "Correlacionando a resposta da aplicação com as métricas de infra: se a latência sobe enquanto CPU/memória/pool de conexões saturam, o gargalo está ali. Analiso: utilização de CPU (GC, compute), pool de conexões de banco (timeouts), I/O de disco/rede, locks e deadlocks no banco, e limites do servidor web. Também isolo camadas (API, banco, integrações) para localizar onde a degradação começa. O ponto de saturação (onde a curva muda de linear para exponencial) é o dado mais valioso.",
+          "followUps": [
+            "Como você isola o gargalo entre camadas?",
+            "O que é o ponto de saturação?"
+          ],
+          "mistakes": [
+            "Olhar só o response time.",
+            "Não correlacionar com infra."
+          ],
+          "english": "By correlating application latency with infrastructure metrics: rising latency while CPU, memory or connection pools saturate points to the bottleneck. I analyze CPU and garbage collection, database connection pool timeouts, disk and network I/O, locks and deadlocks, and web server limits. The saturation point, where the curve goes from linear to exponential, is the most valuable data."
+        }
+      ],
+      "challenges": [
+        "Defina SLAs e thresholds para uma API de autenticação.",
+        "Descreva como você isolaria um gargalo entre API, banco e integração externa."
+      ]
+    }
+  ],
+  "quizCategory": "Performance"
 }

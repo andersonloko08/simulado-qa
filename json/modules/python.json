@@ -1,172 +1,170 @@
 {
-    "id": "python",
-    "title": "Python para QA",
-    "icon": "fa-python",
-    "level": "Intermediário",
-    "duration": "2 semanas",
-    "shortDescription": "Fundamentos, requests, pytest e boas práticas de automação.",
-    "description": "Python é a base do Robot Framework, pytest e da maioria das automações de QA. Este módulo cobre fundamentos essenciais, uso da biblioteca requests para APIs e pytest para escrever testes limpos e manuteníveis.",
-    "topics": ["Fundamentos", "requests", "pytest"],
-    "concepts": [
+  "id": "python",
+  "title": "Python para QA",
+  "icon": "fa-python",
+  "level": "Intermediário",
+  "duration": "2 semanas",
+  "shortDescription": "Fundamentos, requests, pytest e boas práticas de automação.",
+  "description": "Python é a base do Robot Framework, pytest e da maioria das automações de QA. Este módulo cobre fundamentos essenciais, uso da biblioteca requests para APIs e pytest para escrever testes limpos e manuteníveis.",
+  "topics": [
+    "Fundamentos",
+    "requests",
+    "pytest"
+  ],
+  "concepts": [
+    {
+      "title": "Fundamentos de Python para Automação",
+      "theory": "QA escreve código de automação que precisa ser lido e mantido. Fundamentos essenciais: tipos de dados (listas, dicts, sets, tuplas), estruturas de controle, comprehensions, funções, args/kwargs, tratamento de exceções, e context managers (with). Em automação, dicts são usados para payloads e respostas; list comprehensions simplificam filtros; try/except é essencial para tratamento de falhas em testes. Boas práticas: PEP 8, nomes descritivos, funções pequenas e reutilizáveis.",
+      "examples": [
+        "payload = {\"nome\": \"Ana\", \"ativo\": True}",
+        "nomes_ativos = [u[\"nome\"] for u in usuarios if u[\"ativo\"]]",
+        "with open(\"dados.json\") as f: data = json.load(f)",
+        "try: resp = client.get('/orders') except requests.exceptions.Timeout as e: raise AssertionError('timeout')"
+      ],
+      "commonMistakes": [
+        "Usar lista para buscar por chave (deve usar dict).",
+        "Não tratar exceções em testes de API, gerando falhas confusas.",
+        "Mutabilidade: modificar listas passadas por referência sem querer.",
+        "Não usar type hints e nomes legíveis — código vira ilegível em 1 mês."
+      ],
+      "projectExample": "Em um framework de testes de API, refatorei a camada de client para usar dataclasses e context managers, centralizando headers, timeout e logging. Isso reduziu a duplicação e permitiu injetar mocks facilmente nos testes de integração.",
+      "interviewQuestions": [
         {
-            "title": "Fundamentos de Python para Automação",
-            "theory": "QA escreve código de automação que precisa ser lido e mantido. Fundamentos essenciais: tipos de dados (listas, dicts, sets, tuplas), estruturas de controle, comprehensions, funções, args/kwargs, tratamento de exceções, e context managers (with). Em automação, dicts são usados para payloads e respostas; list comprehensions simplificam filtros; try/except é essencial para tratamento de falhas em testes. Boas práticas: PEP 8, nomes descritivos, funções pequenas e reutilizáveis.",
-            "examples": [
-                "payload = {\"nome\": \"Ana\", \"ativo\": True}",
-                "nomes_ativos = [u[\"nome\"] for u in usuarios if u[\"ativo\"]]",
-                "with open(\"dados.json\") as f: data = json.load(f)",
-                "try: resp = client.get('/orders') except requests.exceptions.Timeout as e: raise AssertionError('timeout')"
-            ],
-            "commonMistakes": [
-                "Usar lista para buscar por chave (deve usar dict).",
-                "Não tratar exceções em testes de API, gerando falhas confusas.",
-                "Mutabilidade: modificar listas passadas por referência sem querer.",
-                "Não usar type hints e nomes legíveis — código vira ilegível em 1 mês."
-            ],
-            "projectExample": "Em um framework de testes de API, refatorei a camada de client para usar dataclasses e context managers, centralizando headers, timeout e logging. Isso reduziu a duplicação e permitiu injetar mocks facilmente nos testes de integração.",
-            "interviewQuestions": [
-                {
-                    "question": "Qual a diferença entre lista, tupla e dicionário, e quando você usa cada um?",
-                    "difficulty": "Fácil",
-                    "expectedAnswer": "Lista é uma sequência mutável e ordenada, usada para coleções que mudam. Tupla é imutável, usada para dados fixos como coordenadas ou valores constantes. Dicionário armazena pares chave-valor com acesso por chave, usado para payloads de API, configurações e respostas. Em automação, uso dicts para representar requests/responses e listas para coleções que serão filtradas.",
-                    "followUps": [
-                        "Como você converte uma lista de dicts em um único dict?",
-                        "Qual é o uso de sets em automação de testes?"
-                    ],
-                    "mistakes": [
-                        "Não dar contexto de automação.",
-                        "Confundir imutabilidade."
-                    ],
-                    "english": "A list is mutable and ordered, a tuple is immutable, and a dictionary maps keys to values. In test automation I use dictionaries for API payloads and responses, lists for collections I need to filter, and sets when I need uniqueness."
-                },
-                {
-                    "question": "Como você lidaria com um teste que falha por um timeout esporádico?",
-                    "difficulty": "Intermediária",
-                    "expectedAnswer": "Primeiro eu distinguiria falha de teste de falha de sistema: um timeout pode indicar problema real. Se for um problema conhecido de ambiente (rede instável), aplicaria retry com backoff para chamadas de setup, mantendo o teste final determinístico. O essencial é não mascarar bugs reais: retry em asserção final mascararia regressões. Também logaria o tempo de resposta para análise posterior.",
-                    "followUps": [
-                        "Quando você usaria retry e quando não?",
-                        "Como você evita testes flaky?"
-                    ],
-                    "mistakes": [
-                        "Aplicar retry em asserções (mascara bugs).",
-                        "Não mencionar determinismo."
-                    ],
-                    "english": "I would first distinguish a test failure from a real system failure. For known environment issues I would apply retry with backoff on setup calls, but never on final assertions, to avoid masking real regressions. I would also log response times."
-                }
-            ],
-            "challenges": [
-                "Escreva uma função que recebe uma lista de dicts de usuários e retorna os emails dos ativos.",
-                "Refatore um bloco repetido de try/except em um context manager reutilizável."
-            ]
+          "question": "Qual a diferença entre lista, tupla e dicionário, e quando você usa cada um?",
+          "difficulty": "Fácil",
+          "expectedAnswer": "Lista é uma sequência mutável e ordenada, usada para coleções que mudam. Tupla é imutável, usada para dados fixos como coordenadas ou valores constantes. Dicionário armazena pares chave-valor com acesso por chave, usado para payloads de API, configurações e respostas. Em automação, uso dicts para representar requests/responses e listas para coleções que serão filtradas.",
+          "followUps": [
+            "Como você converte uma lista de dicts em um único dict?",
+            "Qual é o uso de sets em automação de testes?"
+          ],
+          "mistakes": [
+            "Não dar contexto de automação.",
+            "Confundir imutabilidade."
+          ],
+          "english": "A list is mutable and ordered, a tuple is immutable, and a dictionary maps keys to values. In test automation I use dictionaries for API payloads and responses, lists for collections I need to filter, and sets when I need uniqueness."
         },
         {
-            "title": "requests & Testes de API em Python",
-            "theory": "A biblioteca requests é a base para testes de API em Python. Ela abstrai HTTP: sessions reutilizam conexões e headers, headers definem autenticação e conteúdo, parâmetros são passados via params, e o objeto Response expõe status_code, headers, json(), text. Timeouts devem sempre ser definidos. Com pytest, combinamos requests com fixtures e assertions para montar suítes de testes de API legíveis.",
-            "examples": [
-                "s = requests.Session(); s.headers.update({\"Authorization\": f\"Bearer {token}\"})",
-                "resp = s.post(\"/orders\", json=payload, timeout=10)",
-                "assert resp.status_code == 201, resp.text",
-                "data = resp.json(); assert data[\"id\"] > 0"
-            ],
-            "commonMistakes": [
-                "Não definir timeout (teste pode travar indefinidamente).",
-                "Não validar o status code antes de acessar .json().",
-                "Criar uma Session nova a cada requisição (perde otimização).",
-                "Hardcodar a base URL em cada teste."
-            ],
-            "projectExample": "Em um framework de testes de API de cartões, centralizei a autenticação OAuth2 em uma fixture que faz login uma vez e injeta o token em uma Session reutilizável. Com isso, os testes ficaram determinísticos, rápidos e legíveis, e o fluxo de refresh era testado separadamente.",
-            "interviewQuestions": [
-                {
-                    "question": "Como você estrutura testes de API com pytest e requests?",
-                    "difficulty": "Intermediária",
-                    "expectedAnswer": "Eu estruturo com: uma fixture de client (Session) configurada com base URL e autenticação; fixtures de dados de teste (payloads); uma camada de helpers para chamadas repetitivas; e testes com asserções claras sobre status code, contrato (schema) e conteúdo. Uso parametrização para cenários de validação (payload inválido, campos obrigatórios) e separo testes smoke, funcionais e de regressão em arquivos/marcadores diferentes.",
-                    "followUps": [
-                        "Como você valida o contrato/schema da resposta?",
-                        "Como você lida com dados de teste compartilhados?"
-                    ],
-                    "mistakes": [
-                        "Teste monolítico que faz tudo.",
-                        "Não usar fixtures e parametrização."
-                    ],
-                    "english": "I structure it with a client fixture using requests.Session configured with base URL and auth, data fixtures, helper functions for repetitive calls, and clear assertions on status code, schema and content. I use parametrization for validation scenarios."
-                },
-                {
-                    "question": "Qual a diferença entre requests.get(...).json() e acessar resp.text?",
-                    "difficulty": "Fácil",
-                    "expectedAnswer": "resp.json() faz o parse do corpo como JSON e retorna um objeto Python (dict/list); se o corpo não for JSON válido, lança uma exceção. resp.text retorna o corpo como string bruta. Em testes, uso .json() para validar o conteúdo estruturado, mas verifico resp.status_code antes; em caso de erro, uso resp.text para logar o corpo da mensagem de erro.",
-                    "followUps": [
-                        "O que acontece se a resposta for 204 No Content?",
-                        "Como você lida com Content-Type incorreto?"
-                    ],
-                    "mistakes": [
-                        "Chamar .json() sem checar o status.",
-                        "Não lidar com 204."
-                    ],
-                    "english": "resp.json() parses the body as JSON into Python objects and raises on invalid JSON. resp.text returns the raw string body. I always check status_code first, then parse JSON, and use resp.text to log error bodies."
-                }
-            ],
-            "challenges": [
-                "Escreva uma fixture pytest que autentica via OAuth2 e retorna uma Session.",
-                "Parametrize um teste de validação de payload com 4 payloads inválidos."
-            ]
-        },
-        {
-            "title": "pytest: Fixtures, Asserções e Boas Práticas",
-            "theory": "pytest é o runner de testes mais usado em Python. Fixtures preparam o ambiente e injetam dependências; são o coração de testes limpos. Assertions nativas (assert) tornam os testes legíveis. Parametrização (@pytest.mark.parametrize) reduz duplicação. Markers organizam (smoke, regression). Conftest.py compartilha fixtures entre arquivos. Boas práticas: um teste = uma ideia, nomes descritivos (test_<ação>_<resultado>), e setup mínimo.",
-            "examples": [
-                "@pytest.fixture def session(): ... return s",
-                "@pytest.mark.parametrize(\"payload\", [p1, p2, p3]) def test_validacao(payload): ...",
-                "@pytest.mark.smoke def test_health(): assert health() == \"ok\"",
-                "with pytest.raises(Timeout): client.get('/x')"
-            ],
-            "commonMistakes": [
-                "Fixtures com escopo errado (function vs session) gerando estado compartilhado.",
-                "Testes com múltiplas asserções independentes (difíceis de diagnosticar).",
-                "Dependência de ordem de execução entre testes.",
-                "Não usar conftest para fixtures compartilhadas."
-            ],
-            "projectExample": "Em um framework de testes de integração de mensageria, criei fixtures de escopo session para filas e brokers, e fixtures function para limpar estado entre testes. A parametrização cobriu os formatos de payload sem duplicar código, e o marker smoke rodava em cada deploy.",
-            "interviewQuestions": [
-                {
-                    "question": "Explique o conceito de fixtures no pytest e a diferença entre escopo function e session.",
-                    "difficulty": "Intermediária",
-                    "expectedAnswer": "Fixtures são funções que preparam estado e injetam dependências nos testes. Escopo function cria a fixture para cada teste (isolamento, mais seguro), enquanto session cria uma vez para toda a sessão (mais rápido, mas exige cuidado com estado compartilhado). Uso function para dados mutáveis e session para conexões/caches imutáveis.",
-                    "followUps": [
-                        "O que é conftest.py?",
-                        "Como você injeta uma fixture em outra?"
-                    ],
-                    "mistakes": [
-                        "Não explicar a diferença de escopo e os riscos.",
-                        "Não citar conftest."
-                    ],
-                    "english": "Fixtures prepare state and inject dependencies into tests. Function scope creates a fresh fixture per test for isolation, session scope creates it once for speed, but requires care with shared state. I use function scope for mutable data and session scope for immutable connections."
-                },
-                {
-                    "question": "Como você escreve testes que não dependem da ordem de execução?",
-                    "difficulty": "Intermediária",
-                    "expectedAnswer": "Garantindo isolamento: cada teste cria os dados de que precisa (setup na fixture) e limpa o que cria (teardown), sem depender do estado deixado por outro teste. Uso fixtures function para dados, transaction rollback quando possível, e identificadores únicos para evitar colisões. Também evito asserts dependentes de um teste anterior, pois isso torna a suíte frágil e difícil de diagnosticar.",
-                    "followUps": [
-                        "Como você lida com dados compartilhados entre testes?",
-                        "O que é um teste flaky?"
-                    ],
-                    "mistakes": [
-                        "Admitir dependência de ordem.",
-                        "Não mencionar isolamento e teardown."
-                    ],
-                    "english": "I guarantee isolation: each test creates the data it needs in fixtures and cleans up after itself, using unique identifiers and transaction rollback when possible. I never depend on state left by another test."
-                }
-            ],
-            "challenges": [
-                "Escreva um teste parametrizado que valida 3 payloads inválidos para uma API de cadastro.",
-                "Crie uma fixture function que cria e limpa um registro de teste no banco."
-            ]
+          "question": "Como você lidaria com um teste que falha por um timeout esporádico?",
+          "difficulty": "Intermediária",
+          "expectedAnswer": "Primeiro eu distinguiria falha de teste de falha de sistema: um timeout pode indicar problema real. Se for um problema conhecido de ambiente (rede instável), aplicaria retry com backoff para chamadas de setup, mantendo o teste final determinístico. O essencial é não mascarar bugs reais: retry em asserção final mascararia regressões. Também logaria o tempo de resposta para análise posterior.",
+          "followUps": [
+            "Quando você usaria retry e quando não?",
+            "Como você evita testes flaky?"
+          ],
+          "mistakes": [
+            "Aplicar retry em asserções (mascara bugs).",
+            "Não mencionar determinismo."
+          ],
+          "english": "I would first distinguish a test failure from a real system failure. For known environment issues I would apply retry with backoff on setup calls, but never on final assertions, to avoid masking real regressions. I would also log response times."
         }
-    ],
-    "quiz": [
-        { "question": "Qual estrutura de dados usa pares chave-valor?", "options": { "A": "Lista", "B": "Tupla", "C": "Dicionário", "D": "Set" }, "answer": "C", "explanation": "Dicionário armazena pares chave-valor com acesso por chave, ideal para payloads e respostas." },
-        { "question": "Em requests, qual método retorna o corpo como string bruta?", "options": { "A": "resp.json()", "B": "resp.text", "C": "resp.content()", "D": "resp.raw()" }, "answer": "B", "explanation": "resp.text retorna o corpo como string; resp.json() faz parse para objetos Python." },
-        { "question": "Qual escopo de fixture cria o recurso uma única vez para toda a sessão?", "options": { "A": "function", "B": "class", "C": "session", "D": "module" }, "answer": "C", "explanation": "Escopo session cria uma vez para toda a sessão — mais rápido, mas requer cuidado com estado compartilhado." },
-        { "question": "O que acontece se você chamar resp.json() em um corpo que não é JSON válido?", "options": { "A": "Retorna None", "B": "Retorna string vazia", "C": "Lança uma exceção", "D": "Retorna a própria string" }, "answer": "C", "explanation": "resp.json() lança exceção se o corpo não for JSON válido. Por isso, cheque o status antes." },
-        { "question": "Qual marcador do pytest é usado para reduzir duplicação em cenários similares?", "options": { "A": "@pytest.fixture", "B": "@pytest.mark.parametrize", "C": "@pytest.mark.skip", "D": "@pytest.mark.xfail" }, "answer": "B", "explanation": "@pytest.mark.parametrize permite executar o mesmo teste com múltiplos conjuntos de dados." }
-    ]
+      ],
+      "challenges": [
+        "Escreva uma função que recebe uma lista de dicts de usuários e retorna os emails dos ativos.",
+        "Refatore um bloco repetido de try/except em um context manager reutilizável."
+      ]
+    },
+    {
+      "title": "requests & Testes de API em Python",
+      "theory": "A biblioteca requests é a base para testes de API em Python. Ela abstrai HTTP: sessions reutilizam conexões e headers, headers definem autenticação e conteúdo, parâmetros são passados via params, e o objeto Response expõe status_code, headers, json(), text. Timeouts devem sempre ser definidos. Com pytest, combinamos requests com fixtures e assertions para montar suítes de testes de API legíveis.",
+      "examples": [
+        "s = requests.Session(); s.headers.update({\"Authorization\": f\"Bearer {token}\"})",
+        "resp = s.post(\"/orders\", json=payload, timeout=10)",
+        "assert resp.status_code == 201, resp.text",
+        "data = resp.json(); assert data[\"id\"] > 0"
+      ],
+      "commonMistakes": [
+        "Não definir timeout (teste pode travar indefinidamente).",
+        "Não validar o status code antes de acessar .json().",
+        "Criar uma Session nova a cada requisição (perde otimização).",
+        "Hardcodar a base URL em cada teste."
+      ],
+      "projectExample": "Em um framework de testes de API de cartões, centralizei a autenticação OAuth2 em uma fixture que faz login uma vez e injeta o token em uma Session reutilizável. Com isso, os testes ficaram determinísticos, rápidos e legíveis, e o fluxo de refresh era testado separadamente.",
+      "interviewQuestions": [
+        {
+          "question": "Como você estrutura testes de API com pytest e requests?",
+          "difficulty": "Intermediária",
+          "expectedAnswer": "Eu estruturo com: uma fixture de client (Session) configurada com base URL e autenticação; fixtures de dados de teste (payloads); uma camada de helpers para chamadas repetitivas; e testes com asserções claras sobre status code, contrato (schema) e conteúdo. Uso parametrização para cenários de validação (payload inválido, campos obrigatórios) e separo testes smoke, funcionais e de regressão em arquivos/marcadores diferentes.",
+          "followUps": [
+            "Como você valida o contrato/schema da resposta?",
+            "Como você lida com dados de teste compartilhados?"
+          ],
+          "mistakes": [
+            "Teste monolítico que faz tudo.",
+            "Não usar fixtures e parametrização."
+          ],
+          "english": "I structure it with a client fixture using requests.Session configured with base URL and auth, data fixtures, helper functions for repetitive calls, and clear assertions on status code, schema and content. I use parametrization for validation scenarios."
+        },
+        {
+          "question": "Qual a diferença entre requests.get(...).json() e acessar resp.text?",
+          "difficulty": "Fácil",
+          "expectedAnswer": "resp.json() faz o parse do corpo como JSON e retorna um objeto Python (dict/list); se o corpo não for JSON válido, lança uma exceção. resp.text retorna o corpo como string bruta. Em testes, uso .json() para validar o conteúdo estruturado, mas verifico resp.status_code antes; em caso de erro, uso resp.text para logar o corpo da mensagem de erro.",
+          "followUps": [
+            "O que acontece se a resposta for 204 No Content?",
+            "Como você lida com Content-Type incorreto?"
+          ],
+          "mistakes": [
+            "Chamar .json() sem checar o status.",
+            "Não lidar com 204."
+          ],
+          "english": "resp.json() parses the body as JSON into Python objects and raises on invalid JSON. resp.text returns the raw string body. I always check status_code first, then parse JSON, and use resp.text to log error bodies."
+        }
+      ],
+      "challenges": [
+        "Escreva uma fixture pytest que autentica via OAuth2 e retorna uma Session.",
+        "Parametrize um teste de validação de payload com 4 payloads inválidos."
+      ]
+    },
+    {
+      "title": "pytest: Fixtures, Asserções e Boas Práticas",
+      "theory": "pytest é o runner de testes mais usado em Python. Fixtures preparam o ambiente e injetam dependências; são o coração de testes limpos. Assertions nativas (assert) tornam os testes legíveis. Parametrização (@pytest.mark.parametrize) reduz duplicação. Markers organizam (smoke, regression). Conftest.py compartilha fixtures entre arquivos. Boas práticas: um teste = uma ideia, nomes descritivos (test_<ação>_<resultado>), e setup mínimo.",
+      "examples": [
+        "@pytest.fixture def session(): ... return s",
+        "@pytest.mark.parametrize(\"payload\", [p1, p2, p3]) def test_validacao(payload): ...",
+        "@pytest.mark.smoke def test_health(): assert health() == \"ok\"",
+        "with pytest.raises(Timeout): client.get('/x')"
+      ],
+      "commonMistakes": [
+        "Fixtures com escopo errado (function vs session) gerando estado compartilhado.",
+        "Testes com múltiplas asserções independentes (difíceis de diagnosticar).",
+        "Dependência de ordem de execução entre testes.",
+        "Não usar conftest para fixtures compartilhadas."
+      ],
+      "projectExample": "Em um framework de testes de integração de mensageria, criei fixtures de escopo session para filas e brokers, e fixtures function para limpar estado entre testes. A parametrização cobriu os formatos de payload sem duplicar código, e o marker smoke rodava em cada deploy.",
+      "interviewQuestions": [
+        {
+          "question": "Explique o conceito de fixtures no pytest e a diferença entre escopo function e session.",
+          "difficulty": "Intermediária",
+          "expectedAnswer": "Fixtures são funções que preparam estado e injetam dependências nos testes. Escopo function cria a fixture para cada teste (isolamento, mais seguro), enquanto session cria uma vez para toda a sessão (mais rápido, mas exige cuidado com estado compartilhado). Uso function para dados mutáveis e session para conexões/caches imutáveis.",
+          "followUps": [
+            "O que é conftest.py?",
+            "Como você injeta uma fixture em outra?"
+          ],
+          "mistakes": [
+            "Não explicar a diferença de escopo e os riscos.",
+            "Não citar conftest."
+          ],
+          "english": "Fixtures prepare state and inject dependencies into tests. Function scope creates a fresh fixture per test for isolation, session scope creates it once for speed, but requires care with shared state. I use function scope for mutable data and session scope for immutable connections."
+        },
+        {
+          "question": "Como você escreve testes que não dependem da ordem de execução?",
+          "difficulty": "Intermediária",
+          "expectedAnswer": "Garantindo isolamento: cada teste cria os dados de que precisa (setup na fixture) e limpa o que cria (teardown), sem depender do estado deixado por outro teste. Uso fixtures function para dados, transaction rollback quando possível, e identificadores únicos para evitar colisões. Também evito asserts dependentes de um teste anterior, pois isso torna a suíte frágil e difícil de diagnosticar.",
+          "followUps": [
+            "Como você lida com dados compartilhados entre testes?",
+            "O que é um teste flaky?"
+          ],
+          "mistakes": [
+            "Admitir dependência de ordem.",
+            "Não mencionar isolamento e teardown."
+          ],
+          "english": "I guarantee isolation: each test creates the data it needs in fixtures and cleans up after itself, using unique identifiers and transaction rollback when possible. I never depend on state left by another test."
+        }
+      ],
+      "challenges": [
+        "Escreva um teste parametrizado que valida 3 payloads inválidos para uma API de cadastro.",
+        "Crie uma fixture function que cria e limpa um registro de teste no banco."
+      ]
+    }
+  ],
+  "quizCategory": "Python"
 }

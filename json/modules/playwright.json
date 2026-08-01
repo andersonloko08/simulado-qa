@@ -1,172 +1,171 @@
 {
-    "id": "playwright",
-    "title": "Playwright",
-    "icon": "fa-window-restore",
-    "level": "Intermediário",
-    "duration": "2-3 semanas",
-    "shortDescription": "E2E moderno, auto-wait, fixtures e API testing.",
-    "description": "Playwright é o framework E2E moderno da Microsoft, usado em bancos, railways e startups por sua confiabilidade (auto-wait), velocidade e integração com testes de API. Este módulo cobre auto-wait, seletores, fixtures, interceptação de rede e boas práticas.",
-    "topics": ["E2E", "Auto-wait", "Fixtures", "Network"],
-    "concepts": [
+  "id": "playwright",
+  "title": "Playwright",
+  "icon": "fa-window-restore",
+  "level": "Intermediário",
+  "duration": "2-3 semanas",
+  "shortDescription": "E2E moderno, auto-wait, fixtures e API testing.",
+  "description": "Playwright é o framework E2E moderno da Microsoft, usado em bancos, railways e startups por sua confiabilidade (auto-wait), velocidade e integração com testes de API. Este módulo cobre auto-wait, seletores, fixtures, interceptação de rede e boas práticas.",
+  "topics": [
+    "E2E",
+    "Auto-wait",
+    "Fixtures",
+    "Network"
+  ],
+  "concepts": [
+    {
+      "title": "Fundamentos & Auto-Wait",
+      "theory": "Playwright automatiza Chromium, Firefox e WebKit com uma única API. A grande vantagem é o auto-wait: as ações esperam automaticamente o elemento estar pronto (visível, estável, habilitado) antes de agir, eliminando a classe de bugs de timing. As actions são: page.goto, page.click, page.fill, page.check, page.locator(). Operações em lote com expect().toHaveText(), etc. O test runner (playwright/test) fornece fixtures, workers paralelos e snapshot de testes.",
+      "examples": [
+        "await page.goto('/orders');",
+        "await page.getByRole('button', { name: 'Criar' }).click();",
+        "await page.getByLabel('Nome').fill('Ana');",
+        "await expect(page.locator('h1')).toHaveText('Pedidos');"
+      ],
+      "commonMistakes": [
+        "Usar page.waitForTimeout (Sleep) — elimina a vantagem do auto-wait.",
+        "Seletores XPath frágeis em vez de role/text/label.",
+        "Não usar expect(...).toHaveText em operações em lote.",
+        "Rodar testes em paralelo sem isolar dados."
+      ],
+      "projectExample": "Em um projeto de automação E2E de um portal bancário, os testes ficaram estáveis mesmo com mudanças frequentes de UI porque usamos seletores baseados em role/text e o auto-wait do Playwright. Eliminamos todos os waitForTimeout, reduzindo o tempo de suíte em 40%.",
+      "interviewQuestions": [
         {
-            "title": "Fundamentos & Auto-Wait",
-            "theory": "Playwright automatiza Chromium, Firefox e WebKit com uma única API. A grande vantagem é o auto-wait: as ações esperam automaticamente o elemento estar pronto (visível, estável, habilitado) antes de agir, eliminando a classe de bugs de timing. As actions são: page.goto, page.click, page.fill, page.check, page.locator(). Operações em lote com expect().toHaveText(), etc. O test runner (playwright/test) fornece fixtures, workers paralelos e snapshot de testes.",
-            "examples": [
-                "await page.goto('/orders');",
-                "await page.getByRole('button', { name: 'Criar' }).click();",
-                "await page.getByLabel('Nome').fill('Ana');",
-                "await expect(page.locator('h1')).toHaveText('Pedidos');"
-            ],
-            "commonMistakes": [
-                "Usar page.waitForTimeout (Sleep) — elimina a vantagem do auto-wait.",
-                "Seletores XPath frágeis em vez de role/text/label.",
-                "Não usar expect(...).toHaveText em operações em lote.",
-                "Rodar testes em paralelo sem isolar dados."
-            ],
-            "projectExample": "Em um projeto de automação E2E de um portal bancário, os testes ficaram estáveis mesmo com mudanças frequentes de UI porque usamos seletores baseados em role/text e o auto-wait do Playwright. Eliminamos todos os waitForTimeout, reduzindo o tempo de suíte em 40%.",
-            "interviewQuestions": [
-                {
-                    "question": "O que é auto-wait no Playwright e por que ele reduz testes flaky?",
-                    "difficulty": "Intermediária",
-                    "expectedAnswer": "Auto-wait faz com que as ações do Playwright esperem automaticamente uma condição antes de executar — por exemplo, que o elemento esteja visível, estável e habilitado antes de um clique. Como elimina a dependência de esperas fixas, a principal classe de bugs de timing (raça de execução) desaparece. Isso resulta em testes mais determinísticos e menos flaky.",
-                    "followUps": [
-                        "Quando você ainda precisaria de waitForTimeout?",
-                        "Como configurar timeouts globais?"
-                    ],
-                    "mistakes": [
-                        "Não saber explicar o mecanismo.",
-                        "Defender esperas fixas."
-                    ],
-                    "english": "Auto-wait makes Playwright actions wait automatically for a condition, such as the element being visible, stable and enabled before a click. It removes the need for fixed waits and eliminates the most common class of flaky tests caused by race conditions."
-                },
-                {
-                    "question": "Qual a diferença entre locators e o uso de CSS/XPath diretamente?",
-                    "difficulty": "Intermediária",
-                    "expectedAnswer": "Locators são objetos que representam um elemento e podem ser reutilizados e resolvidos no momento da ação, suportando auto-wait e retries. Seletores CSS/XPath diretos resolvem em string e não têm a mesma semântica. Além disso, Playwright recomenda seletores acessíveis: getByRole, getByLabel, getByText, que são mais estáveis que selectores estruturais, alinhados com acessibilidade.",
-                    "followUps": [
-                        "Por que getByRole é preferível a XPath?",
-                        "Como você testa acessibilidade no Playwright?"
-                    ],
-                    "mistakes": [
-                        "Não distinguir locator de string de seletor.",
-                        "Não citar seletores acessíveis."
-                    ],
-                    "english": "Locators are reusable objects resolved at action time, supporting auto-wait and retries, unlike raw CSS/XPath strings. Playwright also recommends accessible selectors like getByRole and getByLabel, which are more stable and aligned with accessibility."
-                }
-            ],
-            "challenges": [
-                "Reescreva um teste que usa waitForTimeout usando auto-wait.",
-                "Escreva um teste de login usando apenas seletores acessíveis (role/label)."
-            ]
+          "question": "O que é auto-wait no Playwright e por que ele reduz testes flaky?",
+          "difficulty": "Intermediária",
+          "expectedAnswer": "Auto-wait faz com que as ações do Playwright esperem automaticamente uma condição antes de executar — por exemplo, que o elemento esteja visível, estável e habilitado antes de um clique. Como elimina a dependência de esperas fixas, a principal classe de bugs de timing (raça de execução) desaparece. Isso resulta em testes mais determinísticos e menos flaky.",
+          "followUps": [
+            "Quando você ainda precisaria de waitForTimeout?",
+            "Como configurar timeouts globais?"
+          ],
+          "mistakes": [
+            "Não saber explicar o mecanismo.",
+            "Defender esperas fixas."
+          ],
+          "english": "Auto-wait makes Playwright actions wait automatically for a condition, such as the element being visible, stable and enabled before a click. It removes the need for fixed waits and eliminates the most common class of flaky tests caused by race conditions."
         },
         {
-            "title": "Fixtures & Test Runner",
-            "theory": "O test runner playwright/test gerencia: fixtures (page, context, request), hooks (beforeEach, afterEach), workers paralelos, projetos (configuração por navegador), e configuração central em playwright.config.ts. Fixtures personalizadas encapsulam setup (ex.: criar usuário via API, abrir sessão). Projetos permitem rodar os mesmos testes em Chromium, Firefox e WebKit. Boas práticas: testes independentes, dados criados via API (mais rápido que UI), e cleanup em afterEach.",
-            "examples": [
-                "test.use({ storageState: 'auth/user.json' });",
-                "test.beforeEach(async ({ request }) => { await criarUsuarioViaAPI(request); });",
-                "const apiContext = await request.newContext({ baseURL: BASE_URL });",
-                "playwright.config.ts: projects: [{ name: 'chromium' }, { name: 'firefox' }]"
-            ],
-            "commonMistakes": [
-                "Criar dados via UI em vez de API (lento e frágil).",
-                "Não limpar dados criados entre testes.",
-                "Não usar storageState para reutilizar autenticação.",
-                "Configuração única para todos os projetos, ignorando diferenças."
-            ],
-            "projectExample": "Em um projeto de automação de CRM, criamos uma fixture customizada que via API cria o cliente e retorna o contexto de usuário autenticado. Cada teste usava dados únicos e o teardown removia o cliente. A suíte ficou determinística, rodando em 3 navegadores em paralelo.",
-            "interviewQuestions": [
-                {
-                    "question": "Como você cria dados de teste no Playwright e por que via API?",
-                    "difficulty": "Intermediária",
-                    "expectedAnswer": "Prefiro criar dados via API com o fixture request, pois é mais rápido e determinístico que via UI. O fluxo: beforeEach cria o recurso (usuário, pedido) via API, o teste usa esse dado, e afterEach/teardown remove ou isola. Para autenticação reutilizável, uso storageState salvando o estado de login. Isso reduz drasticamente tempo de execução e instabilidade.",
-                    "followUps": [
-                        "Como você lida com dados únicos para testes paralelos?",
-                        "O que é storageState?"
-                    ],
-                    "mistakes": [
-                        "Criar dados pela UI.",
-                        "Não isolar dados em testes paralelos."
-                    ],
-                    "english": "I prefer creating test data via API using the request fixture, because it is faster and more deterministic than via UI. beforeEach creates the resource, the test uses it, and teardown removes it. For auth I use storageState to reuse the logged-in session."
-                },
-                {
-                    "question": "Explique projetos no Playwright e quando são úteis.",
-                    "difficulty": "Intermediária",
-                    "expectedAnswer": "Projetos permitem rodar os mesmos testes em múltiplas configurações — tipicamente navegadores (Chromium, Firefox, WebKit) ou ambientes (staging, production). Cada projeto tem seu próprio config, devices e storageState. É útil quando o sistema deve funcionar em vários navegadores (aplicações públicas), embora para sistemas corporativos internos normalmente rodemos apenas Chromium para reduzir custo.",
-                    "followUps": [
-                        "Como rodar testes em um projeto específico?",
-                        "Quais são os trade-offs de rodar em 3 navegadores?"
-                    ],
-                    "mistakes": [
-                        "Não saber para que servem os projetos.",
-                        "Rodar em 3 navegadores sem justificativa de negócio."
-                    ],
-                    "english": "Projects run the same tests in multiple configurations, typically browsers or environments. Each project has its own config, device and storageState. This is useful for public applications that must work across browsers, though internal corporate systems often run Chromium only."
-                }
-            ],
-            "challenges": [
-                "Crie uma fixture que via API cria um usuário e retorna o token.",
-                "Configure playwright.config.ts com projetos para Chromium e Firefox."
-            ]
-        },
-        {
-            "title": "API Testing, Interceptação de Rede & Boas Práticas",
-            "theory": "Playwright testa API com o fixture request (request.get/post), e intercepta/mocka respostas de rede com page.route. Isso permite: testar falhas de backend sem backend (mock de respostas 500/404), validar chamadas de rede (spy: monitorar requests feitos pela página), e combinar testes UI com validação da API. Também suporta autenticação (Authorization header), uploads e downloads.",
-            "examples": [
-                "await page.route('**/api/orders/**', route => route.fulfill({ status: 500, body: 'erro' }));",
-                "await page.route('**/api/campaigns/**', async route => { const resp = await route.fetch(); await page.exposeFunction... });",
-                "const resp = await request.get('/api/users/1'); await expect(resp).toBeOK();",
-                "Spy: page.on('request', req => { if (req.url().includes('/api/')) log.push(req) });"
-            ],
-            "commonMistakes": [
-                "Mockar tudo, mascarando bugs reais de integração.",
-                "Usar page.route sem tratar os casos reais.",
-                "Não validar o status code em testes de API (apenas .body()).",
-                "Interceptar rotas sem especificar glob pattern correto."
-            ],
-            "projectExample": "Em um projeto de automação de um painel de analytics, mockamos a API de métricas para testar a UI em estados extremos (sem dados, erro 500, dados massivos) sem depender do backend. Ao mesmo tempo, testes de API validavam o contrato real. Essa combinação permitiu cobertura rápida e determinística da UI e do backend.",
-            "interviewQuestions": [
-                {
-                    "question": "Quando usar mock de rede (page.route) em testes E2E?",
-                    "difficulty": "Avançada",
-                    "expectedAnswer": "Uso mock quando quero testar a UI em estados que o backend real não produz facilmente: erros de servidor, timeouts, dados vazios, cenários de edge case, ou dependências de terceiros instáveis. Mockar a resposta da API permite validar como a UI reage. Mas nunca mocks em testes de integração final: para validar o fluxo real ponta a ponta, uso o backend real. Equilíbrio: mocks para testes de UI determinísticos, real para validação de contrato e fluxos críticos.",
-                    "followUps": [
-                        "Quais riscos existem em mockar demais?",
-                        "Como você valida que o mock reflete o contrato real?"
-                    ],
-                    "mistakes": [
-                        "Mockar tudo e perder a validação real.",
-                        "Não justificar o cenário que o mock permite."
-                    ],
-                    "english": "I use network mocking to test UI states the real backend does not easily produce, such as server errors, timeouts, empty data, or unstable third parties. But I never mock in final integration validation — real flows use the real backend. Balance: mocks for deterministic UI tests, real for contract validation."
-                },
-                {
-                    "question": "Como você combina testes de API e de UI no mesmo projeto Playwright?",
-                    "difficulty": "Intermediária",
-                    "expectedAnswer": "Mantendo camadas separadas mas coordenadas: testes de API com o fixture request validam contratos e funcionalidades de backend; testes E2E de UI validam fluxos completos; e dados de setup dos testes E2E são criados via API (mais rápido). O mesmo runner, config e CI executam ambos. Também uso spy de rede para validar que a UI chama a API corretamente.",
-                    "followUps": [
-                        "Como você decide entre teste de API e E2E para um cenário?",
-                        "Como o spy de rede ajuda a diagnosticar?"
-                    ],
-                    "mistakes": [
-                        "Só E2E, sem testes de API.",
-                        "Não usar API para setup de dados E2E."
-                    ],
-                    "english": "I keep API and UI layers separate but coordinated: API tests validate contracts with the request fixture, E2E tests validate complete flows, and E2E test data is created via API for speed. The same runner and CI execute both. I also use network spies to verify the UI calls the API correctly."
-                }
-            ],
-            "challenges": [
-                "Escreva um teste que mocka uma resposta 500 e valida a mensagem de erro na UI.",
-                "Escreva um spy que coleta as requisições de uma página e valida que o endpoint correto foi chamado."
-            ]
+          "question": "Qual a diferença entre locators e o uso de CSS/XPath diretamente?",
+          "difficulty": "Intermediária",
+          "expectedAnswer": "Locators são objetos que representam um elemento e podem ser reutilizados e resolvidos no momento da ação, suportando auto-wait e retries. Seletores CSS/XPath diretos resolvem em string e não têm a mesma semântica. Além disso, Playwright recomenda seletores acessíveis: getByRole, getByLabel, getByText, que são mais estáveis que selectores estruturais, alinhados com acessibilidade.",
+          "followUps": [
+            "Por que getByRole é preferível a XPath?",
+            "Como você testa acessibilidade no Playwright?"
+          ],
+          "mistakes": [
+            "Não distinguir locator de string de seletor.",
+            "Não citar seletores acessíveis."
+          ],
+          "english": "Locators are reusable objects resolved at action time, supporting auto-wait and retries, unlike raw CSS/XPath strings. Playwright also recommends accessible selectors like getByRole and getByLabel, which are more stable and aligned with accessibility."
         }
-    ],
-    "quiz": [
-        { "question": "Qual recurso do Playwright elimina a necessidade de esperas fixas?", "options": { "A": "waitForTimeout", "B": "Auto-wait", "C": "page.pause()", "D": "Sleep" }, "answer": "B", "explanation": "Auto-wait espera automaticamente o elemento estar pronto antes de cada ação." },
-        { "question": "Qual seletor acessível é recomendado para clicar em um botão pelo nome?", "options": { "A": "getByRole('button', { name: ... })", "B": "XPath", "C": "CSS por classe", "D": "page.evaluate" }, "answer": "A", "explanation": "getByRole com name é estável e alinhado com acessibilidade." },
-        { "question": "Qual fixture é usada para testes de API no Playwright?", "options": { "A": "page", "B": "request", "C": "context", "D": "browser" }, "answer": "B", "explanation": "O fixture request permite chamadas HTTP (request.get/post) nos testes." },
-        { "question": "Como você mocka uma resposta de rede no Playwright?", "options": { "A": "page.route(...)", "B": "page.goto(...)", "C": "page.fill(...)", "D": "page.waitForTimeout(...)" }, "answer": "A", "explanation": "page.route intercepta requisições e permite fulfill com resposta mockada." },
-        { "question": "O que o storageState faz?", "options": { "A": "Salva o estado de autenticação para reutilização entre testes", "B": "Armazena dados no banco", "C": "Mapeia seletores", "D": "Configura proxies" }, "answer": "A", "explanation": "storageState salva cookies/storage de login, permitindo reutilizar sessão autenticada." }
-    ]
+      ],
+      "challenges": [
+        "Reescreva um teste que usa waitForTimeout usando auto-wait.",
+        "Escreva um teste de login usando apenas seletores acessíveis (role/label)."
+      ]
+    },
+    {
+      "title": "Fixtures & Test Runner",
+      "theory": "O test runner playwright/test gerencia: fixtures (page, context, request), hooks (beforeEach, afterEach), workers paralelos, projetos (configuração por navegador), e configuração central em playwright.config.ts. Fixtures personalizadas encapsulam setup (ex.: criar usuário via API, abrir sessão). Projetos permitem rodar os mesmos testes em Chromium, Firefox e WebKit. Boas práticas: testes independentes, dados criados via API (mais rápido que UI), e cleanup em afterEach.",
+      "examples": [
+        "test.use({ storageState: 'auth/user.json' });",
+        "test.beforeEach(async ({ request }) => { await criarUsuarioViaAPI(request); });",
+        "const apiContext = await request.newContext({ baseURL: BASE_URL });",
+        "playwright.config.ts: projects: [{ name: 'chromium' }, { name: 'firefox' }]"
+      ],
+      "commonMistakes": [
+        "Criar dados via UI em vez de API (lento e frágil).",
+        "Não limpar dados criados entre testes.",
+        "Não usar storageState para reutilizar autenticação.",
+        "Configuração única para todos os projetos, ignorando diferenças."
+      ],
+      "projectExample": "Em um projeto de automação de CRM, criamos uma fixture customizada que via API cria o cliente e retorna o contexto de usuário autenticado. Cada teste usava dados únicos e o teardown removia o cliente. A suíte ficou determinística, rodando em 3 navegadores em paralelo.",
+      "interviewQuestions": [
+        {
+          "question": "Como você cria dados de teste no Playwright e por que via API?",
+          "difficulty": "Intermediária",
+          "expectedAnswer": "Prefiro criar dados via API com o fixture request, pois é mais rápido e determinístico que via UI. O fluxo: beforeEach cria o recurso (usuário, pedido) via API, o teste usa esse dado, e afterEach/teardown remove ou isola. Para autenticação reutilizável, uso storageState salvando o estado de login. Isso reduz drasticamente tempo de execução e instabilidade.",
+          "followUps": [
+            "Como você lida com dados únicos para testes paralelos?",
+            "O que é storageState?"
+          ],
+          "mistakes": [
+            "Criar dados pela UI.",
+            "Não isolar dados em testes paralelos."
+          ],
+          "english": "I prefer creating test data via API using the request fixture, because it is faster and more deterministic than via UI. beforeEach creates the resource, the test uses it, and teardown removes it. For auth I use storageState to reuse the logged-in session."
+        },
+        {
+          "question": "Explique projetos no Playwright e quando são úteis.",
+          "difficulty": "Intermediária",
+          "expectedAnswer": "Projetos permitem rodar os mesmos testes em múltiplas configurações — tipicamente navegadores (Chromium, Firefox, WebKit) ou ambientes (staging, production). Cada projeto tem seu próprio config, devices e storageState. É útil quando o sistema deve funcionar em vários navegadores (aplicações públicas), embora para sistemas corporativos internos normalmente rodemos apenas Chromium para reduzir custo.",
+          "followUps": [
+            "Como rodar testes em um projeto específico?",
+            "Quais são os trade-offs de rodar em 3 navegadores?"
+          ],
+          "mistakes": [
+            "Não saber para que servem os projetos.",
+            "Rodar em 3 navegadores sem justificativa de negócio."
+          ],
+          "english": "Projects run the same tests in multiple configurations, typically browsers or environments. Each project has its own config, device and storageState. This is useful for public applications that must work across browsers, though internal corporate systems often run Chromium only."
+        }
+      ],
+      "challenges": [
+        "Crie uma fixture que via API cria um usuário e retorna o token.",
+        "Configure playwright.config.ts com projetos para Chromium e Firefox."
+      ]
+    },
+    {
+      "title": "API Testing, Interceptação de Rede & Boas Práticas",
+      "theory": "Playwright testa API com o fixture request (request.get/post), e intercepta/mocka respostas de rede com page.route. Isso permite: testar falhas de backend sem backend (mock de respostas 500/404), validar chamadas de rede (spy: monitorar requests feitos pela página), e combinar testes UI com validação da API. Também suporta autenticação (Authorization header), uploads e downloads.",
+      "examples": [
+        "await page.route('**/api/orders/**', route => route.fulfill({ status: 500, body: 'erro' }));",
+        "await page.route('**/api/campaigns/**', async route => { const resp = await route.fetch(); await page.exposeFunction... });",
+        "const resp = await request.get('/api/users/1'); await expect(resp).toBeOK();",
+        "Spy: page.on('request', req => { if (req.url().includes('/api/')) log.push(req) });"
+      ],
+      "commonMistakes": [
+        "Mockar tudo, mascarando bugs reais de integração.",
+        "Usar page.route sem tratar os casos reais.",
+        "Não validar o status code em testes de API (apenas .body()).",
+        "Interceptar rotas sem especificar glob pattern correto."
+      ],
+      "projectExample": "Em um projeto de automação de um painel de analytics, mockamos a API de métricas para testar a UI em estados extremos (sem dados, erro 500, dados massivos) sem depender do backend. Ao mesmo tempo, testes de API validavam o contrato real. Essa combinação permitiu cobertura rápida e determinística da UI e do backend.",
+      "interviewQuestions": [
+        {
+          "question": "Quando usar mock de rede (page.route) em testes E2E?",
+          "difficulty": "Avançada",
+          "expectedAnswer": "Uso mock quando quero testar a UI em estados que o backend real não produz facilmente: erros de servidor, timeouts, dados vazios, cenários de edge case, ou dependências de terceiros instáveis. Mockar a resposta da API permite validar como a UI reage. Mas nunca mocks em testes de integração final: para validar o fluxo real ponta a ponta, uso o backend real. Equilíbrio: mocks para testes de UI determinísticos, real para validação de contrato e fluxos críticos.",
+          "followUps": [
+            "Quais riscos existem em mockar demais?",
+            "Como você valida que o mock reflete o contrato real?"
+          ],
+          "mistakes": [
+            "Mockar tudo e perder a validação real.",
+            "Não justificar o cenário que o mock permite."
+          ],
+          "english": "I use network mocking to test UI states the real backend does not easily produce, such as server errors, timeouts, empty data, or unstable third parties. But I never mock in final integration validation — real flows use the real backend. Balance: mocks for deterministic UI tests, real for contract validation."
+        },
+        {
+          "question": "Como você combina testes de API e de UI no mesmo projeto Playwright?",
+          "difficulty": "Intermediária",
+          "expectedAnswer": "Mantendo camadas separadas mas coordenadas: testes de API com o fixture request validam contratos e funcionalidades de backend; testes E2E de UI validam fluxos completos; e dados de setup dos testes E2E são criados via API (mais rápido). O mesmo runner, config e CI executam ambos. Também uso spy de rede para validar que a UI chama a API corretamente.",
+          "followUps": [
+            "Como você decide entre teste de API e E2E para um cenário?",
+            "Como o spy de rede ajuda a diagnosticar?"
+          ],
+          "mistakes": [
+            "Só E2E, sem testes de API.",
+            "Não usar API para setup de dados E2E."
+          ],
+          "english": "I keep API and UI layers separate but coordinated: API tests validate contracts with the request fixture, E2E tests validate complete flows, and E2E test data is created via API for speed. The same runner and CI execute both. I also use network spies to verify the UI calls the API correctly."
+        }
+      ],
+      "challenges": [
+        "Escreva um teste que mocka uma resposta 500 e valida a mensagem de erro na UI.",
+        "Escreva um spy que coleta as requisições de uma página e valida que o endpoint correto foi chamado."
+      ]
+    }
+  ],
+  "quizCategory": "Playwright"
 }

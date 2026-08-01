@@ -1,172 +1,170 @@
 {
-    "id": "sap",
-    "title": "SAP Testing",
-    "icon": "fa-industry",
-    "level": "Avançado",
-    "duration": "2 semanas",
-    "shortDescription": "SAP GUI, BAPI, integrações e automação em ecossistemas SAP.",
-    "description": "Testar sistemas SAP é comum em grandes corporações brasileiras (energia, indústria, bancos). Este módulo cobre SAP GUI, BAPIs, integrações legadas e como automatizar fluxos críticos para o negócio.",
-    "topics": ["SAP GUI", "BAPI", "Integração"],
-    "concepts": [
+  "id": "sap",
+  "title": "SAP Testing",
+  "icon": "fa-industry",
+  "level": "Avançado",
+  "duration": "2 semanas",
+  "shortDescription": "SAP GUI, BAPI, integrações e automação em ecossistemas SAP.",
+  "description": "Testar sistemas SAP é comum em grandes corporações brasileiras (energia, indústria, bancos). Este módulo cobre SAP GUI, BAPIs, integrações legadas e como automatizar fluxos críticos para o negócio.",
+  "topics": [
+    "SAP GUI",
+    "BAPI",
+    "Integração"
+  ],
+  "concepts": [
+    {
+      "title": "Fundamentos do Ecossistema SAP",
+      "theory": "SAP é um ERP modular (FI - finanças, CO - controlling, MM - materiais, SD - vendas, PP - produção, HCM - RH). Módulos interagem por documentos e movimentos. O QA em SAP precisa entender o negócio por trás do módulo, as transações (códigos como SE11, SE16, ME21N, VA01) e os dados mestre/transação. Testes cobrem: fluxos de negócio ponta a ponta, integrações (IDocs, RFC, BAPI), autorizações e validação de dados.",
+      "examples": [
+        "Transação VA01: criação de pedido de venda (SD)",
+        "Transação ME21N: criação de pedido de compra (MM)",
+        "IDoc: mensagem de integração entre SAP e parceiro",
+        "SE16: consulta direta em tabelas para validar persistência"
+      ],
+      "commonMistakes": [
+        "Tratar SAP como uma tela genérica (o contexto de negócio é o mais importante).",
+        "Não validar a camada de dados (tabelas/IDocs).",
+        "Ignorar autorizações e papéis.",
+        "Automatizar fluxo complexo sem entender o negócio."
+      ],
+      "projectExample": "Em uma automação de faturamento no SAP, validávamos o pedido de venda (VA01), a saída de mercadoria e o faturamento (VF01), consultando as tabelas via SE16 para confirmar o movimento contábil. Isso garantia o fluxo completo, não apenas a tela.",
+      "interviewQuestions": [
         {
-            "title": "Fundamentos do Ecossistema SAP",
-            "theory": "SAP é um ERP modular (FI - finanças, CO - controlling, MM - materiais, SD - vendas, PP - produção, HCM - RH). Módulos interagem por documentos e movimentos. O QA em SAP precisa entender o negócio por trás do módulo, as transações (códigos como SE11, SE16, ME21N, VA01) e os dados mestre/transação. Testes cobrem: fluxos de negócio ponta a ponta, integrações (IDocs, RFC, BAPI), autorizações e validação de dados.",
-            "examples": [
-                "Transação VA01: criação de pedido de venda (SD)",
-                "Transação ME21N: criação de pedido de compra (MM)",
-                "IDoc: mensagem de integração entre SAP e parceiro",
-                "SE16: consulta direta em tabelas para validar persistência"
-            ],
-            "commonMistakes": [
-                "Tratar SAP como uma tela genérica (o contexto de negócio é o mais importante).",
-                "Não validar a camada de dados (tabelas/IDocs).",
-                "Ignorar autorizações e papéis.",
-                "Automatizar fluxo complexo sem entender o negócio."
-            ],
-            "projectExample": "Em uma automação de faturamento no SAP, validávamos o pedido de venda (VA01), a saída de mercadoria e o faturamento (VF01), consultando as tabelas via SE16 para confirmar o movimento contábil. Isso garantia o fluxo completo, não apenas a tela.",
-            "interviewQuestions": [
-                {
-                    "question": "Como você aborda o teste de um fluxo de negócio SAP ponta a ponta?",
-                    "difficulty": "Avançada",
-                    "expectedAnswer": "Eu mapeio primeiro o fluxo de negócio e o valor esperado: transações envolvidas, documentos gerados, integrações (IDocs/BAPI) e dados que precisam persistir. Depois executo o fluxo no ambiente de qualidade, valido cada documento e a persistência nas tabelas relevantes (SE16), verifico autorizações e trato casos de erro (rejeição por regra de negócio). Finalmente automatizo o caminho feliz e os principais cenários de erro, mantendo dados mestre isolados.",
-                    "followUps": [
-                        "Como você valida a persistência dos dados?",
-                        "Como lida com dependência de dados mestre?"
-                    ],
-                    "mistakes": [
-                        "Só clicar em telas sem validar dados.",
-                        "Ignorar o contexto de negócio."
-                    ],
-                    "english": "I first map the business flow and expected value: the transactions, generated documents, integrations and data that must persist. Then I execute the flow in the quality environment, validate each document and table persistence, check authorizations, and handle business rule errors. Finally I automate the happy path and key error scenarios."
-                },
-                {
-                    "question": "Qual a diferença entre testar SAP via GUI, via BAPI/RFC e via integração?",
-                    "difficulty": "Avançada",
-                    "expectedAnswer": "GUI testa a interface do usuário (fluxo funcional de quem opera o sistema). BAPI/RFC testa a camada de negócio programática, útil para integrações e automação de validação de dados — mais rápida e determinística que GUI. Integração testa a troca de mensagens (IDocs) com sistemas externos. A estratégia ideal combina: GUI para fluxos críticos de usuário, BAPI/API para validações de dados e setup, e testes de integração para IDocs.",
-                    "followUps": [
-                        "Quando você prefere BAPI a GUI?",
-                        "O que são IDocs?"
-                    ],
-                    "mistakes": [
-                        "Só GUI.",
-                        "Não conhecer BAPI/RFC."
-                    ],
-                    "english": "GUI testing validates the user interface flow. BAPI/RFC testing validates the business layer programmatically, faster and more deterministic for integrations and data validation. Integration testing validates message exchange like IDocs with external systems. The best strategy combines GUI, BAPI and IDoc tests."
-                }
-            ],
-            "challenges": [
-                "Mapeie o fluxo de um pedido de compra (MM) e os pontos de validação.",
-                "Proponha quando usar GUI vs BAPI em uma automação SAP."
-            ]
+          "question": "Como você aborda o teste de um fluxo de negócio SAP ponta a ponta?",
+          "difficulty": "Avançada",
+          "expectedAnswer": "Eu mapeio primeiro o fluxo de negócio e o valor esperado: transações envolvidas, documentos gerados, integrações (IDocs/BAPI) e dados que precisam persistir. Depois executo o fluxo no ambiente de qualidade, valido cada documento e a persistência nas tabelas relevantes (SE16), verifico autorizações e trato casos de erro (rejeição por regra de negócio). Finalmente automatizo o caminho feliz e os principais cenários de erro, mantendo dados mestre isolados.",
+          "followUps": [
+            "Como você valida a persistência dos dados?",
+            "Como lida com dependência de dados mestre?"
+          ],
+          "mistakes": [
+            "Só clicar em telas sem validar dados.",
+            "Ignorar o contexto de negócio."
+          ],
+          "english": "I first map the business flow and expected value: the transactions, generated documents, integrations and data that must persist. Then I execute the flow in the quality environment, validate each document and table persistence, check authorizations, and handle business rule errors. Finally I automate the happy path and key error scenarios."
         },
         {
-            "title": "Automação SAP: GUI, BAPI e Ferramentas",
-            "theory": "Automação de SAP GUI usa ferramentas como SAP GUI Scripting (VBScript/Python via library), RPA (UiPath, Power Automate) e frameworks de teste (Tricentis Tosca, Worksoft). SAP GUI Scripting permite controlar transações e ler tabelas/controles (via sapguiwin). Para camada de dados, BAPI via RFC (Python pyRFC, Java JCo) valida e executa funções de negócio. Desafios: sessões GUI instáveis, foco de janelas, e a necessidade de manter dados mestre (material, fornecedor, centro) configurados.",
-            "examples": [
-                "Python + pywinauto/robotframework-sapgui para GUI Scripting",
-                "pyRFC: pyRfcConnection.call('BAPI_GOODSMVT_CREATE', ...)",
-                "Tosca/Tricentis para testes SAP corporativos",
-                "Validar via SE16 o documento de material gerado"
-            ],
-            "commonMistakes": [
-                "Esperas fixas em GUI instável.",
-                "Automatizar BAPI sem validar o retorno (message type E/W).",
-                "Não isolar dados mestre (material usado por outros testes).",
-                "Rodar automação GUI em ambiente sem desktop/vídeo no CI."
-            ],
-            "projectExample": "Automatizamos o lançamento de mercadorias via BAPI (BAPI_GOODSMVT_CREATE) em um ERP de energia, com validação do retorno e conferência da tabela via SE16. O setup de dados mestre era criado via função própria, isolando material por suíte. A automação rodava em CI com sessão virtual.",
-            "interviewQuestions": [
-                {
-                    "question": "Como você automatiza um fluxo SAP GUI mantendo estabilidade?",
-                    "difficulty": "Avançada",
-                    "expectedAnswer": "Usando SAP GUI Scripting com esperas baseadas em estado (tela/status da transação), não sleeps fixos. Faço setup de dados via BAPI/API quando possível para reduzir tempo e instabilidade. Isolo dados mestre (criando material/fornecedor próprios por suíte) e limpo no teardown. No CI, uso sessão de desktop virtual. Também trato janelas de popup e mensagens de status (S/E/W/A) como parte da asserção.",
-                    "followUps": [
-                        "Como você valida mensagens de status do SAP?",
-                        "Como roda GUI automation em CI?"
-                    ],
-                    "mistakes": [
-                        "Sleeps fixos e sessões instáveis.",
-                        "Não validar mensagens de status."
-                    ],
-                    "english": "Using SAP GUI Scripting with state-based waits, not fixed sleeps. I do data setup via BAPI when possible, isolate master data per suite, and clean up in teardown. In CI I use a virtual desktop session and assert on SAP status messages as part of the validation."
-                },
-                {
-                    "question": "Quando usar BAPI/RFC em vez de automação GUI?",
-                    "difficulty": "Intermediária",
-                    "expectedAnswer": "Uso BAPI/RFC quando o objetivo é validar a camada de negócio ou fazer setup/teardown de dados: é mais rápido, determinístico e não depende de sessão GUI. GUI é necessária para validar o fluxo funcional real do usuário (usabilidade, campos, mensagens). Estratégia: BAPI para setup e validação de dados, GUI para um conjunto menor de fluxos críticos de usuário final.",
-                    "followUps": [
-                        "Quais os riscos de só usar BAPI?",
-                        "Como você valida retornos BAPI?"
-                    ],
-                    "mistakes": [
-                        "BAPI só para setup sem validar retorno.",
-                        "Usar GUI para tudo (lento)."
-                    ],
-                    "english": "I use BAPI/RFC to validate the business layer or for data setup and teardown: faster and deterministic, no GUI session dependency. GUI is needed to validate the real user flow, fields and messages. Best strategy: BAPI for data validation and setup, GUI for critical user flows."
-                }
-            ],
-            "challenges": [
-                "Desenhe uma automação que usa BAPI para setup e GUI para o fluxo crítico.",
-                "Liste as verificações de retorno de um BAPI (message type, return table)."
-            ]
-        },
-        {
-            "title": "Integrações SAP & Testes de Interface com Parceiros",
-            "theory": "SAP se integra a parceiros via IDocs, RFC, OData (REST), SOAP e APIs. Testes de integração validam: formato e conteúdo da mensagem, mapeamentos (ordem de parceiro -> pedido SAP), tratamento de erros/retries, e consistência de dados entre sistemas. O QA valida o circuito completo: emissão da mensagem, chegada no parceiro, resposta e o impacto no documento SAP. É comum testar com parceiros simulados (mocks de IDoc) e mensagens de teste no ambiente de qualidade.",
-            "examples": [
-                "IDoc ORDERS (pedido de venda) entre SAP e marketplace",
-                "Monitorar via transação WE02/WE05 o status dos IDocs",
-                "Mock de parceiro para validar retries e tratamento de erro",
-                "OData/REST via SAP Gateway para integração moderna"
-            ],
-            "commonMistakes": [
-                "Não validar o payload real da mensagem (só o status).",
-                "Não testar retry/erro de parceiro.",
-                "Ignorar mapeamentos de dados.",
-                "Testar integração só no ambiente do parceiro real."
-            ],
-            "projectExample": "Numa integração SAP-mobile, o app enviava ordem via OData. Validamos o mapeamento completo: payload recebido no Gateway, documento gerado no SD, e o IDoc emitido para o parceiro logístico. Um erro de mapeamento de centro causava rejeição do parceiro — detectado pelo teste de contrato do payload.",
-            "interviewQuestions": [
-                {
-                    "question": "Como você testa uma integração SAP com um parceiro externo?",
-                    "difficulty": "Avançada",
-                    "expectedAnswer": "Em camadas: (1) contrato — valido o schema/conteúdo do payload gerado (IDoc/OData); (2) mapeamento — valido que os dados de origem viram os dados corretos na mensagem; (3) circuito — valido a emissão, a chegada no parceiro (ou mock), a resposta e o efeito no documento SAP; (4) erro/retry — valido o que acontece quando o parceiro falha ou demora. Uso mocks para cenários de erro e valido no ambiente de qualidade antes de integrar com parceiro real.",
-                    "followUps": [
-                        "Como você testa retry e tratamento de erro?",
-                        "O que valida em um IDoc?"
-                    ],
-                    "mistakes": [
-                        "Só validar status, sem payload.",
-                        "Não testar cenários de erro."
-                    ],
-                    "english": "In layers: contract validation of the generated payload, mapping validation, the full circuit from emission to partner response and its effect on the SAP document, and error and retry scenarios using mocks. I validate in the quality environment before integrating with the real partner."
-                },
-                {
-                    "question": "O que é um IDoc e como você valida sua integridade?",
-                    "difficulty": "Intermediária",
-                    "expectedAnswer": "IDoc é a estrutura de mensagem usada para intercâmbio de dados entre SAP e sistemas externos. Valido: o tipo (ex.: ORDERS05), o status da mensagem (via WE02/WE05 — sucesso, erro), os segmentos e campos relevantes (dados de cabeçalho e itens), o mapeamento correto dos dados e a consistência com o documento de origem. Também valido o fluxo completo de retorno quando o parceiro processa.",
-                    "followUps": [
-                        "O que significam os status de IDoc?",
-                        "Como você monta um teste de erro de IDoc?"
-                    ],
-                    "mistakes": [
-                        "Não conhecer os status.",
-                        "Validar apenas se enviou."
-                    ],
-                    "english": "An IDoc is the message structure for data exchange between SAP and external systems. I validate its type, status, segments and relevant fields, the correct mapping of data, and consistency with the source document, as well as the full return flow when the partner processes it."
-                }
-            ],
-            "challenges": [
-                "Liste as camadas de validação de uma integração IDoc.",
-                "Descreva um teste de erro: parceiro rejeita mensagem e o retry funciona."
-            ]
+          "question": "Qual a diferença entre testar SAP via GUI, via BAPI/RFC e via integração?",
+          "difficulty": "Avançada",
+          "expectedAnswer": "GUI testa a interface do usuário (fluxo funcional de quem opera o sistema). BAPI/RFC testa a camada de negócio programática, útil para integrações e automação de validação de dados — mais rápida e determinística que GUI. Integração testa a troca de mensagens (IDocs) com sistemas externos. A estratégia ideal combina: GUI para fluxos críticos de usuário, BAPI/API para validações de dados e setup, e testes de integração para IDocs.",
+          "followUps": [
+            "Quando você prefere BAPI a GUI?",
+            "O que são IDocs?"
+          ],
+          "mistakes": [
+            "Só GUI.",
+            "Não conhecer BAPI/RFC."
+          ],
+          "english": "GUI testing validates the user interface flow. BAPI/RFC testing validates the business layer programmatically, faster and more deterministic for integrations and data validation. Integration testing validates message exchange like IDocs with external systems. The best strategy combines GUI, BAPI and IDoc tests."
         }
-    ],
-    "quiz": [
-        { "question": "Qual é o principal ponto no teste SAP ponta a ponta?", "options": { "A": "Só clicar nas telas", "B": "Validar o fluxo de negócio e a persistência dos dados", "C": "Só testar login", "D": "Ignorar autorizações" }, "answer": "B", "explanation": "O valor está em validar o fluxo de negócio, documentos gerados e dados persistidos." },
-        { "question": "O que é um IDoc?", "options": { "A": "Um tipo de banco de dados", "B": "Uma mensagem de integração entre SAP e sistemas externos", "C": "Uma tela de configuração", "D": "Um relatório" }, "answer": "B", "explanation": "IDoc é a estrutura de mensagem para intercâmbio de dados com parceiros." },
-        { "question": "Para validar dados persistidos, qual transação é comumente usada?", "options": { "A": "VA01", "B": "SE16", "C": "ME21N", "D": "VF01" }, "answer": "B", "explanation": "SE16 permite consulta direta em tabelas do SAP para validar persistência." },
-        { "question": "Automação via BAPI/RFC é vantajosa porque:", "options": { "A": "Testa a interface visual", "B": "É rápida e determinística, sem sessão GUI", "C": "É a única forma de testar", "D": "Não valida dados" }, "answer": "B", "explanation": "BAPI valida a camada de negócio programaticamente, rápido e determinístico." },
-        { "question": "Qual abordagem combina melhor na estratégia de testes SAP?", "options": { "A": "Só GUI", "B": "Só BAPI", "C": "GUI para fluxos de usuário + BAPI para dados/setup + integração para IDocs", "D": "Só integração" }, "answer": "C", "explanation": "A combinação equilibra fidelidade do fluxo real, velocidade e cobertura de integração." }
-    ]
+      ],
+      "challenges": [
+        "Mapeie o fluxo de um pedido de compra (MM) e os pontos de validação.",
+        "Proponha quando usar GUI vs BAPI em uma automação SAP."
+      ]
+    },
+    {
+      "title": "Automação SAP: GUI, BAPI e Ferramentas",
+      "theory": "Automação de SAP GUI usa ferramentas como SAP GUI Scripting (VBScript/Python via library), RPA (UiPath, Power Automate) e frameworks de teste (Tricentis Tosca, Worksoft). SAP GUI Scripting permite controlar transações e ler tabelas/controles (via sapguiwin). Para camada de dados, BAPI via RFC (Python pyRFC, Java JCo) valida e executa funções de negócio. Desafios: sessões GUI instáveis, foco de janelas, e a necessidade de manter dados mestre (material, fornecedor, centro) configurados.",
+      "examples": [
+        "Python + pywinauto/robotframework-sapgui para GUI Scripting",
+        "pyRFC: pyRfcConnection.call('BAPI_GOODSMVT_CREATE', ...)",
+        "Tosca/Tricentis para testes SAP corporativos",
+        "Validar via SE16 o documento de material gerado"
+      ],
+      "commonMistakes": [
+        "Esperas fixas em GUI instável.",
+        "Automatizar BAPI sem validar o retorno (message type E/W).",
+        "Não isolar dados mestre (material usado por outros testes).",
+        "Rodar automação GUI em ambiente sem desktop/vídeo no CI."
+      ],
+      "projectExample": "Automatizamos o lançamento de mercadorias via BAPI (BAPI_GOODSMVT_CREATE) em um ERP de energia, com validação do retorno e conferência da tabela via SE16. O setup de dados mestre era criado via função própria, isolando material por suíte. A automação rodava em CI com sessão virtual.",
+      "interviewQuestions": [
+        {
+          "question": "Como você automatiza um fluxo SAP GUI mantendo estabilidade?",
+          "difficulty": "Avançada",
+          "expectedAnswer": "Usando SAP GUI Scripting com esperas baseadas em estado (tela/status da transação), não sleeps fixos. Faço setup de dados via BAPI/API quando possível para reduzir tempo e instabilidade. Isolo dados mestre (criando material/fornecedor próprios por suíte) e limpo no teardown. No CI, uso sessão de desktop virtual. Também trato janelas de popup e mensagens de status (S/E/W/A) como parte da asserção.",
+          "followUps": [
+            "Como você valida mensagens de status do SAP?",
+            "Como roda GUI automation em CI?"
+          ],
+          "mistakes": [
+            "Sleeps fixos e sessões instáveis.",
+            "Não validar mensagens de status."
+          ],
+          "english": "Using SAP GUI Scripting with state-based waits, not fixed sleeps. I do data setup via BAPI when possible, isolate master data per suite, and clean up in teardown. In CI I use a virtual desktop session and assert on SAP status messages as part of the validation."
+        },
+        {
+          "question": "Quando usar BAPI/RFC em vez de automação GUI?",
+          "difficulty": "Intermediária",
+          "expectedAnswer": "Uso BAPI/RFC quando o objetivo é validar a camada de negócio ou fazer setup/teardown de dados: é mais rápido, determinístico e não depende de sessão GUI. GUI é necessária para validar o fluxo funcional real do usuário (usabilidade, campos, mensagens). Estratégia: BAPI para setup e validação de dados, GUI para um conjunto menor de fluxos críticos de usuário final.",
+          "followUps": [
+            "Quais os riscos de só usar BAPI?",
+            "Como você valida retornos BAPI?"
+          ],
+          "mistakes": [
+            "BAPI só para setup sem validar retorno.",
+            "Usar GUI para tudo (lento)."
+          ],
+          "english": "I use BAPI/RFC to validate the business layer or for data setup and teardown: faster and deterministic, no GUI session dependency. GUI is needed to validate the real user flow, fields and messages. Best strategy: BAPI for data validation and setup, GUI for critical user flows."
+        }
+      ],
+      "challenges": [
+        "Desenhe uma automação que usa BAPI para setup e GUI para o fluxo crítico.",
+        "Liste as verificações de retorno de um BAPI (message type, return table)."
+      ]
+    },
+    {
+      "title": "Integrações SAP & Testes de Interface com Parceiros",
+      "theory": "SAP se integra a parceiros via IDocs, RFC, OData (REST), SOAP e APIs. Testes de integração validam: formato e conteúdo da mensagem, mapeamentos (ordem de parceiro -> pedido SAP), tratamento de erros/retries, e consistência de dados entre sistemas. O QA valida o circuito completo: emissão da mensagem, chegada no parceiro, resposta e o impacto no documento SAP. É comum testar com parceiros simulados (mocks de IDoc) e mensagens de teste no ambiente de qualidade.",
+      "examples": [
+        "IDoc ORDERS (pedido de venda) entre SAP e marketplace",
+        "Monitorar via transação WE02/WE05 o status dos IDocs",
+        "Mock de parceiro para validar retries e tratamento de erro",
+        "OData/REST via SAP Gateway para integração moderna"
+      ],
+      "commonMistakes": [
+        "Não validar o payload real da mensagem (só o status).",
+        "Não testar retry/erro de parceiro.",
+        "Ignorar mapeamentos de dados.",
+        "Testar integração só no ambiente do parceiro real."
+      ],
+      "projectExample": "Numa integração SAP-mobile, o app enviava ordem via OData. Validamos o mapeamento completo: payload recebido no Gateway, documento gerado no SD, e o IDoc emitido para o parceiro logístico. Um erro de mapeamento de centro causava rejeição do parceiro — detectado pelo teste de contrato do payload.",
+      "interviewQuestions": [
+        {
+          "question": "Como você testa uma integração SAP com um parceiro externo?",
+          "difficulty": "Avançada",
+          "expectedAnswer": "Em camadas: (1) contrato — valido o schema/conteúdo do payload gerado (IDoc/OData); (2) mapeamento — valido que os dados de origem viram os dados corretos na mensagem; (3) circuito — valido a emissão, a chegada no parceiro (ou mock), a resposta e o efeito no documento SAP; (4) erro/retry — valido o que acontece quando o parceiro falha ou demora. Uso mocks para cenários de erro e valido no ambiente de qualidade antes de integrar com parceiro real.",
+          "followUps": [
+            "Como você testa retry e tratamento de erro?",
+            "O que valida em um IDoc?"
+          ],
+          "mistakes": [
+            "Só validar status, sem payload.",
+            "Não testar cenários de erro."
+          ],
+          "english": "In layers: contract validation of the generated payload, mapping validation, the full circuit from emission to partner response and its effect on the SAP document, and error and retry scenarios using mocks. I validate in the quality environment before integrating with the real partner."
+        },
+        {
+          "question": "O que é um IDoc e como você valida sua integridade?",
+          "difficulty": "Intermediária",
+          "expectedAnswer": "IDoc é a estrutura de mensagem usada para intercâmbio de dados entre SAP e sistemas externos. Valido: o tipo (ex.: ORDERS05), o status da mensagem (via WE02/WE05 — sucesso, erro), os segmentos e campos relevantes (dados de cabeçalho e itens), o mapeamento correto dos dados e a consistência com o documento de origem. Também valido o fluxo completo de retorno quando o parceiro processa.",
+          "followUps": [
+            "O que significam os status de IDoc?",
+            "Como você monta um teste de erro de IDoc?"
+          ],
+          "mistakes": [
+            "Não conhecer os status.",
+            "Validar apenas se enviou."
+          ],
+          "english": "An IDoc is the message structure for data exchange between SAP and external systems. I validate its type, status, segments and relevant fields, the correct mapping of data, and consistency with the source document, as well as the full return flow when the partner processes it."
+        }
+      ],
+      "challenges": [
+        "Liste as camadas de validação de uma integração IDoc.",
+        "Descreva um teste de erro: parceiro rejeita mensagem e o retry funciona."
+      ]
+    }
+  ],
+  "quizCategory": "SAP"
 }

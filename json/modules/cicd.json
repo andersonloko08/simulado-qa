@@ -1,172 +1,171 @@
 {
-    "id": "cicd",
-    "title": "CI/CD",
-    "icon": "fa-arrows-rotate",
-    "level": "Avançado",
-    "duration": "2 semanas",
-    "shortDescription": "Pipelines, integração contínua, deploy e qualidade no pipeline.",
-    "description": "Integração contínua e entrega contínua são a espinha dorsal de squads modernos. Este módulo cobre pipelines, estágios, gates de qualidade, e o papel do QA em garantir que testes rodem de forma confiável no CI.",
-    "topics": ["Pipelines", "Estágios", "Gates", "Deploy"],
-    "concepts": [
+  "id": "cicd",
+  "title": "CI/CD",
+  "icon": "fa-arrows-rotate",
+  "level": "Avançado",
+  "duration": "2 semanas",
+  "shortDescription": "Pipelines, integração contínua, deploy e qualidade no pipeline.",
+  "description": "Integração contínua e entrega contínua são a espinha dorsal de squads modernos. Este módulo cobre pipelines, estágios, gates de qualidade, e o papel do QA em garantir que testes rodem de forma confiável no CI.",
+  "topics": [
+    "Pipelines",
+    "Estágios",
+    "Gates",
+    "Deploy"
+  ],
+  "concepts": [
+    {
+      "title": "Fundamentos de CI/CD",
+      "theory": "CI (Integração Contínua) é a prática de integrar código frequentemente com build e testes automatizados rodando a cada push. CD (Entrega Contínua) estende com deploy automatizado para ambientes, com aprovação manual para produção. Pipelines são definidos como código (GitHub Actions YAML, GitLab CI, Jenkinsfile, Azure Pipelines). Estágios típicos: lint, unit, build, testes, deploy. O QA participa definindo quais testes rodam em cada estágio e configurando gates (testes obrigatórios antes do merge/deploy).",
+      "examples": [
+        "GitHub Actions: on: push, jobs: [lint, test, build]",
+        "Estágios: build -> test -> deploy-staging -> deploy-prod (aprovado)",
+        "Gate: falha em testes smoke bloqueia deploy",
+        "Artefatos: relatórios de teste publicados como artifacts"
+      ],
+      "commonMistakes": [
+        "Rodar a suíte inteira em todo push (lento e desnecessário).",
+        "Sem gate de qualidade antes do deploy.",
+        "Pipeline frágil com esperas e dependências de ambiente.",
+        "Não publicar relatórios e logs para análise."
+      ],
+      "projectExample": "Em um banco, configuramos um pipeline onde lint e unit rodavam em todo push, smoke a cada PR, e regressão completa em nightly com publicação do report. Um gate de testes críticos impedia o deploy. Isso reduziu regressões em produção e acelerou o feedback dos devs.",
+      "interviewQuestions": [
         {
-            "title": "Fundamentos de CI/CD",
-            "theory": "CI (Integração Contínua) é a prática de integrar código frequentemente com build e testes automatizados rodando a cada push. CD (Entrega Contínua) estende com deploy automatizado para ambientes, com aprovação manual para produção. Pipelines são definidos como código (GitHub Actions YAML, GitLab CI, Jenkinsfile, Azure Pipelines). Estágios típicos: lint, unit, build, testes, deploy. O QA participa definindo quais testes rodam em cada estágio e configurando gates (testes obrigatórios antes do merge/deploy).",
-            "examples": [
-                "GitHub Actions: on: push, jobs: [lint, test, build]",
-                "Estágios: build -> test -> deploy-staging -> deploy-prod (aprovado)",
-                "Gate: falha em testes smoke bloqueia deploy",
-                "Artefatos: relatórios de teste publicados como artifacts"
-            ],
-            "commonMistakes": [
-                "Rodar a suíte inteira em todo push (lento e desnecessário).",
-                "Sem gate de qualidade antes do deploy.",
-                "Pipeline frágil com esperas e dependências de ambiente.",
-                "Não publicar relatórios e logs para análise."
-            ],
-            "projectExample": "Em um banco, configuramos um pipeline onde lint e unit rodavam em todo push, smoke a cada PR, e regressão completa em nightly com publicação do report. Um gate de testes críticos impedia o deploy. Isso reduziu regressões em produção e acelerou o feedback dos devs.",
-            "interviewQuestions": [
-                {
-                    "question": "Qual a diferença entre integração contínua e entrega contínua?",
-                    "difficulty": "Fácil",
-                    "expectedAnswer": "Integração contínua é a prática de integrar código com frequência e validar com build e testes automatizados a cada push, detectando problemas cedo. Entrega contínua estende isso: o código está sempre pronto para deploy, com pipelines que automatizam o build e o deploy para ambientes de staging, deixando a aprovação de produção como passo final (opcionalmente automatizado = deploy contínuo). Como QA, garanto que os testes rodem em cada estágio e atuem como gate.",
-                    "followUps": [
-                        "O que é deploy contínuo?",
-                        "Como o QA define o que é gate de qualidade?"
-                    ],
-                    "mistakes": [
-                        "Confundir os dois termos.",
-                        "Não citar o papel de gates."
-                    ],
-                    "english": "Continuous integration integrates code frequently with automated builds and tests on every push. Continuous delivery extends it: code is always ready to deploy, with pipelines automating builds and deploys to staging, leaving production approval as a final step. QA ensures tests run at each stage as quality gates."
-                },
-                {
-                    "question": "Como você organiza os níveis de teste em um pipeline CI/CD?",
-                    "difficulty": "Intermediária",
-                    "expectedAnswer": "Em camadas por velocidade e confiabilidade: em todo push, lint e testes unitários/rápidos; em PR, testes smoke e de API; em merge/main, build e deploy para staging com testes de integração e E2E críticos; em nightly ou release, a regressão completa. Cada camada age como gate do próximo estágio. Isso equilibra feedback rápido com cobertura confiável.",
-                    "followUps": [
-                        "O que você coloca em smoke no PR?",
-                        "Como evita que a suíte completa torne o pipeline lento?"
-                    ],
-                    "mistakes": [
-                        "Rodar tudo sempre.",
-                        "Sem camadas de feedback."
-                    ],
-                    "english": "In layers by speed and reliability: lint and unit on every push, smoke and API tests on PRs, integration and critical E2E on merge to staging, and full regression nightly or on release. Each layer acts as a gate for the next stage, balancing fast feedback with reliable coverage."
-                }
-            ],
-            "challenges": [
-                "Desenhe o pipeline de um projeto QA com estágios, testes e gates.",
-                "Proponha como reduzir o tempo da regressão completa sem perder cobertura."
-            ]
+          "question": "Qual a diferença entre integração contínua e entrega contínua?",
+          "difficulty": "Fácil",
+          "expectedAnswer": "Integração contínua é a prática de integrar código com frequência e validar com build e testes automatizados a cada push, detectando problemas cedo. Entrega contínua estende isso: o código está sempre pronto para deploy, com pipelines que automatizam o build e o deploy para ambientes de staging, deixando a aprovação de produção como passo final (opcionalmente automatizado = deploy contínuo). Como QA, garanto que os testes rodem em cada estágio e atuem como gate.",
+          "followUps": [
+            "O que é deploy contínuo?",
+            "Como o QA define o que é gate de qualidade?"
+          ],
+          "mistakes": [
+            "Confundir os dois termos.",
+            "Não citar o papel de gates."
+          ],
+          "english": "Continuous integration integrates code frequently with automated builds and tests on every push. Continuous delivery extends it: code is always ready to deploy, with pipelines automating builds and deploys to staging, leaving production approval as a final step. QA ensures tests run at each stage as quality gates."
         },
         {
-            "title": "Testes no Pipeline & Relatórios",
-            "theory": "Rodar testes no CI exige: containers reproduzíveis (Docker com dependências e navegadores), configuração determinística (URLs, credenciais via secrets), publicar relatórios (JUnit XML, HTML) como artefatos, e integrar com ferramentas de análise (reports de cobertura). Boas práticas: executar em paralelo (shards), usar caches de dependências, e tratar falhas esporádicas com retry seletivo por tag e análise de tendência. O QA também configura notificações de falha (Slack/email) com links para o report.",
-            "examples": [
-                "Upload artifact: actions/upload-artifact com results/",
-                "Paralelizar: matrix com shards 1..4",
-                "Cobertura: report com threshold mínimo (ex.: 80%)",
-                "Retry seletivo: rerun apenas testes com tag 'flaky'"
-            ],
-            "commonMistakes": [
-                "Não publicar relatórios (falha invisível).",
-                "Rodar testes seriais (lento).",
-                "Não usar secrets para credenciais.",
-                "Falhar o pipeline em testes flaky sem análise."
-            ],
-            "projectExample": "Num pipeline de automação E2E, configuramos execução em paralelo com shards, publicação do report HTML como artifact e alerta no Slack com link direto. O tempo caiu de 60 para 15 minutos e a equipe passou a identificar falhas pelo report.",
-            "interviewQuestions": [
-                {
-                    "question": "Como você publica e analisa os resultados dos testes no CI?",
-                    "difficulty": "Intermediária",
-                    "expectedAnswer": "Publico os relatórios (JUnit XML e HTML) como artefatos do pipeline, com nomes por run/build para histórico. Configure notificações (Slack/email) com link direto ao report e screenshots das falhas. Analiso tendências (taxa de passagem por dia) para detectar degradação gradual e flakiness. Uso o output.xml (Robot) ou junit.xml para integrar com dashboards de qualidade.",
-                    "followUps": [
-                        "Como você monitora a taxa de flaky ao longo do tempo?",
-                        "Como fazer o report acessível para devs?"
-                    ],
-                    "mistakes": [
-                        "Só logs de texto sem relatório estruturado.",
-                        "Sem histórico/tendência."
-                    ],
-                    "english": "I publish JUnit XML and HTML reports as pipeline artifacts, configure notifications with direct report links and failure screenshots, and analyze trends in pass rate to detect gradual degradation and flakiness."
-                },
-                {
-                    "question": "Como você lida com testes instáveis no CI sem mascarar regressões?",
-                    "difficulty": "Avançada",
-                    "expectedAnswer": "Separando claramente: retry automático apenas para testes conhecidos e marcados como flaky, e nunca retry em asserções de teste. Quando um teste falha no CI, investigo a causa raiz (log, screenshot, timing) em vez de reexecutar até passar. Trackeo a taxa de flaky e priorizo a correção estrutural (espera correta, isolamento de dados). Regressões reais devem falhar o pipeline imediatamente e sempre.",
-                    "followUps": [
-                        "Como você decide marcar um teste como flaky?",
-                        "O que considerar antes de reexecutar um teste no CI?"
-                    ],
-                    "mistakes": [
-                        "Retry em tudo para o pipeline ficar verde.",
-                        "Não investigar causa raiz."
-                    ],
-                    "english": "I apply automatic retry only to known flaky tests, never on assertions. On failure I investigate the root cause from logs and screenshots instead of rerunning until green. I track the flaky rate and fix the structural cause. Real regressions must fail the pipeline immediately."
-                }
-            ],
-            "challenges": [
-                "Configure mentalmente um pipeline que paraleliza a regressão em 4 shards.",
-                "Proponha um processo para reduzir a taxa de flaky em 3 semanas."
-            ]
-        },
-        {
-            "title": "Deploy, Ambientes & Infra de Testes",
-            "theory": "Ambientes: desenvolvimento, staging/homologação, produção. QA precisa entender deploys: estratégias (blue-green, canary, rolling), rollback, e como validar no ambiente correto. Infra de testes: containers para banco de dados (Postgres, Oracle em container), serviços mockados, e runners self-hosted quando necessário (acesso a rede corporativa). Monitorar: smoke pós-deploy (synthetics), health checks e alertas.",
-            "examples": [
-                "Blue-Green: duas versões; troca o roteamento",
-                "Canary: versão nova recebe % do tráfego",
-                "Smoke pós-deploy: verificar health check de cada serviço",
-                "docker-compose para levantar banco e serviços de teste"
-            ],
-            "commonMistakes": [
-                "Validar só no ambiente de desenvolvimento.",
-                "Não rodar smoke pós-deploy.",
-                "Ambientes de teste divergentes de produção.",
-                "Não ter plano de rollback."
-            ],
-            "projectExample": "Após deploy canário de uma API de crédito, nosso smoke pós-deploy validou o health check e a criação de proposta no percentual do canário. Detectamos uma falha de configuração de ambiente em minutos, antes do rollout completo.",
-            "interviewQuestions": [
-                {
-                    "question": "O que é deploy canário e como o QA valida nesse cenário?",
-                    "difficulty": "Avançada",
-                    "expectedAnswer": "Deploy canário libera a nova versão para uma pequena porcentagem de usuários/tráfego, permitindo detectar problemas antes do rollout completo. O QA valida: smoke pós-deploy no health check do canário, execução dos testes críticos contra a versão canário, monitoramento de métricas (erros, latência) no período canário, e critérios de rollout (se métricas saudáveis, expande; senão, rollback). Automatizo o smoke para rodar assim que o canário sobe.",
-                    "followUps": [
-                        "Qual a diferença entre canary e blue-green?",
-                        "Que métricas você monitora no período canário?"
-                    ],
-                    "mistakes": [
-                        "Confundir estratégias de deploy.",
-                        "Não definir critérios de rollback."
-                    ],
-                    "english": "Canary deploy releases the new version to a small percentage of traffic to detect problems before full rollout. QA validates post-deploy smoke on the canary health check, runs critical tests against it, monitors error rate and latency, and defines rollout or rollback criteria."
-                },
-                {
-                    "question": "Como você garante que o ambiente de teste é fiel ao de produção?",
-                    "difficulty": "Intermediária",
-                    "expectedAnswer": "Usando o mesmo build/artefato que vai para produção (build imutável), mesma configuração de infraestrutura (containers, recursos), dados representativos (anônimos ou sintéticos, não dados reais de clientes), e o mesmo pipeline de deploy. Também monitoro a divergência de configurações (feature flags, versões de dependências). O ideal é um ambiente efêmero recriado a partir de código (Infrastructure as Code), para que seja reproduzível.",
-                    "followUps": [
-                        "O que é Infrastructure as Code?",
-                        "Como você trata dados sensíveis no ambiente de teste?"
-                    ],
-                    "mistakes": [
-                        "Ambiente manual e divergente.",
-                        "Usar dados reais de clientes (LGPD)."
-                    ],
-                    "english": "By using the same immutable build destined for production, the same infrastructure configuration, representative anonymized data, and the same deployment pipeline. Ideally the environment is ephemeral, recreated from code using Infrastructure as Code, so it is reproducible."
-                }
-            ],
-            "challenges": [
-                "Desenhe o fluxo de deploy canário com os pontos de validação do QA.",
-                "Proponha como recriar um ambiente de teste efêmero via IaC."
-            ]
+          "question": "Como você organiza os níveis de teste em um pipeline CI/CD?",
+          "difficulty": "Intermediária",
+          "expectedAnswer": "Em camadas por velocidade e confiabilidade: em todo push, lint e testes unitários/rápidos; em PR, testes smoke e de API; em merge/main, build e deploy para staging com testes de integração e E2E críticos; em nightly ou release, a regressão completa. Cada camada age como gate do próximo estágio. Isso equilibra feedback rápido com cobertura confiável.",
+          "followUps": [
+            "O que você coloca em smoke no PR?",
+            "Como evita que a suíte completa torne o pipeline lento?"
+          ],
+          "mistakes": [
+            "Rodar tudo sempre.",
+            "Sem camadas de feedback."
+          ],
+          "english": "In layers by speed and reliability: lint and unit on every push, smoke and API tests on PRs, integration and critical E2E on merge to staging, and full regression nightly or on release. Each layer acts as a gate for the next stage, balancing fast feedback with reliable coverage."
         }
-    ],
-    "quiz": [
-        { "question": "CI significa:", "options": { "A": "Continuous Integration", "B": "Continuous Improvement", "C": "Code Injection", "D": "Continuous Interface" }, "answer": "A", "explanation": "Integração contínua: build e testes a cada integração de código." },
-        { "question": "Qual estratégia de deploy libera a versão nova para uma pequena % de tráfego?", "options": { "A": "Rolling", "B": "Canary", "C": "Recreate", "D": "Blue-Green" }, "answer": "B", "explanation": "Canary libera gradualmente para uma fração do tráfego, com monitoramento." },
-        { "question": "Qual camada de teste roda em todo push?", "options": { "A": "Regressão completa", "B": "E2E crítico", "C": "Lint e unitários rápidos", "D": "Testes de carga" }, "answer": "C", "explanation": "Testes rápidos (lint e unit) dão feedback imediato em todo push." },
-        { "question": "O que é um 'gate' no pipeline?", "options": { "A": "Um portão físico", "B": "Um critério obrigatório que bloqueia o próximo estágio", "C": "Um tipo de teste", "D": "Um agente de build" }, "answer": "B", "explanation": "Gate é um critério (ex.: testes críticos passando) que deve ser satisfeito para avançar." },
-        { "question": "Por que usar build imutável nos ambientes?", "options": { "A": "Porque é mais barato", "B": "Para garantir que o que foi testado é o que vai para produção", "C": "Para evitar testes", "D": "Para recompilar mais rápido" }, "answer": "B", "explanation": "O mesmo artefato é testado e promovido, garantindo rastreabilidade e fidelidade." }
-    ]
+      ],
+      "challenges": [
+        "Desenhe o pipeline de um projeto QA com estágios, testes e gates.",
+        "Proponha como reduzir o tempo da regressão completa sem perder cobertura."
+      ]
+    },
+    {
+      "title": "Testes no Pipeline & Relatórios",
+      "theory": "Rodar testes no CI exige: containers reproduzíveis (Docker com dependências e navegadores), configuração determinística (URLs, credenciais via secrets), publicar relatórios (JUnit XML, HTML) como artefatos, e integrar com ferramentas de análise (reports de cobertura). Boas práticas: executar em paralelo (shards), usar caches de dependências, e tratar falhas esporádicas com retry seletivo por tag e análise de tendência. O QA também configura notificações de falha (Slack/email) com links para o report.",
+      "examples": [
+        "Upload artifact: actions/upload-artifact com results/",
+        "Paralelizar: matrix com shards 1..4",
+        "Cobertura: report com threshold mínimo (ex.: 80%)",
+        "Retry seletivo: rerun apenas testes com tag 'flaky'"
+      ],
+      "commonMistakes": [
+        "Não publicar relatórios (falha invisível).",
+        "Rodar testes seriais (lento).",
+        "Não usar secrets para credenciais.",
+        "Falhar o pipeline em testes flaky sem análise."
+      ],
+      "projectExample": "Num pipeline de automação E2E, configuramos execução em paralelo com shards, publicação do report HTML como artifact e alerta no Slack com link direto. O tempo caiu de 60 para 15 minutos e a equipe passou a identificar falhas pelo report.",
+      "interviewQuestions": [
+        {
+          "question": "Como você publica e analisa os resultados dos testes no CI?",
+          "difficulty": "Intermediária",
+          "expectedAnswer": "Publico os relatórios (JUnit XML e HTML) como artefatos do pipeline, com nomes por run/build para histórico. Configure notificações (Slack/email) com link direto ao report e screenshots das falhas. Analiso tendências (taxa de passagem por dia) para detectar degradação gradual e flakiness. Uso o output.xml (Robot) ou junit.xml para integrar com dashboards de qualidade.",
+          "followUps": [
+            "Como você monitora a taxa de flaky ao longo do tempo?",
+            "Como fazer o report acessível para devs?"
+          ],
+          "mistakes": [
+            "Só logs de texto sem relatório estruturado.",
+            "Sem histórico/tendência."
+          ],
+          "english": "I publish JUnit XML and HTML reports as pipeline artifacts, configure notifications with direct report links and failure screenshots, and analyze trends in pass rate to detect gradual degradation and flakiness."
+        },
+        {
+          "question": "Como você lida com testes instáveis no CI sem mascarar regressões?",
+          "difficulty": "Avançada",
+          "expectedAnswer": "Separando claramente: retry automático apenas para testes conhecidos e marcados como flaky, e nunca retry em asserções de teste. Quando um teste falha no CI, investigo a causa raiz (log, screenshot, timing) em vez de reexecutar até passar. Trackeo a taxa de flaky e priorizo a correção estrutural (espera correta, isolamento de dados). Regressões reais devem falhar o pipeline imediatamente e sempre.",
+          "followUps": [
+            "Como você decide marcar um teste como flaky?",
+            "O que considerar antes de reexecutar um teste no CI?"
+          ],
+          "mistakes": [
+            "Retry em tudo para o pipeline ficar verde.",
+            "Não investigar causa raiz."
+          ],
+          "english": "I apply automatic retry only to known flaky tests, never on assertions. On failure I investigate the root cause from logs and screenshots instead of rerunning until green. I track the flaky rate and fix the structural cause. Real regressions must fail the pipeline immediately."
+        }
+      ],
+      "challenges": [
+        "Configure mentalmente um pipeline que paraleliza a regressão em 4 shards.",
+        "Proponha um processo para reduzir a taxa de flaky em 3 semanas."
+      ]
+    },
+    {
+      "title": "Deploy, Ambientes & Infra de Testes",
+      "theory": "Ambientes: desenvolvimento, staging/homologação, produção. QA precisa entender deploys: estratégias (blue-green, canary, rolling), rollback, e como validar no ambiente correto. Infra de testes: containers para banco de dados (Postgres, Oracle em container), serviços mockados, e runners self-hosted quando necessário (acesso a rede corporativa). Monitorar: smoke pós-deploy (synthetics), health checks e alertas.",
+      "examples": [
+        "Blue-Green: duas versões; troca o roteamento",
+        "Canary: versão nova recebe % do tráfego",
+        "Smoke pós-deploy: verificar health check de cada serviço",
+        "docker-compose para levantar banco e serviços de teste"
+      ],
+      "commonMistakes": [
+        "Validar só no ambiente de desenvolvimento.",
+        "Não rodar smoke pós-deploy.",
+        "Ambientes de teste divergentes de produção.",
+        "Não ter plano de rollback."
+      ],
+      "projectExample": "Após deploy canário de uma API de crédito, nosso smoke pós-deploy validou o health check e a criação de proposta no percentual do canário. Detectamos uma falha de configuração de ambiente em minutos, antes do rollout completo.",
+      "interviewQuestions": [
+        {
+          "question": "O que é deploy canário e como o QA valida nesse cenário?",
+          "difficulty": "Avançada",
+          "expectedAnswer": "Deploy canário libera a nova versão para uma pequena porcentagem de usuários/tráfego, permitindo detectar problemas antes do rollout completo. O QA valida: smoke pós-deploy no health check do canário, execução dos testes críticos contra a versão canário, monitoramento de métricas (erros, latência) no período canário, e critérios de rollout (se métricas saudáveis, expande; senão, rollback). Automatizo o smoke para rodar assim que o canário sobe.",
+          "followUps": [
+            "Qual a diferença entre canary e blue-green?",
+            "Que métricas você monitora no período canário?"
+          ],
+          "mistakes": [
+            "Confundir estratégias de deploy.",
+            "Não definir critérios de rollback."
+          ],
+          "english": "Canary deploy releases the new version to a small percentage of traffic to detect problems before full rollout. QA validates post-deploy smoke on the canary health check, runs critical tests against it, monitors error rate and latency, and defines rollout or rollback criteria."
+        },
+        {
+          "question": "Como você garante que o ambiente de teste é fiel ao de produção?",
+          "difficulty": "Intermediária",
+          "expectedAnswer": "Usando o mesmo build/artefato que vai para produção (build imutável), mesma configuração de infraestrutura (containers, recursos), dados representativos (anônimos ou sintéticos, não dados reais de clientes), e o mesmo pipeline de deploy. Também monitoro a divergência de configurações (feature flags, versões de dependências). O ideal é um ambiente efêmero recriado a partir de código (Infrastructure as Code), para que seja reproduzível.",
+          "followUps": [
+            "O que é Infrastructure as Code?",
+            "Como você trata dados sensíveis no ambiente de teste?"
+          ],
+          "mistakes": [
+            "Ambiente manual e divergente.",
+            "Usar dados reais de clientes (LGPD)."
+          ],
+          "english": "By using the same immutable build destined for production, the same infrastructure configuration, representative anonymized data, and the same deployment pipeline. Ideally the environment is ephemeral, recreated from code using Infrastructure as Code, so it is reproducible."
+        }
+      ],
+      "challenges": [
+        "Desenhe o fluxo de deploy canário com os pontos de validação do QA.",
+        "Proponha como recriar um ambiente de teste efêmero via IaC."
+      ]
+    }
+  ],
+  "quizCategory": "CI/CD"
 }

@@ -1,219 +1,218 @@
 {
-    "id": "sql",
-    "title": "SQL",
-    "icon": "fa-database",
-    "level": "Avançado",
-    "duration": "2-3 semanas",
-    "shortDescription": "Consultas, joins, funções de agregação e validação de dados.",
-    "description": "SQL é a habilidade mais pedida em entrevistas de QA, porque QA valida persistência de dados. Este módulo cobre SELECT, JOINs, agregações, subqueries e o papel do QA na validação de dados em bancos reais.",
-    "topics": ["SELECT", "JOIN", "Agregação", "Subquery"],
-    "concepts": [
+  "id": "sql",
+  "title": "SQL",
+  "icon": "fa-database",
+  "level": "Avançado",
+  "duration": "2-3 semanas",
+  "shortDescription": "Consultas, joins, funções de agregação e validação de dados.",
+  "description": "SQL é a habilidade mais pedida em entrevistas de QA, porque QA valida persistência de dados. Este módulo cobre SELECT, JOINs, agregações, subqueries e o papel do QA na validação de dados em bancos reais.",
+  "topics": [
+    "SELECT",
+    "JOIN",
+    "Agregação",
+    "Subquery"
+  ],
+  "concepts": [
+    {
+      "title": "SELECT, Filtros e Ordenação",
+      "theory": "A base da consulta SQL é o SELECT. A ordem lógica de execução difere da ordem escrita: FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY → LIMIT. É importante entender essa ordem para escrever consultas corretas e prever o resultado. O WHERE filtra linhas; o HAVING filtra grupos; o DISTINCT elimina duplicatas; o ORDER BY ordena; o LIMIT restringe o número de linhas. Como QA, validar consultas envolve conhecer os dados esperados (fixtures) e o resultado real da consulta.",
+      "examples": [
+        "SELECT id, nome, salario FROM funcionarios WHERE departamento = 'TI' ORDER BY salario DESC;",
+        "SELECT DISTINCT cidade FROM clientes;",
+        "SELECT * FROM pedidos WHERE data_criacao >= '2025-01-01' AND status = 'CONCLUIDO' LIMIT 50;"
+      ],
+      "commonMistakes": [
+        "Não saber a diferença entre WHERE e HAVING.",
+        "Usar SELECT * em produção (custo de leitura desnecessário).",
+        "Esquecer que string é case-sensitive em alguns bancos (dependendo do collation).",
+        "Confundir NULL com string vazia — NULL não é comparável com =; usa IS NULL."
+      ],
+      "projectExample": "Para validar a persistência de um cadastro no ERP, escrevi uma consulta que cruzava a tabela de clientes com a de endereços e comparava os dados exibidos na tela com o banco. O controle de NULL (campos opcionais) e a ordenação estável eram essenciais. Isso virou uma rotina de teste de dados reaproveitável.",
+      "interviewQuestions": [
         {
-            "title": "SELECT, Filtros e Ordenação",
-            "theory": "A base da consulta SQL é o SELECT. A ordem lógica de execução difere da ordem escrita: FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY → LIMIT. É importante entender essa ordem para escrever consultas corretas e prever o resultado. O WHERE filtra linhas; o HAVING filtra grupos; o DISTINCT elimina duplicatas; o ORDER BY ordena; o LIMIT restringe o número de linhas. Como QA, validar consultas envolve conhecer os dados esperados (fixtures) e o resultado real da consulta.",
-            "examples": [
-                "SELECT id, nome, salario FROM funcionarios WHERE departamento = 'TI' ORDER BY salario DESC;",
-                "SELECT DISTINCT cidade FROM clientes;",
-                "SELECT * FROM pedidos WHERE data_criacao >= '2025-01-01' AND status = 'CONCLUIDO' LIMIT 50;"
-            ],
-            "commonMistakes": [
-                "Não saber a diferença entre WHERE e HAVING.",
-                "Usar SELECT * em produção (custo de leitura desnecessário).",
-                "Esquecer que string é case-sensitive em alguns bancos (dependendo do collation).",
-                "Confundir NULL com string vazia — NULL não é comparável com =; usa IS NULL."
-            ],
-            "projectExample": "Para validar a persistência de um cadastro no ERP, escrevi uma consulta que cruzava a tabela de clientes com a de endereços e comparava os dados exibidos na tela com o banco. O controle de NULL (campos opcionais) e a ordenação estável eram essenciais. Isso virou uma rotina de teste de dados reaproveitável.",
-            "interviewQuestions": [
-                {
-                    "question": "Qual a diferença entre WHERE e HAVING?",
-                    "difficulty": "Fácil",
-                    "expectedAnswer": "WHERE filtra linhas antes da agregação; HAVING filtra grupos já agregados (resultados de GROUP BY ou funções de agregação). Exemplo: WHERE status = 'ATIVO' filtra clientes ativos antes de contar; HAVING COUNT(*) > 10 filtra grupos que tenham mais de 10 registros.",
-                    "followUps": [
-                        "Em que ordem as cláusulas são executadas?",
-                        "Pode usar função de agregação no WHERE? Por quê?"
-                    ],
-                    "mistakes": [
-                        "Usar HAVING sem GROUP BY corretamente.",
-                        "Não explicar a ordem de execução."
-                    ],
-                    "english": "WHERE filters rows before aggregation. HAVING filters aggregated groups. For example, WHERE filters active clients before counting, while HAVING filters groups with more than 10 records."
-                },
-                {
-                    "question": "Como você valida dados no banco durante um teste de automação?",
-                    "difficulty": "Intermediária",
-                    "expectedAnswer": "Eu uso consultas SQL para comparar o estado persistido com o esperado após uma ação. Isso inclui: verificar se um registro foi criado (INSERT), se os campos estão corretos, se o histórico/auditoria foi gravado, e se operações de atualização/deleção refletiram no banco. Também uso fixtures ou trunca dados entre testes para garantir determinismo. Importante: preferir validações via API quando possível e usar SQL para validações de banco que não são expostas pela API.",
-                    "followUps": [
-                        "Como você garante que os testes não dependam de dados sujos?",
-                        "Quando usar SQL vs validar pela resposta da API?"
-                    ],
-                    "mistakes": [
-                        "Dizer que valida tudo pela UI.",
-                        "Não mencionar isolamento de dados de teste."
-                    ],
-                    "english": "I use SQL to compare the persisted state with the expected state after an action, verifying records were created, fields are correct, and audit history was written. I use fixtures and clean data between tests to keep them deterministic."
-                }
-            ],
-            "challenges": [
-                "Escreva a consulta que retorna os 5 clientes com mais pedidos.",
-                "Escreva a consulta que conta pedidos por status no último mês, filtrando status que aparecem menos de 100 vezes."
-            ]
+          "question": "Qual a diferença entre WHERE e HAVING?",
+          "difficulty": "Fácil",
+          "expectedAnswer": "WHERE filtra linhas antes da agregação; HAVING filtra grupos já agregados (resultados de GROUP BY ou funções de agregação). Exemplo: WHERE status = 'ATIVO' filtra clientes ativos antes de contar; HAVING COUNT(*) > 10 filtra grupos que tenham mais de 10 registros.",
+          "followUps": [
+            "Em que ordem as cláusulas são executadas?",
+            "Pode usar função de agregação no WHERE? Por quê?"
+          ],
+          "mistakes": [
+            "Usar HAVING sem GROUP BY corretamente.",
+            "Não explicar a ordem de execução."
+          ],
+          "english": "WHERE filters rows before aggregation. HAVING filters aggregated groups. For example, WHERE filters active clients before counting, while HAVING filters groups with more than 10 records."
         },
         {
-            "title": "JOINs",
-            "theory": "JOINs combinam dados de múltiplas tabelas. INNER JOIN retorna apenas linhas com correspondência nas duas tabelas. LEFT JOIN retorna todas as linhas da tabela esquerda e as correspondentes da direita (NULL quando não há correspondência). RIGHT JOIN é o inverso. FULL OUTER JOIN retorna tudo. CROSS JOIN é o produto cartesiano. Self-join compara linhas da mesma tabela. Erros comuns: esquecer a condição de join (produzindo produto cartesiano), usar join errado (perder linhas), e ambiguidade de colunas.",
-            "examples": [
-                "SELECT c.nome, p.id FROM clientes c INNER JOIN pedidos p ON c.id = p.cliente_id;",
-                "SELECT c.nome, COUNT(p.id) FROM clientes c LEFT JOIN pedidos p ON c.id = p.cliente_id GROUP BY c.id;",
-                "SELECT e1.nome, e2.nome FROM funcionarios e1 LEFT JOIN funcionarios e2 ON e1.gerente_id = e2.id;"
-            ],
-            "commonMistakes": [
-                "Usar INNER JOIN quando se espera manter linhas sem correspondência (perde dados).",
-                "Esquecer a cláusula ON e gerar produto cartesiano.",
-                "Não entender que LEFT JOIN gera NULL na coluna da direita.",
-                "Agregar com LEFT JOIN sem tratar NULL."
-            ],
-            "projectExample": "Num projeto de RH, o relatório de horas dos funcionários sumia com funcionários que não tinham lançamentos. O INNER JOIN filtrava quem não tinha horas. Troquei para LEFT JOIN e o relatório passou a mostrar todos, com NULL nos períodos sem lançamento — o teste do relatório detectou o dado faltante que a consulta original escondia.",
-            "interviewQuestions": [
-                {
-                    "question": "Explique a diferença entre INNER JOIN, LEFT JOIN e FULL OUTER JOIN com um exemplo.",
-                    "difficulty": "Fácil",
-                    "expectedAnswer": "INNER JOIN retorna apenas os registros que existem nas duas tabelas. LEFT JOIN retorna todos os registros da tabela à esquerda e os correspondentes da direita, preenchendo com NULL quando não há correspondência. FULL OUTER JOIN retorna todos os registros de ambas, unindo as correspondências. Exemplo: clientes e pedidos — INNER mostra clientes com pedidos; LEFT mostra todos os clientes, mesmo sem pedidos; FULL mostra clientes sem pedidos e pedidos órfãos.",
-                    "followUps": [
-                        "Quando você usaria LEFT JOIN em vez de INNER?",
-                        "O que acontece com COUNT() quando há NULL?"
-                    ],
-                    "mistakes": [
-                        "Confundir qual tabela é preservada em LEFT JOIN.",
-                        "Não citar o caso NULL."
-                    ],
-                    "english": "INNER JOIN returns only matching rows. LEFT JOIN preserves all left rows, adding NULL where there is no match. FULL OUTER JOIN returns all rows from both sides. In practice, I use LEFT JOIN when I must not lose rows without matches."
-                },
-                {
-                    "question": "Como você diagnosticaria uma consulta que retorna mais linhas que o esperado?",
-                    "difficulty": "Intermediária",
-                    "expectedAnswer": "Eu verificaria primeiro se há produto cartesiano: um JOIN sem condição adequada (faltando ON ou com ON muito amplo). Depois verificaria se há duplicidade na chave de junção (uma tabela tem múltiplas linhas por chave). Usaria SELECT DISTINCT ou agregaria para verificar. Também conferiria se a cláusula ON referencia colunas corretas e se não há joins desnecessários. Na prática, com QA, eu desconfiaria de duplicidade nos dados de teste.",
-                    "followUps": [
-                        "Como você descobre se o problema é na consulta ou nos dados?",
-                        "O que é produto cartesiano?"
-                    ],
-                    "mistakes": [
-                        "Não mencionar duplicidade de chave.",
-                        "Não citar a condição ON."
-                    ],
-                    "english": "I would check for a cartesian product caused by a missing or overly broad join condition, then check for duplicate keys in the joined table. I would use DISTINCT or aggregation to confirm the row count."
-                }
-            ],
-            "challenges": [
-                "Escreva uma consulta que lista todos os departamentos e a contagem de funcionários, incluindo departamentos vazios.",
-                "Escreva a consulta que encontra pedidos órfãos (pedidos sem cliente)."
-            ]
-        },
-        {
-            "title": "Funções de Agregação & Agrupamento",
-            "theory": "Funções de agregação (COUNT, SUM, AVG, MIN, MAX) resumem dados. GROUP BY agrupa por colunas, e HAVING filtra grupos. COUNT(*) conta linhas (incluindo NULL), COUNT(coluna) conta valores não nulos. AVG ignora NULL por padrão. É comum o QA usar agregações para validar totais (ex.: somatório de valores deve bater com o valor exibido na aplicação).",
-            "examples": [
-                "SELECT COUNT(*), AVG(salario), MIN(salario), MAX(salario) FROM funcionarios;",
-                "SELECT departamento, COUNT(*), SUM(salario) FROM funcionarios GROUP BY departamento HAVING COUNT(*) > 5;",
-                "SELECT status, COUNT(*) FROM pedidos GROUP BY status;"
-            ],
-            "commonMistakes": [
-                "Usar COUNT(coluna) quando quer contar linhas — NULLs não são contados.",
-                "Esquecer HAVING para filtrar grupos.",
-                "Não agrupar todas as colunas não agregadas do SELECT (regra em muitos bancos).",
-                "Calcular média com NULL no denominador de forma incorreta."
-            ],
-            "projectExample": "Para validar a tela de faturamento, eu agregava o valor dos itens de cada pedido no banco e comparava com o total exibido na aplicação. Encontrei uma divergência de centavos causada por arredondamento de casas decimais (FLOAT vs DECIMAL). Documentei o caso e a correção no banco usou DECIMAL(10,2), e nosso teste de agregação passou a validar a igualdade exata.",
-            "interviewQuestions": [
-                {
-                    "question": "Qual a diferença entre COUNT(*) e COUNT(coluna)?",
-                    "difficulty": "Fácil",
-                    "expectedAnswer": "COUNT(*) conta o número total de linhas do resultado, incluindo linhas com valores NULL. COUNT(coluna) conta apenas linhas onde a coluna tem valor não nulo. Exemplo: se uma tabela tem 10 funcionários e 3 sem email, COUNT(*) = 10 e COUNT(email) = 7. Em validação de dados, essa distinção evita erros de contagem.",
-                    "followUps": [
-                        "COUNT(DISTINCT coluna) o que faz?",
-                        "Em que cenário essa diferença causaria um bug no seu teste?"
-                    ],
-                    "mistakes": [
-                        "Afirmar que são iguais.",
-                        "Não dar exemplo numérico."
-                    ],
-                    "english": "COUNT(*) counts all rows including NULL values. COUNT(column) counts only rows where the column is not null. For example, 10 employees with 3 missing emails: COUNT(*) is 10 and COUNT(email) is 7."
-                },
-                {
-                    "question": "Descreva um cenário real em que você usou SQL para validar a consistência de dados entre o banco e a aplicação.",
-                    "difficulty": "Intermediária",
-                    "expectedAnswer": "Em um ERP de vendas, eu validava que o total exibido no relatório de pedidos correspondia ao somatório dos itens no banco. Usava consultas de agregação (SUM e GROUP BY) comparadas com os valores da interface. Em um caso, encontrei divergência de arredondamento entre FLOAT e DECIMAL que alterava centavos no total. Isso virou um caso de teste de regressão permanente para a validação financeira.",
-                    "followUps": [
-                        "Como você lida com dados sensíveis (PII) nessas consultas?",
-                        "Como você automatiza essa validação?"
-                    ],
-                    "mistakes": [
-                        "História vaga, sem problema concreto e impacto.",
-                        "Não mencionar a validação automatizada."
-                    ],
-                    "english": "In a sales ERP I validated that the total shown in reports matched the SUM of items in the database. I found a rounding discrepancy between FLOAT and DECIMAL that changed cents in the total. That became a permanent regression test for financial validation."
-                }
-            ],
-            "challenges": [
-                "Escreva a consulta que retorna o total de vendas por mês no último trimestre.",
-                "Escreva a consulta que retorna produtos nunca vendidos."
-            ]
-        },
-        {
-            "title": "Subqueries & CTEs",
-            "theory": "Subqueries são consultas dentro de consultas, usadas no WHERE, FROM ou SELECT. CTEs (Common Table Expressions, cláusula WITH) nomeiam uma consulta temporária, melhorando legibilidade e reutilização. Diferenças: subquery é executada inline; CTE pode ser referenciada múltiplas vezes na mesma consulta. Correlated subqueries dependem de cada linha da consulta externa (mais custosas). EXISTS vs IN: EXISTS para testar existência; IN para comparar com lista.",
-            "examples": [
-                "SELECT nome FROM funcionarios WHERE departamento_id IN (SELECT id FROM departamentos WHERE ativo = true);",
-                "WITH pedidos_2025 AS (SELECT * FROM pedidos WHERE YEAR(data) = 2025) SELECT cliente_id, COUNT(*) FROM pedidos_2025 GROUP BY cliente_id;",
-                "SELECT c.nome FROM clientes c WHERE EXISTS (SELECT 1 FROM pedidos p WHERE p.cliente_id = c.id);"
-            ],
-            "commonMistakes": [
-                "Subquery retornando múltiplas linhas com operador de igualdade (=).",
-                "Usar IN com lista NULL sem entender o comportamento.",
-                "Correlated subquery mal escrita gerando custo alto.",
-                "Subquery escalar retornando mais de uma linha (erro em alguns bancos)."
-            ],
-            "projectExample": "Numa consulta de relatório de vendas por região, refatorei uma subquery repetida para um CTE reutilizável. A consulta ficou mais legível, o plano de execução melhorou, e o teste de dados correspondente passou a validar também a performance de tempo de resposta abaixo do SLA.",
-            "interviewQuestions": [
-                {
-                    "question": "O que é uma CTE e quando você prefere CTE a subquery?",
-                    "difficulty": "Intermediária",
-                    "expectedAnswer": "CTE é uma consulta temporária nomeada com a cláusula WITH, que pode ser referenciada múltiplas vezes dentro da consulta principal. Prefiro CTE quando: preciso reutilizar a mesma subconsulta várias vezes, quando a consulta fica mais legível (query grande), ou quando quero fazer operações recursivas (WITH RECURSIVE). Subquery é suficiente para casos simples de uma única referência.",
-                    "followUps": [
-                        "Como funciona uma CTE recursiva?",
-                        "CTE é materializada? Depende do banco?"
-                    ],
-                    "mistakes": [
-                        "Não saber dizer quando usar cada uma.",
-                        "Não mencionar recursão."
-                    ],
-                    "english": "A CTE is a named temporary result set defined with the WITH clause, which can be referenced multiple times in the main query. I prefer CTEs for reuse, readability of large queries, and recursive queries. Simple one-off cases are fine with subqueries."
-                },
-                {
-                    "question": "Qual a diferença entre EXISTS e IN?",
-                    "difficulty": "Intermediária",
-                    "expectedAnswer": "IN compara um valor com uma lista de valores retornada pela subquery; se a subquery retornar NULL na lista, IN pode se comportar de forma inesperada (não retorna resultado). EXISTS testa a existência de ao menos uma linha na subquery e geralmente é mais eficiente para conjuntos grandes, porque pode parar na primeira correspondência. Uso EXISTS para testar presença e IN para comparação de valores específicos.",
-                    "followUps": [
-                        "Quando EXISTS é mais performático que IN?",
-                        "O que acontece com IN (SELECT ... ) retornando NULL?"
-                    ],
-                    "mistakes": [
-                        "Dizer que são equivalentes sempre.",
-                        "Não mencionar o comportamento com NULL."
-                    ],
-                    "english": "IN compares a value against a list of values and can misbehave when the list contains NULL. EXISTS tests whether at least one row matches and is often more efficient for large sets, stopping at the first match. I use EXISTS for presence checks and IN for specific value comparisons."
-                }
-            ],
-            "challenges": [
-                "Reescreva uma consulta com subquery duplicada usando CTE.",
-                "Escreva uma consulta que retorna clientes que têm pedidos (use EXISTS)."
-            ]
+          "question": "Como você valida dados no banco durante um teste de automação?",
+          "difficulty": "Intermediária",
+          "expectedAnswer": "Eu uso consultas SQL para comparar o estado persistido com o esperado após uma ação. Isso inclui: verificar se um registro foi criado (INSERT), se os campos estão corretos, se o histórico/auditoria foi gravado, e se operações de atualização/deleção refletiram no banco. Também uso fixtures ou trunca dados entre testes para garantir determinismo. Importante: preferir validações via API quando possível e usar SQL para validações de banco que não são expostas pela API.",
+          "followUps": [
+            "Como você garante que os testes não dependam de dados sujos?",
+            "Quando usar SQL vs validar pela resposta da API?"
+          ],
+          "mistakes": [
+            "Dizer que valida tudo pela UI.",
+            "Não mencionar isolamento de dados de teste."
+          ],
+          "english": "I use SQL to compare the persisted state with the expected state after an action, verifying records were created, fields are correct, and audit history was written. I use fixtures and clean data between tests to keep them deterministic."
         }
-    ],
-    "quiz": [
-        { "question": "Qual cláusula filtra grupos agregados?", "options": { "A": "WHERE", "B": "HAVING", "C": "ORDER BY", "D": "LIMIT" }, "answer": "B", "explanation": "HAVING filtra grupos após a agregação; WHERE filtra linhas antes." },
-        { "question": "Qual JOIN retorna todas as linhas da tabela esquerda e os correspondentes da direita?", "options": { "A": "INNER JOIN", "B": "RIGHT JOIN", "C": "LEFT JOIN", "D": "FULL OUTER JOIN" }, "answer": "C", "explanation": "LEFT JOIN preserva todas as linhas da tabela esquerda, preenchendo com NULL quando não há correspondência." },
-        { "question": "COUNT(*) em uma tabela com 10 linhas, sendo 3 com email nulo, e COUNT(email):", "options": { "A": "10 e 7", "B": "10 e 10", "C": "7 e 7", "D": "7 e 10" }, "answer": "A", "explanation": "COUNT(*) conta todas as linhas (10); COUNT(email) conta apenas as não nulas (7)." },
-        { "question": "Qual é a ordem lógica de execução de uma consulta SQL?", "options": { "A": "SELECT → FROM → WHERE → ORDER BY", "B": "FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY", "C": "FROM → SELECT → WHERE → GROUP BY", "D": "WHERE → FROM → SELECT → ORDER BY" }, "answer": "B", "explanation": "A ordem lógica: FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY → LIMIT." },
-        { "question": "Para testar se ao menos uma linha existe em uma subquery de forma eficiente, qual operador usar?", "options": { "A": "IN", "B": "=", "C": "EXISTS", "D": "LIKE" }, "answer": "C", "explanation": "EXISTS testa existência e pode parar na primeira correspondência, sendo mais eficiente para conjuntos grandes." }
-    ]
+      ],
+      "challenges": [
+        "Escreva a consulta que retorna os 5 clientes com mais pedidos.",
+        "Escreva a consulta que conta pedidos por status no último mês, filtrando status que aparecem menos de 100 vezes."
+      ]
+    },
+    {
+      "title": "JOINs",
+      "theory": "JOINs combinam dados de múltiplas tabelas. INNER JOIN retorna apenas linhas com correspondência nas duas tabelas. LEFT JOIN retorna todas as linhas da tabela esquerda e as correspondentes da direita (NULL quando não há correspondência). RIGHT JOIN é o inverso. FULL OUTER JOIN retorna tudo. CROSS JOIN é o produto cartesiano. Self-join compara linhas da mesma tabela. Erros comuns: esquecer a condição de join (produzindo produto cartesiano), usar join errado (perder linhas), e ambiguidade de colunas.",
+      "examples": [
+        "SELECT c.nome, p.id FROM clientes c INNER JOIN pedidos p ON c.id = p.cliente_id;",
+        "SELECT c.nome, COUNT(p.id) FROM clientes c LEFT JOIN pedidos p ON c.id = p.cliente_id GROUP BY c.id;",
+        "SELECT e1.nome, e2.nome FROM funcionarios e1 LEFT JOIN funcionarios e2 ON e1.gerente_id = e2.id;"
+      ],
+      "commonMistakes": [
+        "Usar INNER JOIN quando se espera manter linhas sem correspondência (perde dados).",
+        "Esquecer a cláusula ON e gerar produto cartesiano.",
+        "Não entender que LEFT JOIN gera NULL na coluna da direita.",
+        "Agregar com LEFT JOIN sem tratar NULL."
+      ],
+      "projectExample": "Num projeto de RH, o relatório de horas dos funcionários sumia com funcionários que não tinham lançamentos. O INNER JOIN filtrava quem não tinha horas. Troquei para LEFT JOIN e o relatório passou a mostrar todos, com NULL nos períodos sem lançamento — o teste do relatório detectou o dado faltante que a consulta original escondia.",
+      "interviewQuestions": [
+        {
+          "question": "Explique a diferença entre INNER JOIN, LEFT JOIN e FULL OUTER JOIN com um exemplo.",
+          "difficulty": "Fácil",
+          "expectedAnswer": "INNER JOIN retorna apenas os registros que existem nas duas tabelas. LEFT JOIN retorna todos os registros da tabela à esquerda e os correspondentes da direita, preenchendo com NULL quando não há correspondência. FULL OUTER JOIN retorna todos os registros de ambas, unindo as correspondências. Exemplo: clientes e pedidos — INNER mostra clientes com pedidos; LEFT mostra todos os clientes, mesmo sem pedidos; FULL mostra clientes sem pedidos e pedidos órfãos.",
+          "followUps": [
+            "Quando você usaria LEFT JOIN em vez de INNER?",
+            "O que acontece com COUNT() quando há NULL?"
+          ],
+          "mistakes": [
+            "Confundir qual tabela é preservada em LEFT JOIN.",
+            "Não citar o caso NULL."
+          ],
+          "english": "INNER JOIN returns only matching rows. LEFT JOIN preserves all left rows, adding NULL where there is no match. FULL OUTER JOIN returns all rows from both sides. In practice, I use LEFT JOIN when I must not lose rows without matches."
+        },
+        {
+          "question": "Como você diagnosticaria uma consulta que retorna mais linhas que o esperado?",
+          "difficulty": "Intermediária",
+          "expectedAnswer": "Eu verificaria primeiro se há produto cartesiano: um JOIN sem condição adequada (faltando ON ou com ON muito amplo). Depois verificaria se há duplicidade na chave de junção (uma tabela tem múltiplas linhas por chave). Usaria SELECT DISTINCT ou agregaria para verificar. Também conferiria se a cláusula ON referencia colunas corretas e se não há joins desnecessários. Na prática, com QA, eu desconfiaria de duplicidade nos dados de teste.",
+          "followUps": [
+            "Como você descobre se o problema é na consulta ou nos dados?",
+            "O que é produto cartesiano?"
+          ],
+          "mistakes": [
+            "Não mencionar duplicidade de chave.",
+            "Não citar a condição ON."
+          ],
+          "english": "I would check for a cartesian product caused by a missing or overly broad join condition, then check for duplicate keys in the joined table. I would use DISTINCT or aggregation to confirm the row count."
+        }
+      ],
+      "challenges": [
+        "Escreva uma consulta que lista todos os departamentos e a contagem de funcionários, incluindo departamentos vazios.",
+        "Escreva a consulta que encontra pedidos órfãos (pedidos sem cliente)."
+      ]
+    },
+    {
+      "title": "Funções de Agregação & Agrupamento",
+      "theory": "Funções de agregação (COUNT, SUM, AVG, MIN, MAX) resumem dados. GROUP BY agrupa por colunas, e HAVING filtra grupos. COUNT(*) conta linhas (incluindo NULL), COUNT(coluna) conta valores não nulos. AVG ignora NULL por padrão. É comum o QA usar agregações para validar totais (ex.: somatório de valores deve bater com o valor exibido na aplicação).",
+      "examples": [
+        "SELECT COUNT(*), AVG(salario), MIN(salario), MAX(salario) FROM funcionarios;",
+        "SELECT departamento, COUNT(*), SUM(salario) FROM funcionarios GROUP BY departamento HAVING COUNT(*) > 5;",
+        "SELECT status, COUNT(*) FROM pedidos GROUP BY status;"
+      ],
+      "commonMistakes": [
+        "Usar COUNT(coluna) quando quer contar linhas — NULLs não são contados.",
+        "Esquecer HAVING para filtrar grupos.",
+        "Não agrupar todas as colunas não agregadas do SELECT (regra em muitos bancos).",
+        "Calcular média com NULL no denominador de forma incorreta."
+      ],
+      "projectExample": "Para validar a tela de faturamento, eu agregava o valor dos itens de cada pedido no banco e comparava com o total exibido na aplicação. Encontrei uma divergência de centavos causada por arredondamento de casas decimais (FLOAT vs DECIMAL). Documentei o caso e a correção no banco usou DECIMAL(10,2), e nosso teste de agregação passou a validar a igualdade exata.",
+      "interviewQuestions": [
+        {
+          "question": "Qual a diferença entre COUNT(*) e COUNT(coluna)?",
+          "difficulty": "Fácil",
+          "expectedAnswer": "COUNT(*) conta o número total de linhas do resultado, incluindo linhas com valores NULL. COUNT(coluna) conta apenas linhas onde a coluna tem valor não nulo. Exemplo: se uma tabela tem 10 funcionários e 3 sem email, COUNT(*) = 10 e COUNT(email) = 7. Em validação de dados, essa distinção evita erros de contagem.",
+          "followUps": [
+            "COUNT(DISTINCT coluna) o que faz?",
+            "Em que cenário essa diferença causaria um bug no seu teste?"
+          ],
+          "mistakes": [
+            "Afirmar que são iguais.",
+            "Não dar exemplo numérico."
+          ],
+          "english": "COUNT(*) counts all rows including NULL values. COUNT(column) counts only rows where the column is not null. For example, 10 employees with 3 missing emails: COUNT(*) is 10 and COUNT(email) is 7."
+        },
+        {
+          "question": "Descreva um cenário real em que você usou SQL para validar a consistência de dados entre o banco e a aplicação.",
+          "difficulty": "Intermediária",
+          "expectedAnswer": "Em um ERP de vendas, eu validava que o total exibido no relatório de pedidos correspondia ao somatório dos itens no banco. Usava consultas de agregação (SUM e GROUP BY) comparadas com os valores da interface. Em um caso, encontrei divergência de arredondamento entre FLOAT e DECIMAL que alterava centavos no total. Isso virou um caso de teste de regressão permanente para a validação financeira.",
+          "followUps": [
+            "Como você lida com dados sensíveis (PII) nessas consultas?",
+            "Como você automatiza essa validação?"
+          ],
+          "mistakes": [
+            "História vaga, sem problema concreto e impacto.",
+            "Não mencionar a validação automatizada."
+          ],
+          "english": "In a sales ERP I validated that the total shown in reports matched the SUM of items in the database. I found a rounding discrepancy between FLOAT and DECIMAL that changed cents in the total. That became a permanent regression test for financial validation."
+        }
+      ],
+      "challenges": [
+        "Escreva a consulta que retorna o total de vendas por mês no último trimestre.",
+        "Escreva a consulta que retorna produtos nunca vendidos."
+      ]
+    },
+    {
+      "title": "Subqueries & CTEs",
+      "theory": "Subqueries são consultas dentro de consultas, usadas no WHERE, FROM ou SELECT. CTEs (Common Table Expressions, cláusula WITH) nomeiam uma consulta temporária, melhorando legibilidade e reutilização. Diferenças: subquery é executada inline; CTE pode ser referenciada múltiplas vezes na mesma consulta. Correlated subqueries dependem de cada linha da consulta externa (mais custosas). EXISTS vs IN: EXISTS para testar existência; IN para comparar com lista.",
+      "examples": [
+        "SELECT nome FROM funcionarios WHERE departamento_id IN (SELECT id FROM departamentos WHERE ativo = true);",
+        "WITH pedidos_2025 AS (SELECT * FROM pedidos WHERE YEAR(data) = 2025) SELECT cliente_id, COUNT(*) FROM pedidos_2025 GROUP BY cliente_id;",
+        "SELECT c.nome FROM clientes c WHERE EXISTS (SELECT 1 FROM pedidos p WHERE p.cliente_id = c.id);"
+      ],
+      "commonMistakes": [
+        "Subquery retornando múltiplas linhas com operador de igualdade (=).",
+        "Usar IN com lista NULL sem entender o comportamento.",
+        "Correlated subquery mal escrita gerando custo alto.",
+        "Subquery escalar retornando mais de uma linha (erro em alguns bancos)."
+      ],
+      "projectExample": "Numa consulta de relatório de vendas por região, refatorei uma subquery repetida para um CTE reutilizável. A consulta ficou mais legível, o plano de execução melhorou, e o teste de dados correspondente passou a validar também a performance de tempo de resposta abaixo do SLA.",
+      "interviewQuestions": [
+        {
+          "question": "O que é uma CTE e quando você prefere CTE a subquery?",
+          "difficulty": "Intermediária",
+          "expectedAnswer": "CTE é uma consulta temporária nomeada com a cláusula WITH, que pode ser referenciada múltiplas vezes dentro da consulta principal. Prefiro CTE quando: preciso reutilizar a mesma subconsulta várias vezes, quando a consulta fica mais legível (query grande), ou quando quero fazer operações recursivas (WITH RECURSIVE). Subquery é suficiente para casos simples de uma única referência.",
+          "followUps": [
+            "Como funciona uma CTE recursiva?",
+            "CTE é materializada? Depende do banco?"
+          ],
+          "mistakes": [
+            "Não saber dizer quando usar cada uma.",
+            "Não mencionar recursão."
+          ],
+          "english": "A CTE is a named temporary result set defined with the WITH clause, which can be referenced multiple times in the main query. I prefer CTEs for reuse, readability of large queries, and recursive queries. Simple one-off cases are fine with subqueries."
+        },
+        {
+          "question": "Qual a diferença entre EXISTS e IN?",
+          "difficulty": "Intermediária",
+          "expectedAnswer": "IN compara um valor com uma lista de valores retornada pela subquery; se a subquery retornar NULL na lista, IN pode se comportar de forma inesperada (não retorna resultado). EXISTS testa a existência de ao menos uma linha na subquery e geralmente é mais eficiente para conjuntos grandes, porque pode parar na primeira correspondência. Uso EXISTS para testar presença e IN para comparação de valores específicos.",
+          "followUps": [
+            "Quando EXISTS é mais performático que IN?",
+            "O que acontece com IN (SELECT ... ) retornando NULL?"
+          ],
+          "mistakes": [
+            "Dizer que são equivalentes sempre.",
+            "Não mencionar o comportamento com NULL."
+          ],
+          "english": "IN compares a value against a list of values and can misbehave when the list contains NULL. EXISTS tests whether at least one row matches and is often more efficient for large sets, stopping at the first match. I use EXISTS for presence checks and IN for specific value comparisons."
+        }
+      ],
+      "challenges": [
+        "Reescreva uma consulta com subquery duplicada usando CTE.",
+        "Escreva uma consulta que retorna clientes que têm pedidos (use EXISTS)."
+      ]
+    }
+  ],
+  "quizCategory": "SQL"
 }

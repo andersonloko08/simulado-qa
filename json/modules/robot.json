@@ -1,222 +1,221 @@
 {
-    "id": "robot",
-    "title": "Robot Framework",
-    "icon": "fa-robot",
-    "level": "Avançado",
-    "duration": "3 semanas",
-    "shortDescription": "Keywords, listeners, variáveis, dados e estabilidade de testes.",
-    "description": "Robot Framework é a ferramenta keyword-driven mais usada em bancos e seguradoras brasileiras. Este módulo cobre keywords, organização de suites, dados de teste, bibliotecas e o desafio diário: estabilizar testes instáveis.",
-    "topics": ["Keywords", "Suites", "Dados", "Estabilidade"],
-    "concepts": [
+  "id": "robot",
+  "title": "Robot Framework",
+  "icon": "fa-robot",
+  "level": "Avançado",
+  "duration": "3 semanas",
+  "shortDescription": "Keywords, listeners, variáveis, dados e estabilidade de testes.",
+  "description": "Robot Framework é a ferramenta keyword-driven mais usada em bancos e seguradoras brasileiras. Este módulo cobre keywords, organização de suites, dados de teste, bibliotecas e o desafio diário: estabilizar testes instáveis.",
+  "topics": [
+    "Keywords",
+    "Suites",
+    "Dados",
+    "Estabilidade"
+  ],
+  "concepts": [
+    {
+      "title": "Keywords & Fundamentos",
+      "theory": "Robot Framework é keyword-driven: testes são escritos como sequências de keywords legíveis. Tipos de keywords: palavras reservadas (BuiltIn como Log, Should Be Equal, Run Keyword If), keywords de bibliotecas (SeleniumLibrary, RequestsLibrary, DatabaseLibrary) e user keywords definidas no próprio projeto. Estrutura: Test Cases com Settings (Setup, Teardown, Tags), Variables, Keywords. Argumentos em user keywords usam ${arg}; valores de retorno ${resultado}. O framework gera logs HTML (log.html, report.html, output.xml) essenciais para análise.",
+      "examples": [
+        "*** Test Cases *** \\n Validar Login \\n    Dado que acesso a tela de login \\n    Quando informo usuario 'admin' e senha '123' \\n    Entao o sistema exibe o painel",
+        "*** Keywords *** \\n Dado que acesso a tela de login \\n    Open Browser    url    chrome",
+        "*** Variables *** \\n ${BASE_URL}    https://api.exemplo.com"
+      ],
+      "commonMistakes": [
+        "Escrever testes com sequência gigante de passos, sem user keywords (ilegível).",
+        "Não usar Setup/Teardown para isolamento.",
+        "Não usar Tags para organizar suites.",
+        "Misturar camadas de UI/API/dados no mesmo teste."
+      ],
+      "projectExample": "Em um projeto de automação SAP, o time tinha testes com 40 passos repetidos. Refatorei criando user keywords de alto nível (Dado que acesso a transação X, Quando preencho os dados de faturamento), reduzindo os testes para 10 linhas e melhorando drasticamente a legibilidade e a manutenção.",
+      "interviewQuestions": [
         {
-            "title": "Keywords & Fundamentos",
-            "theory": "Robot Framework é keyword-driven: testes são escritos como sequências de keywords legíveis. Tipos de keywords: palavras reservadas (BuiltIn como Log, Should Be Equal, Run Keyword If), keywords de bibliotecas (SeleniumLibrary, RequestsLibrary, DatabaseLibrary) e user keywords definidas no próprio projeto. Estrutura: Test Cases com Settings (Setup, Teardown, Tags), Variables, Keywords. Argumentos em user keywords usam ${arg}; valores de retorno ${resultado}. O framework gera logs HTML (log.html, report.html, output.xml) essenciais para análise.",
-            "examples": [
-                "*** Test Cases *** \\n Validar Login \\n    Dado que acesso a tela de login \\n    Quando informo usuario 'admin' e senha '123' \\n    Entao o sistema exibe o painel",
-                "*** Keywords *** \\n Dado que acesso a tela de login \\n    Open Browser    url    chrome",
-                "*** Variables *** \\n ${BASE_URL}    https://api.exemplo.com"
-            ],
-            "commonMistakes": [
-                "Escrever testes com sequência gigante de passos, sem user keywords (ilegível).",
-                "Não usar Setup/Teardown para isolamento.",
-                "Não usar Tags para organizar suites.",
-                "Misturar camadas de UI/API/dados no mesmo teste."
-            ],
-            "projectExample": "Em um projeto de automação SAP, o time tinha testes com 40 passos repetidos. Refatorei criando user keywords de alto nível (Dado que acesso a transação X, Quando preencho os dados de faturamento), reduzindo os testes para 10 linhas e melhorando drasticamente a legibilidade e a manutenção.",
-            "interviewQuestions": [
-                {
-                    "question": "Explique a arquitetura keyword-driven do Robot Framework e por que ela é vantajosa.",
-                    "difficulty": "Intermediária",
-                    "expectedAnswer": "Robot Framework separa a especificação do teste (keywords descritivas em linguagem natural) da implementação (bibliotecas e user keywords). Vantagens: legibilidade para não-programadores (BDD-like), reuso de keywords, separação de camadas (UI/API/dados), logs ricos (log.html/report.html) e integração com CI. A desvantagem é o risco de criar camadas frágeis se as keywords não forem bem desenhadas — por isso a arquitetura de keywords é crítica.",
-                    "followUps": [
-                        "Como você organiza as camadas de keywords no projeto?",
-                        "Como você usa variáveis de escopo (suite vs global)?"
-                    ],
-                    "mistakes": [
-                        "Responder só a definição sem falar de arquitetura.",
-                        "Não citar logs/reports."
-                    ],
-                    "english": "Robot Framework separates test specification from implementation. Descriptive keywords in natural language are backed by libraries and user keywords. Benefits are readability, reuse, layer separation, rich logs and CI integration. The risk is fragile layers if keywords are poorly designed."
-                },
-                {
-                    "question": "Qual a diferença entre variáveis de escopo local, suite e global no Robot Framework?",
-                    "difficulty": "Intermediária",
-                    "expectedAnswer": "Variáveis locais (Set Local Variable) valem apenas dentro da keyword/teste atual. Variáveis de suite (Set Suite Variable) valem para todo o arquivo de teste. Variáveis globais (Set Global Variable) valem para toda a execução, persistindo entre arquivos. O uso correto evita acoplamento e estado compartilhado que causam testes instáveis.",
-                    "followUps": [
-                        "O que acontece se duas suites usam a mesma variável global?",
-                        "Como passar argumentos entre keywords?"
-                    ],
-                    "mistakes": [
-                        "Não conhecer os três escopos.",
-                        "Não conectar com o risco de estado compartilhado."
-                    ],
-                    "english": "Local variables exist only within the current keyword or test. Suite variables apply to the whole test file. Global variables persist across the entire run. Correct scoping prevents coupling and shared state that cause flaky tests."
-                }
-            ],
-            "challenges": [
-                "Refatore um teste com 30 passos em user keywords de alto nível.",
-                "Escreva um teste que usa variáveis de escopo suite para dados compartilhados de setup."
-            ]
+          "question": "Explique a arquitetura keyword-driven do Robot Framework e por que ela é vantajosa.",
+          "difficulty": "Intermediária",
+          "expectedAnswer": "Robot Framework separa a especificação do teste (keywords descritivas em linguagem natural) da implementação (bibliotecas e user keywords). Vantagens: legibilidade para não-programadores (BDD-like), reuso de keywords, separação de camadas (UI/API/dados), logs ricos (log.html/report.html) e integração com CI. A desvantagem é o risco de criar camadas frágeis se as keywords não forem bem desenhadas — por isso a arquitetura de keywords é crítica.",
+          "followUps": [
+            "Como você organiza as camadas de keywords no projeto?",
+            "Como você usa variáveis de escopo (suite vs global)?"
+          ],
+          "mistakes": [
+            "Responder só a definição sem falar de arquitetura.",
+            "Não citar logs/reports."
+          ],
+          "english": "Robot Framework separates test specification from implementation. Descriptive keywords in natural language are backed by libraries and user keywords. Benefits are readability, reuse, layer separation, rich logs and CI integration. The risk is fragile layers if keywords are poorly designed."
         },
         {
-            "title": "Bibliotecas & Dados de Teste",
-            "theory": "As bibliotecas principais: BuiltIn (asserções e controle de fluxo), SeleniumLibrary (UI), Browser (Playwright-based), RequestsLibrary (API), DatabaseLibrary (SQL), OperatingSystem e Collections. Dados de teste: arquivos .robot com *** Variables ***, arquivos de dados externos (JSON, CSV, Excel via ExcelLibrary), templates de teste com loops de dados, e variáveis de ambiente para credenciais. Boa prática: separar dados de teste do código, usar arquivos de recursos (resource.robot) e setup central.",
-            "examples": [
-                "RequestsLibrary: ${resp}=  GET  ${BASE_URL}/orders  headers=${headers}",
-                "DatabaseLibrary: Query  SELECT * FROM pedidos WHERE id=${id}",
-                "Collections: Dictionary Should Contain Key  ${resp.json()}  id",
-                "Template com dados: ${dado}  FOR  ${dado}  IN  @{DATAS}"
-            ],
-            "commonMistakes": [
-                "Hardcodar credenciais e URLs nos testes.",
-                "Não usar resource.robot para compartilhar imports.",
-                "Tratar dados de UI e de API em camadas misturadas.",
-                "Não usar Templates para dados em massa."
-            ],
-            "projectExample": "Em um projeto de automação de APIs de crédito, centralizei todas as chamadas HTTP em resource.robot com keywords reutilizáveis (Fazer Login, Obter Token, Criar Proposta), e os dados de teste ficaram em arquivos JSON versionados. Isso reduziu drasticamente a duplicação e permitiu que analistas de negócio revisassem os cenários.",
-            "interviewQuestions": [
-                {
-                    "question": "Como você gerencia dados de teste no Robot Framework?",
-                    "difficulty": "Intermediária",
-                    "expectedAnswer": "Eu separo dados de teste do código em arquivos externos (JSON/CSV/Excel) ou seções de Variables em resource.robot, e uso Templates para mass data. Para evitar dependência de ambiente, uso variáveis de ambiente para URLs e credenciais. Também crio dados no setup dos testes e limpo no teardown, garantindo isolamento. Dados sensíveis nunca são versionados.",
-                    "followUps": [
-                        "Como você cria dados dinâmicos únicos?",
-                        "Como você evita que dados compartilhados quebrem os testes?"
-                    ],
-                    "mistakes": [
-                        "Hardcodar dados e credenciais.",
-                        "Não usar teardown para limpeza."
-                    ],
-                    "english": "I separate test data from code in external files or Variables sections, use templates for mass data, and environment variables for URLs and credentials. I create data in setup and clean it in teardown to guarantee isolation."
-                },
-                {
-                    "question": "Em que cenário você combinaria RequestsLibrary e DatabaseLibrary no mesmo teste?",
-                    "difficulty": "Avançada",
-                    "expectedAnswer": "Quando a ação é via API e a validação de persistência é no banco. Exemplo: criar um pedido via API (RequestsLibrary), depois consultar no banco (DatabaseLibrary) para validar que o registro e a auditoria foram persistidos corretamente, e que o estado esperado está coerente. Essa combinação valida o fluxo completo de ponta a ponta de forma determinística, sem depender da UI.",
-                    "followUps": [
-                        "Como você trata o tempo entre a API e a leitura no banco?",
-                        "Que riscos existem em validar tudo via banco?"
-                    ],
-                    "mistakes": [
-                        "Não mencionar sync/eventual consistency.",
-                        "Validar só via API ou só via banco."
-                    ],
-                    "english": "When the action is via API and the persistence validation must be in the database. I create an order via API, then query the database to validate the record and audit were persisted correctly. This validates the full flow deterministically."
-                }
-            ],
-            "challenges": [
-                "Crie um resource.robot com keywords de autenticação e helpers de API.",
-                "Escreva um teste com Template que valida 3 payloads de pedido."
-            ]
-        },
-        {
-            "title": "Estabilizando Testes Instáveis (Flaky Tests)",
-            "theory": "Testes instáveis são o maior problema prático de automação. Causas: esperas fixas (Sleep), timing conditions (elemento ainda não pronto), estado compartilhado, dependência de ordem, dados de teste não isolados, seletores frágeis, e ambiente. Soluções: esperas explícitas (Wait Until Element Is Visible, Wait Until Keyword Succeeds), evitar Sleep fixo, isolamento de dados, seletores estáveis (data-testid), retry apenas em ações de setup (nunca em asserções), e análise de logs (log.html) para distinguir falha de sistema de falha de teste.",
-            "examples": [
-                "Wait Until Element Is Visible  ${login_btn}  timeout=10s",
-                "Wait Until Keyword Succeeds  2x  5s  Criar Pedido",
-                "Usar atributos data-testid no lugar de XPath frágil",
-                "Análise: comparar falha repetida em ${locator} entre runs no report"
-            ],
-            "commonMistakes": [
-                "Usar Sleep 5s como solução universal.",
-                "Retry em asserções finais, mascarando regressões reais.",
-                "Não analisar a causa raiz — só 'tentar de novo'.",
-                "Seletores XPath dependentes de estrutura da página."
-            ],
-            "projectExample": "Em um projeto de automação de e-commerce, os testes falhavam 30% das vezes por esperas fixas. Substituí todos os Sleep por esperas explícitas nos pontos críticos, removi dependência entre testes (cada um criava seus dados) e passei a usar data-testid nos elementos. A estabilidade subiu de 70% para 99%, e o tempo de execução caiu porque não havia mais esperas desnecessárias.",
-            "interviewQuestions": [
-                {
-                    "question": "Como você diagnostica e corrige um teste flaky?",
-                    "difficulty": "Avançada",
-                    "expectedAnswer": "Processo: (1) reproduzir e coletar evidência — log.html, screenshots, timestamps; (2) identificar a causa raiz: timing (espera insuficiente), estado compartilhado, dado de teste, seletor frágil ou ambiente; (3) corrigir na origem: espera explícita no lugar de Sleep, isolamento de dados, seletores estáveis, retry em setup apenas; (4) validar rodando múltiplas vezes e no CI. Nunca mascarar com retry na asserção final.",
-                    "followUps": [
-                        "Quais são as causas mais comuns que você já viu?",
-                        "Como medir a estabilidade da suíte?"
-                    ],
-                    "mistakes": [
-                        "Falar de 'rodar de novo' como solução.",
-                        "Não mencionar coleta de evidência e causa raiz."
-                    ],
-                    "english": "I reproduce and collect evidence from logs and screenshots, identify the root cause — timing, shared state, test data, fragile selectors or environment — then fix it at the source with explicit waits, isolated data, stable selectors, and retry on setup only. I never mask issues with retry on final assertions."
-                },
-                {
-                    "question": "Por que esperas explícitas são melhores que Sleep?",
-                    "difficulty": "Fácil",
-                    "expectedAnswer": "Sleep espera um tempo fixo, independentemente do estado real do sistema: é lento quando o sistema está rápido e insuficiente quando está lento, gerando flakiness. Espera explícita (Wait Until Element Is Visible, Wait Until Keyword Succeeds) aguarda uma condição, executando assim que ela é satisfeita — mais rápido, determinístico e resiliente. Como QA, isso melhora tanto a estabilidade quanto o tempo de execução.",
-                    "followUps": [
-                        "Quando o Sleep ainda pode ser aceitável?",
-                        "Como configurar timeout global?"
-                    ],
-                    "mistakes": [
-                        "Não explicar o impacto em tempo e estabilidade.",
-                        "Defender Sleep."
-                    ],
-                    "english": "Sleep waits a fixed time regardless of the real system state, which is slow when fast and insufficient when slow. Explicit waits wait for a condition, executing as soon as it is met — faster, deterministic and resilient. This improves both stability and execution time."
-                }
-            ],
-            "challenges": [
-                "Analise um log de teste flaky e proponha a correção de causa raiz.",
-                "Refatore uma suíte que usa Sleep 5s para esperas explícitas."
-            ]
-        },
-        {
-            "title": "Organização de Suites & CI",
-            "theory": "Organização profissional: pastas por funcionalidade, arquivos .robot por feature, resource.robot com imports e keywords compartilhadas, suite setup/teardown, e tags para categorizar (smoke, regression, critical). No CI, executar por tags (por exemplo, smoke a cada deploy, completo em nightly), gerar report e output.xml para análise, e publicar os relatórios. Boas práticas de estrutura: separar dados, keywords, locators (em resources) e páginas/fluxos.",
-            "examples": [
-                "robot -d results --include smoke tests/",
-                "robot -d results --exclude unstable tests/",
-                "Arquivos: tests/features/login/login.robot, resources/keywords.robot, resources/locators.robot",
-                "Suite Setup: Conectar Banco de Testes"
-            ],
-            "commonMistakes": [
-                "Uma pasta gigante com todos os testes.",
-                "Não usar tags, rodando tudo sempre.",
-                "Não publicar relatórios no CI.",
-                "Locators espalhados dentro dos testes."
-            ],
-            "projectExample": "Estruturei um projeto Robot para uma seguradora em features, com resource central e tags smoke/regression. No CI (GitHub Actions), smoke rodava a cada PR e a suíte completa em nightly com publicação do report HTML. A equipe conseguia ver a saúde da automação em minutos.",
-            "interviewQuestions": [
-                {
-                    "question": "Como você organizaria uma suíte Robot Framework em um projeto de grande porte?",
-                    "difficulty": "Intermediária",
-                    "expectedAnswer": "Por features: pastas por funcionalidade, um arquivo .robot por fluxo, resources separados (keywords, locators, dados). Tags para classificar (smoke, regression, critical). Suite setup/teardown para estado, e dados de teste versionados. Execução por tags no CI: smoke em PR, regressão completa em nightly. Assim a suíte escala sem virar um monolito.",
-                    "followUps": [
-                        "Como você separa locators das keywords?",
-                        "Como define o que é smoke?"
-                    ],
-                    "mistakes": [
-                        "Estrutura vaga sem camadas.",
-                        "Não mencionar CI e tags."
-                    ],
-                    "english": "I organize by feature: folders per functionality, one robot file per flow, separated resources for keywords, locators and data. Tags classify tests as smoke, regression or critical. CI runs smoke on PRs and full regression nightly."
-                },
-                {
-                    "question": "Como você integra testes Robot ao CI/CD?",
-                    "difficulty": "Intermediária",
-                    "expectedAnswer": "Crio um step no pipeline que instala o Python, as bibliotecas (robotframework, Selenium/Requests), executa o comando robot com tags (ex.: --include smoke), e publica output.xml e report.html como artefatos. O pipeline falha se os testes críticos falharem. Também configuro retry seletivo por tag e análise de tendência dos reports (Pabot/rebot) para monitorar estabilidade.",
-                    "followUps": [
-                        "Qual a diferença entre rodar local e no CI?",
-                        "Como você gerencia navegadores no CI?"
-                    ],
-                    "mistakes": [
-                        "Não publicar relatórios.",
-                        "Rodar tudo sempre, sem tags."
-                    ],
-                    "english": "I create a pipeline step that installs Python and libraries, runs robot with tags, and publishes output.xml and report.html as artifacts. The pipeline fails on critical test failures. I also track stability trends from reports."
-                }
-            ],
-            "challenges": [
-                "Desenhe a estrutura de pastas e tags de um projeto Robot para uma empresa de seguros.",
-                "Escreva um comando de CI que roda apenas smoke e falha quando há falha crítica."
-            ]
+          "question": "Qual a diferença entre variáveis de escopo local, suite e global no Robot Framework?",
+          "difficulty": "Intermediária",
+          "expectedAnswer": "Variáveis locais (Set Local Variable) valem apenas dentro da keyword/teste atual. Variáveis de suite (Set Suite Variable) valem para todo o arquivo de teste. Variáveis globais (Set Global Variable) valem para toda a execução, persistindo entre arquivos. O uso correto evita acoplamento e estado compartilhado que causam testes instáveis.",
+          "followUps": [
+            "O que acontece se duas suites usam a mesma variável global?",
+            "Como passar argumentos entre keywords?"
+          ],
+          "mistakes": [
+            "Não conhecer os três escopos.",
+            "Não conectar com o risco de estado compartilhado."
+          ],
+          "english": "Local variables exist only within the current keyword or test. Suite variables apply to the whole test file. Global variables persist across the entire run. Correct scoping prevents coupling and shared state that cause flaky tests."
         }
-    ],
-    "quiz": [
-        { "question": "Qual biblioteca é usada para testes de API no Robot Framework?", "options": { "A": "SeleniumLibrary", "B": "RequestsLibrary", "C": "OperatingSystem", "D": "Collections" }, "answer": "B", "explanation": "RequestsLibrary fornece keywords para chamadas HTTP (GET, POST, etc.)." },
-        { "question": "Qual variável de escopo persiste para toda a execução?", "options": { "A": "Local", "B": "Suite", "C": "Global", "D": "Teste" }, "answer": "C", "explanation": "Set Global Variable persiste para toda a execução, entre todos os arquivos." },
-        { "question": "Qual é a melhor prática para evitar testes flaky por timing?", "options": { "A": "Aumentar o Sleep", "B": "Usar esperas explícitas", "C": "Rodar o teste várias vezes", "D": "Ignorar a falha" }, "answer": "B", "explanation": "Esperas explícitas (Wait Until ...) aguardam condições reais, em vez de tempo fixo." },
-        { "question": "Onde devem ficar os locators (seletores) em um projeto bem organizado?", "options": { "A": "Dentro dos testes", "B": "Em um resource separado", "C": "Hardcodados", "D": "Em arquivos de log" }, "answer": "B", "explanation": "Locators devem ficar em resources (ex.: locators.robot) para reuso e manutenção centralizada." },
-        { "question": "Qual comando executa apenas testes com a tag smoke?", "options": { "A": "robot --exclude smoke tests/", "B": "robot --include smoke tests/", "C": "robot tests/smoke.robot", "D": "robot --tag smoke" }, "answer": "B", "explanation": "--include smoke executa apenas testes marcados com a tag smoke; --exclude faz o inverso." }
-    ]
+      ],
+      "challenges": [
+        "Refatore um teste com 30 passos em user keywords de alto nível.",
+        "Escreva um teste que usa variáveis de escopo suite para dados compartilhados de setup."
+      ]
+    },
+    {
+      "title": "Bibliotecas & Dados de Teste",
+      "theory": "As bibliotecas principais: BuiltIn (asserções e controle de fluxo), SeleniumLibrary (UI), Browser (Playwright-based), RequestsLibrary (API), DatabaseLibrary (SQL), OperatingSystem e Collections. Dados de teste: arquivos .robot com *** Variables ***, arquivos de dados externos (JSON, CSV, Excel via ExcelLibrary), templates de teste com loops de dados, e variáveis de ambiente para credenciais. Boa prática: separar dados de teste do código, usar arquivos de recursos (resource.robot) e setup central.",
+      "examples": [
+        "RequestsLibrary: ${resp}=  GET  ${BASE_URL}/orders  headers=${headers}",
+        "DatabaseLibrary: Query  SELECT * FROM pedidos WHERE id=${id}",
+        "Collections: Dictionary Should Contain Key  ${resp.json()}  id",
+        "Template com dados: ${dado}  FOR  ${dado}  IN  @{DATAS}"
+      ],
+      "commonMistakes": [
+        "Hardcodar credenciais e URLs nos testes.",
+        "Não usar resource.robot para compartilhar imports.",
+        "Tratar dados de UI e de API em camadas misturadas.",
+        "Não usar Templates para dados em massa."
+      ],
+      "projectExample": "Em um projeto de automação de APIs de crédito, centralizei todas as chamadas HTTP em resource.robot com keywords reutilizáveis (Fazer Login, Obter Token, Criar Proposta), e os dados de teste ficaram em arquivos JSON versionados. Isso reduziu drasticamente a duplicação e permitiu que analistas de negócio revisassem os cenários.",
+      "interviewQuestions": [
+        {
+          "question": "Como você gerencia dados de teste no Robot Framework?",
+          "difficulty": "Intermediária",
+          "expectedAnswer": "Eu separo dados de teste do código em arquivos externos (JSON/CSV/Excel) ou seções de Variables em resource.robot, e uso Templates para mass data. Para evitar dependência de ambiente, uso variáveis de ambiente para URLs e credenciais. Também crio dados no setup dos testes e limpo no teardown, garantindo isolamento. Dados sensíveis nunca são versionados.",
+          "followUps": [
+            "Como você cria dados dinâmicos únicos?",
+            "Como você evita que dados compartilhados quebrem os testes?"
+          ],
+          "mistakes": [
+            "Hardcodar dados e credenciais.",
+            "Não usar teardown para limpeza."
+          ],
+          "english": "I separate test data from code in external files or Variables sections, use templates for mass data, and environment variables for URLs and credentials. I create data in setup and clean it in teardown to guarantee isolation."
+        },
+        {
+          "question": "Em que cenário você combinaria RequestsLibrary e DatabaseLibrary no mesmo teste?",
+          "difficulty": "Avançada",
+          "expectedAnswer": "Quando a ação é via API e a validação de persistência é no banco. Exemplo: criar um pedido via API (RequestsLibrary), depois consultar no banco (DatabaseLibrary) para validar que o registro e a auditoria foram persistidos corretamente, e que o estado esperado está coerente. Essa combinação valida o fluxo completo de ponta a ponta de forma determinística, sem depender da UI.",
+          "followUps": [
+            "Como você trata o tempo entre a API e a leitura no banco?",
+            "Que riscos existem em validar tudo via banco?"
+          ],
+          "mistakes": [
+            "Não mencionar sync/eventual consistency.",
+            "Validar só via API ou só via banco."
+          ],
+          "english": "When the action is via API and the persistence validation must be in the database. I create an order via API, then query the database to validate the record and audit were persisted correctly. This validates the full flow deterministically."
+        }
+      ],
+      "challenges": [
+        "Crie um resource.robot com keywords de autenticação e helpers de API.",
+        "Escreva um teste com Template que valida 3 payloads de pedido."
+      ]
+    },
+    {
+      "title": "Estabilizando Testes Instáveis (Flaky Tests)",
+      "theory": "Testes instáveis são o maior problema prático de automação. Causas: esperas fixas (Sleep), timing conditions (elemento ainda não pronto), estado compartilhado, dependência de ordem, dados de teste não isolados, seletores frágeis, e ambiente. Soluções: esperas explícitas (Wait Until Element Is Visible, Wait Until Keyword Succeeds), evitar Sleep fixo, isolamento de dados, seletores estáveis (data-testid), retry apenas em ações de setup (nunca em asserções), e análise de logs (log.html) para distinguir falha de sistema de falha de teste.",
+      "examples": [
+        "Wait Until Element Is Visible  ${login_btn}  timeout=10s",
+        "Wait Until Keyword Succeeds  2x  5s  Criar Pedido",
+        "Usar atributos data-testid no lugar de XPath frágil",
+        "Análise: comparar falha repetida em ${locator} entre runs no report"
+      ],
+      "commonMistakes": [
+        "Usar Sleep 5s como solução universal.",
+        "Retry em asserções finais, mascarando regressões reais.",
+        "Não analisar a causa raiz — só 'tentar de novo'.",
+        "Seletores XPath dependentes de estrutura da página."
+      ],
+      "projectExample": "Em um projeto de automação de e-commerce, os testes falhavam 30% das vezes por esperas fixas. Substituí todos os Sleep por esperas explícitas nos pontos críticos, removi dependência entre testes (cada um criava seus dados) e passei a usar data-testid nos elementos. A estabilidade subiu de 70% para 99%, e o tempo de execução caiu porque não havia mais esperas desnecessárias.",
+      "interviewQuestions": [
+        {
+          "question": "Como você diagnostica e corrige um teste flaky?",
+          "difficulty": "Avançada",
+          "expectedAnswer": "Processo: (1) reproduzir e coletar evidência — log.html, screenshots, timestamps; (2) identificar a causa raiz: timing (espera insuficiente), estado compartilhado, dado de teste, seletor frágil ou ambiente; (3) corrigir na origem: espera explícita no lugar de Sleep, isolamento de dados, seletores estáveis, retry em setup apenas; (4) validar rodando múltiplas vezes e no CI. Nunca mascarar com retry na asserção final.",
+          "followUps": [
+            "Quais são as causas mais comuns que você já viu?",
+            "Como medir a estabilidade da suíte?"
+          ],
+          "mistakes": [
+            "Falar de 'rodar de novo' como solução.",
+            "Não mencionar coleta de evidência e causa raiz."
+          ],
+          "english": "I reproduce and collect evidence from logs and screenshots, identify the root cause — timing, shared state, test data, fragile selectors or environment — then fix it at the source with explicit waits, isolated data, stable selectors, and retry on setup only. I never mask issues with retry on final assertions."
+        },
+        {
+          "question": "Por que esperas explícitas são melhores que Sleep?",
+          "difficulty": "Fácil",
+          "expectedAnswer": "Sleep espera um tempo fixo, independentemente do estado real do sistema: é lento quando o sistema está rápido e insuficiente quando está lento, gerando flakiness. Espera explícita (Wait Until Element Is Visible, Wait Until Keyword Succeeds) aguarda uma condição, executando assim que ela é satisfeita — mais rápido, determinístico e resiliente. Como QA, isso melhora tanto a estabilidade quanto o tempo de execução.",
+          "followUps": [
+            "Quando o Sleep ainda pode ser aceitável?",
+            "Como configurar timeout global?"
+          ],
+          "mistakes": [
+            "Não explicar o impacto em tempo e estabilidade.",
+            "Defender Sleep."
+          ],
+          "english": "Sleep waits a fixed time regardless of the real system state, which is slow when fast and insufficient when slow. Explicit waits wait for a condition, executing as soon as it is met — faster, deterministic and resilient. This improves both stability and execution time."
+        }
+      ],
+      "challenges": [
+        "Analise um log de teste flaky e proponha a correção de causa raiz.",
+        "Refatore uma suíte que usa Sleep 5s para esperas explícitas."
+      ]
+    },
+    {
+      "title": "Organização de Suites & CI",
+      "theory": "Organização profissional: pastas por funcionalidade, arquivos .robot por feature, resource.robot com imports e keywords compartilhadas, suite setup/teardown, e tags para categorizar (smoke, regression, critical). No CI, executar por tags (por exemplo, smoke a cada deploy, completo em nightly), gerar report e output.xml para análise, e publicar os relatórios. Boas práticas de estrutura: separar dados, keywords, locators (em resources) e páginas/fluxos.",
+      "examples": [
+        "robot -d results --include smoke tests/",
+        "robot -d results --exclude unstable tests/",
+        "Arquivos: tests/features/login/login.robot, resources/keywords.robot, resources/locators.robot",
+        "Suite Setup: Conectar Banco de Testes"
+      ],
+      "commonMistakes": [
+        "Uma pasta gigante com todos os testes.",
+        "Não usar tags, rodando tudo sempre.",
+        "Não publicar relatórios no CI.",
+        "Locators espalhados dentro dos testes."
+      ],
+      "projectExample": "Estruturei um projeto Robot para uma seguradora em features, com resource central e tags smoke/regression. No CI (GitHub Actions), smoke rodava a cada PR e a suíte completa em nightly com publicação do report HTML. A equipe conseguia ver a saúde da automação em minutos.",
+      "interviewQuestions": [
+        {
+          "question": "Como você organizaria uma suíte Robot Framework em um projeto de grande porte?",
+          "difficulty": "Intermediária",
+          "expectedAnswer": "Por features: pastas por funcionalidade, um arquivo .robot por fluxo, resources separados (keywords, locators, dados). Tags para classificar (smoke, regression, critical). Suite setup/teardown para estado, e dados de teste versionados. Execução por tags no CI: smoke em PR, regressão completa em nightly. Assim a suíte escala sem virar um monolito.",
+          "followUps": [
+            "Como você separa locators das keywords?",
+            "Como define o que é smoke?"
+          ],
+          "mistakes": [
+            "Estrutura vaga sem camadas.",
+            "Não mencionar CI e tags."
+          ],
+          "english": "I organize by feature: folders per functionality, one robot file per flow, separated resources for keywords, locators and data. Tags classify tests as smoke, regression or critical. CI runs smoke on PRs and full regression nightly."
+        },
+        {
+          "question": "Como você integra testes Robot ao CI/CD?",
+          "difficulty": "Intermediária",
+          "expectedAnswer": "Crio um step no pipeline que instala o Python, as bibliotecas (robotframework, Selenium/Requests), executa o comando robot com tags (ex.: --include smoke), e publica output.xml e report.html como artefatos. O pipeline falha se os testes críticos falharem. Também configuro retry seletivo por tag e análise de tendência dos reports (Pabot/rebot) para monitorar estabilidade.",
+          "followUps": [
+            "Qual a diferença entre rodar local e no CI?",
+            "Como você gerencia navegadores no CI?"
+          ],
+          "mistakes": [
+            "Não publicar relatórios.",
+            "Rodar tudo sempre, sem tags."
+          ],
+          "english": "I create a pipeline step that installs Python and libraries, runs robot with tags, and publishes output.xml and report.html as artifacts. The pipeline fails on critical test failures. I also track stability trends from reports."
+        }
+      ],
+      "challenges": [
+        "Desenhe a estrutura de pastas e tags de um projeto Robot para uma empresa de seguros.",
+        "Escreva um comando de CI que roda apenas smoke e falha quando há falha crítica."
+      ]
+    }
+  ],
+  "quizCategory": "Robot Framework"
 }

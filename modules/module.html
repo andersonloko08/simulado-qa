@@ -107,6 +107,18 @@
                 document.getElementById('bc-module').innerText = data.title;
                 document.title = `${data.title} | InterviewOps Portugal`;
 
+                // Quiz: pool único em questions.json filtrado pela categoria do módulo.
+                const poolData = await loadJSON('../json/questions.json');
+                const category = data.quizCategory || data.title;
+                window._quizCategory = category;
+                window._quizPoolRaw = poolData.questions || [];
+                quizPool = buildQuizPool(window._quizPoolRaw, category);
+                window._quizPoolSize = quizPool.length;
+                // sorteia a rodada: até 10 questões embaralhadas
+                quizPool = shuffleArray(quizPool).slice(0, Math.min(10, quizPool.length));
+                window._quizData = quizPool;
+                const quizCount = quizPool.length;
+
                 let conceptsHtml = data.concepts.map((c, ci) => {
                     const learnedKey = `interviewops_learned_${moduleId}_${ci}`;
                     const isLearned = localStorage.getItem(learnedKey) === '1';
@@ -134,17 +146,16 @@
                 const quizHtml = `
                 <section class="content-section" id="quiz-section">
                     <h2><i class="fa-solid fa-clipboard-question"></i> Quiz do módulo</h2>
-                    <p class="text-muted mb-2">Responda e veja sua nota. A melhor pontuação conta para o progresso geral.</p>
+                    <p class="text-muted mb-2">Cada rodada sorteia ${quizCount} de ${quizPool.length} questões e embaralha as alternativas. A melhor pontuação conta para o progresso geral.</p>
                     <div id="quiz-questions">
-                        ${(data.quiz || []).map((q, qi) => {
-                            const nq = normalizeQuiz(q);
+                        ${quizPool.slice(0, quizCount).map((qq, qi) => {
                             return `
                             <div class="q-card">
-                                <div class="q-text">${qi + 1}. ${escapeHtml(q.question)}</div>
+                                <div class="q-text">${qi + 1}. ${escapeHtml(qq.question)}</div>
                                 <div class="options-grid" id="quiz-options-${qi}">
-                                    ${nq.list.map((o, oi) => `
+                                    ${qq.list.map(o => `
                                     <label class="option-label" onclick="selectQuizOption(${qi}, '${o.key}', this)" id="qo-${qi}-${o.key}">
-                                        <input type="radio" name="q${qi}" value="${o.key}" data-index="${oi}">
+                                        <input type="radio" name="q${qi}" value="${o.key}">
                                         <div class="option-content"><span class="option-letter">${o.key}</span><span class="option-text">${escapeHtml(o.text)}</span></div>
                                     </label>`).join('')}
                                 </div>
@@ -152,7 +163,13 @@
                             </div>`;
                         }).join('')}
                     </div>
-                    <button class="primary-btn w-100 mt-3" onclick="submitQuiz('${moduleId}')"><i class="fa-solid fa-check-double"></i> Corrigir Quiz</button>
+                    <div class="flex-between mt-2">
+                        <span class="badge badge-muted" id="quiz-round-note"><i class="fa-solid fa-shuffle"></i> ${quizPool.length} questões disponíveis</span>
+                        <button class="primary-btn" onclick="submitQuiz('${moduleId}')"><i class="fa-solid fa-check-double"></i> Corrigir Quiz</button>
+                    </div>
+                    <div class="text-center mt-2">
+                        <button class="outline-btn small-btn" onclick="shuffleQuizRound()"><i class="fa-solid fa-rotate"></i> Sortear novas questões</button>
+                    </div>
                 </section>`;
 
                 container.innerHTML = `
@@ -171,7 +188,7 @@
 
                     <div class="tabs" id="module-tabs">
                         <button class="tab-btn active" data-tab="concepts" onclick="switchTab('concepts')"><i class="fa-solid fa-book"></i> Conceitos (${totalConcepts})</button>
-                        <button class="tab-btn" data-tab="quiz" onclick="switchTab('quiz')"><i class="fa-solid fa-clipboard-question"></i> Quiz (${(data.quiz || []).length})</button>
+                        <button class="tab-btn" data-tab="quiz" onclick="switchTab('quiz')"><i class="fa-solid fa-clipboard-question"></i> Quiz (${Math.min(10, quizPool.length)})</button>
                     </div>
 
                     <div id="tab-concepts" class="tab-panel active">${conceptsHtml}</div>
@@ -199,6 +216,65 @@
             location.reload();
         };
 
+        // ---- QUIZ POOL (central em questions.json) ----
+
+        // Constrói o pool sorteado da rodada: filtra pela categoria, sorteia até 10
+        // questões e embaralha as alternativas de cada uma. Resolve o idioma via l().
+        function buildQuizPool(questions, category) {
+            const pool = questions.filter(q => q.category === category && q.type === 'choice');
+            // resolve o idioma efetivo para a categoria (US/UK para English, etc.)
+            const langKey = resolveLang(category);
+            const localized = pool.map(q => {
+                const content = q.lang[langKey] || q.lang['en-us'] || q.lang['pt-br'] || {};
+                return {
+                    id: q.id,
+                    question: content.question || '',
+                    options: content.options || [],
+                    answer: q.answer,
+                    explanation: content.expectedAnswer || '',
+                };
+            });
+            // embaralha as alternativas e guarda o índice correto mapeado
+            return localized.map(q => {
+                const keys = q.options.map((_, i) => i);
+                const shuffled = shuffleArray(keys);
+                return {
+                    question: q.question,
+                    list: shuffled.map(i => ({ key: String.fromCharCode(65 + i), text: q.options[i] })),
+                    answerKey: String.fromCharCode(65 + q.answer),
+                    correctIndex: q.answer,
+                    explanation: q.explanation,
+                };
+            });
+        }
+
+        // Sorteia nova rodada: reembaralha o pool e re-renderiza só o quiz.
+        window.shuffleQuizRound = function() {
+            const poolData = window._quizPoolRaw || [];
+            const shuffled = shuffleArray(buildQuizPool(poolData, window._quizCategory));
+            window._quizData = shuffled.slice(0, Math.min(10, shuffled.length));
+            renderQuizSection(window._quizData);
+        };
+
+        function renderQuizSection(quiz) {
+            const box = document.getElementById('quiz-questions');
+            if (!box) return;
+            box.innerHTML = quiz.map((nq, qi) => `
+                <div class="q-card">
+                    <div class="q-text">${qi + 1}. ${escapeHtml(nq.question)}</div>
+                    <div class="options-grid" id="quiz-options-${qi}">
+                        ${nq.list.map(o => `
+                        <label class="option-label" onclick="selectQuizOption(${qi}, '${o.key}', this)" id="qo-${qi}-${o.key}">
+                            <input type="radio" name="q${qi}" value="${o.key}">
+                            <div class="option-content"><span class="option-letter">${o.key}</span><span class="option-text">${escapeHtml(o.text)}</span></div>
+                        </label>`).join('')}
+                    </div>
+                    <div id="quiz-feedback-${qi}" class="feedback-box"></div>
+                </div>`).join('');
+            const note = document.getElementById('quiz-round-note');
+            if (note) note.innerHTML = `<i class="fa-solid fa-shuffle"></i> ${quiz.length} sorteadas de ${window._quizPoolSize || quiz.length}`;
+        }
+
         window.selectQuizOption = function(qi, key) {
             document.querySelectorAll(`#quiz-options-${qi} .option-label`).forEach(l => l.classList.remove('selected'));
             const sel = document.getElementById(`qo-${qi}-${key}`);
@@ -208,41 +284,39 @@
         };
 
         window.submitQuiz = function(id) {
-            // load quiz data fresh
-            fetch(`../json/modules/${id}.json`).then(r => r.json()).then(data => {
-                let correct = 0;
-                const quiz = data.quiz || [];
-                quiz.forEach((q, qi) => {
-                    const nq = normalizeQuiz(q);
-                    const selected = document.querySelector(`#quiz-options-${qi} input:checked`);
-                    const feedback = document.getElementById(`quiz-feedback-${qi}`);
-                    const userKey = selected ? selected.value : null;
-                    const isCorrect = userKey === nq.answerKey;
-                    if (isCorrect) correct++;
+            const qCards = document.querySelectorAll('#quiz-questions .q-card');
+            const quiz = window._quizData || [];
+            if (!quiz.length) return;
+            let correct = 0;
+            quiz.forEach((nq, qi) => {
+                const selected = document.querySelector(`#quiz-options-${qi} input:checked`);
+                const feedback = document.getElementById(`quiz-feedback-${qi}`);
+                const userKey = selected ? selected.value : null;
+                const isCorrect = userKey === nq.answerKey;
+                if (isCorrect) correct++;
 
-                    document.querySelectorAll(`#quiz-options-${qi} .option-label`).forEach(l => {
-                        const key = l.querySelector('input').value;
-                        l.classList.add('disabled');
-                        l.style.pointerEvents = 'none';
-                        if (key === nq.answerKey) { l.style.borderColor = 'var(--success)'; l.style.background = 'var(--success-light)'; }
-                        else if (key === userKey) { l.style.borderColor = 'var(--danger)'; l.style.background = 'var(--danger-light)'; }
-                    });
-
-                    feedback.className = `feedback-box show ${isCorrect ? 'feedback-ok' : 'feedback-bad'}`;
-                    feedback.innerHTML = isCorrect
-                        ? `<div class="feedback-header"><i class="fa-solid fa-circle-check"></i> Correto!</div><div class="feedback-comment">${escapeHtml(q.explanation)}</div>`
-                        : `<div class="feedback-header"><i class="fa-solid fa-circle-xmark"></i> Errado — resposta correta: ${escapeHtml(nq.answerKey)}</div><div class="feedback-comment">${escapeHtml(q.explanation)}</div>`;
+                document.querySelectorAll(`#quiz-options-${qi} .option-label`).forEach(l => {
+                    const key = l.querySelector('input').value;
+                    l.classList.add('disabled');
+                    l.style.pointerEvents = 'none';
+                    if (key === nq.answerKey) { l.style.borderColor = 'var(--success)'; l.style.background = 'var(--success-light)'; }
+                    else if (key === userKey) { l.style.borderColor = 'var(--danger)'; l.style.background = 'var(--danger-light)'; }
                 });
 
-                const pct = quiz.length ? Math.round((correct / quiz.length) * 100) : 0;
-                setQuizBest(id, pct);
-
-                let msg = `Quiz corrigido: ${correct}/${quiz.length} (${pct}%).`;
-                const prevBest = localStorage.getItem(`interviewops_quiz_prev_${id}`);
-                if (prevBest !== null && parseInt(prevBest) >= pct) msg += ' Melhor pontuação mantida.';
-                else { localStorage.setItem(`interviewops_quiz_prev_${id}`, String(pct)); msg += ' Novo recorde registrado!'; }
-                alert(msg);
+                feedback.className = `feedback-box show ${isCorrect ? 'feedback-ok' : 'feedback-bad'}`;
+                feedback.innerHTML = isCorrect
+                    ? `<div class="feedback-header"><i class="fa-solid fa-circle-check"></i> Correto!</div><div class="feedback-comment">${escapeHtml(nq.explanation)}</div>`
+                    : `<div class="feedback-header"><i class="fa-solid fa-circle-xmark"></i> Errado — resposta correta: ${escapeHtml(nq.answerKey)}</div><div class="feedback-comment">${escapeHtml(nq.explanation)}</div>`;
             });
+
+            const pct = quiz.length ? Math.round((correct / quiz.length) * 100) : 0;
+            setQuizBest(id, pct);
+
+            let msg = `Quiz corrigido: ${correct}/${quiz.length} (${pct}%).`;
+            const prevBest = localStorage.getItem(`interviewops_quiz_prev_${id}`);
+            if (prevBest !== null && parseInt(prevBest) >= pct) msg += ' Melhor pontuação mantida.';
+            else { localStorage.setItem(`interviewops_quiz_prev_${id}`, String(pct)); msg += ' Novo recorde registrado!'; }
+            alert(msg);
         };
     </script>
 </body>
