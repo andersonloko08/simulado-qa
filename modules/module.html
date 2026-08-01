@@ -50,6 +50,27 @@
     <script>
         const moduleId = new URLSearchParams(location.search).get('id') || 'api';
 
+        // Normaliza options para [{key: 'A', text: '...'}] e answer para a letra.
+        // Suporta 2 formatos de dados:
+        //   A) { options: {"A": "txt", "B": "txt"}, answer: "C" }
+        //   B) { options: ["txt", "txt"], answer: 1 }  (índice)
+        function normalizeQuiz(q) {
+            const raw = q.options || {};
+            let list = [];
+            if (Array.isArray(raw)) {
+                list = raw.map((text, i) => ({ key: String.fromCharCode(65 + i), text }));
+            } else {
+                list = Object.entries(raw).map(([key, text]) => ({ key: key.toUpperCase(), text }));
+            }
+            let answerKey;
+            if (Array.isArray(raw)) {
+                answerKey = list[(Number(q.answer) || 0)] ? list[Number(q.answer)].key : 'A';
+            } else {
+                answerKey = String(q.answer || '').toUpperCase();
+            }
+            return { list, answerKey };
+        }
+
         function difficultyBadge(d) {
             const map = { 'Fácil': 'badge-success', 'Média': 'badge-warning', 'Intermediária': 'badge-warning', 'Avançada': 'badge-danger' };
             return `<span class="badge ${map[d] || 'badge-info'}">${escapeHtml(d)}</span>`;
@@ -115,18 +136,21 @@
                     <h2><i class="fa-solid fa-clipboard-question"></i> Quiz do módulo</h2>
                     <p class="text-muted mb-2">Responda e veja sua nota. A melhor pontuação conta para o progresso geral.</p>
                     <div id="quiz-questions">
-                        ${(data.quiz || []).map((q, qi) => `
-                        <div class="q-card">
-                            <div class="q-text">${qi + 1}. ${escapeHtml(q.question)}</div>
-                            <div class="options-grid" id="quiz-options-${qi}">
-                                ${Object.entries(q.options).map(([k, v]) => `
-                                <label class="option-label" onclick="selectQuizOption(${qi}, '${k}')" id="qo-${qi}-${k}">
-                                    <input type="radio" name="q${qi}" value="${k}">
-                                    <div class="option-content"><span class="option-letter">${k}</span><span class="option-text">${escapeHtml(v)}</span></div>
-                                </label>`).join('')}
-                            </div>
-                            <div id="quiz-feedback-${qi}" class="feedback-box"></div>
-                        </div>`).join('')}
+                        ${(data.quiz || []).map((q, qi) => {
+                            const nq = normalizeQuiz(q);
+                            return `
+                            <div class="q-card">
+                                <div class="q-text">${qi + 1}. ${escapeHtml(q.question)}</div>
+                                <div class="options-grid" id="quiz-options-${qi}">
+                                    ${nq.list.map((o, oi) => `
+                                    <label class="option-label" onclick="selectQuizOption(${qi}, '${o.key}', this)" id="qo-${qi}-${o.key}">
+                                        <input type="radio" name="q${qi}" value="${o.key}" data-index="${oi}">
+                                        <div class="option-content"><span class="option-letter">${o.key}</span><span class="option-text">${escapeHtml(o.text)}</span></div>
+                                    </label>`).join('')}
+                                </div>
+                                <div id="quiz-feedback-${qi}" class="feedback-box"></div>
+                            </div>`;
+                        }).join('')}
                     </div>
                     <button class="primary-btn w-100 mt-3" onclick="submitQuiz('${moduleId}')"><i class="fa-solid fa-check-double"></i> Corrigir Quiz</button>
                 </section>`;
@@ -178,6 +202,7 @@
         window.selectQuizOption = function(qi, key) {
             document.querySelectorAll(`#quiz-options-${qi} .option-label`).forEach(l => l.classList.remove('selected'));
             const sel = document.getElementById(`qo-${qi}-${key}`);
+            if (!sel) return;
             sel.classList.add('selected');
             sel.querySelector('input').checked = true;
         };
@@ -188,24 +213,25 @@
                 let correct = 0;
                 const quiz = data.quiz || [];
                 quiz.forEach((q, qi) => {
+                    const nq = normalizeQuiz(q);
                     const selected = document.querySelector(`#quiz-options-${qi} input:checked`);
                     const feedback = document.getElementById(`quiz-feedback-${qi}`);
-                    const userAnswer = selected ? selected.value : null;
-                    const isCorrect = userAnswer === q.answer;
+                    const userKey = selected ? selected.value : null;
+                    const isCorrect = userKey === nq.answerKey;
                     if (isCorrect) correct++;
 
                     document.querySelectorAll(`#quiz-options-${qi} .option-label`).forEach(l => {
                         const key = l.querySelector('input').value;
                         l.classList.add('disabled');
                         l.style.pointerEvents = 'none';
-                        if (key === q.answer) { l.style.borderColor = 'var(--success)'; l.style.background = 'var(--success-light)'; }
-                        else if (key === userAnswer) { l.style.borderColor = 'var(--danger)'; l.style.background = 'var(--danger-light)'; }
+                        if (key === nq.answerKey) { l.style.borderColor = 'var(--success)'; l.style.background = 'var(--success-light)'; }
+                        else if (key === userKey) { l.style.borderColor = 'var(--danger)'; l.style.background = 'var(--danger-light)'; }
                     });
 
                     feedback.className = `feedback-box show ${isCorrect ? 'feedback-ok' : 'feedback-bad'}`;
                     feedback.innerHTML = isCorrect
                         ? `<div class="feedback-header"><i class="fa-solid fa-circle-check"></i> Correto!</div><div class="feedback-comment">${escapeHtml(q.explanation)}</div>`
-                        : `<div class="feedback-header"><i class="fa-solid fa-circle-xmark"></i> Errado — resposta: ${escapeHtml(q.answer)}</div><div class="feedback-comment">${escapeHtml(q.explanation)}</div>`;
+                        : `<div class="feedback-header"><i class="fa-solid fa-circle-xmark"></i> Errado — resposta correta: ${escapeHtml(nq.answerKey)}</div><div class="feedback-comment">${escapeHtml(q.explanation)}</div>`;
                 });
 
                 const pct = quiz.length ? Math.round((correct / quiz.length) * 100) : 0;

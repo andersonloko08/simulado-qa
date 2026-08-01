@@ -230,13 +230,17 @@
             const optionsBox = document.getElementById('q-options');
             if (q.type === 'choice' && ldata.options && ldata.options.length) {
                 optionsBox.style.display = 'block';
+                optionsBox.className = 'options-grid';
                 optionsBox.innerHTML = ldata.options.map((opt, i) => `
-                    <button class="option-label choice-opt" data-opt="${i}" onclick="selectChoice(this)" style="display:flex; align-items:center; gap:0.5rem; width:100%; text-align:left; padding:0.7rem 1rem; border-radius:8px; border:1px solid var(--option-border); background:var(--option-bg); cursor:pointer; margin-bottom:0.5rem; font-size:0.95rem;">
-                        <span class="badge badge-info" style="min-width:1.6rem; text-align:center;">${String.fromCharCode(65 + i)}</span>
-                        <span>${escapeHtml(opt)}</span>
+                    <button class="option-label choice-opt" data-opt="${i}" onclick="selectChoice(this)" style="justify-content:flex-start; text-align:left;">
+                        <div class="option-content">
+                            <span class="option-letter">${String.fromCharCode(65 + i)}</span>
+                            <span class="option-text">${escapeHtml(opt)}</span>
+                        </div>
                     </button>`).join('');
             } else {
                 optionsBox.style.display = 'none';
+                optionsBox.className = '';
             }
             window._currentChoice = null;
 
@@ -255,12 +259,8 @@
         }
 
         window.selectChoice = function(btn) {
-            document.querySelectorAll('.choice-opt').forEach(b => {
-                b.style.borderColor = 'var(--option-border)';
-                b.style.background = 'var(--option-bg)';
-            });
-            btn.style.borderColor = 'var(--primary)';
-            btn.style.background = 'var(--primary-light)';
+            document.querySelectorAll('.choice-opt').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
             window._currentChoice = parseInt(btn.dataset.opt, 10);
         };
 
@@ -304,8 +304,11 @@
                     </div>
                     <div class="q-options-review" style="margin-top:0.75rem;">
                         ${ldata.options.map((opt, i) => `
-                            <div class="option-label" style="padding:0.6rem 1rem; border-radius:8px; margin-bottom:0.4rem; ${i === correct ? 'border-color:var(--success); background:var(--success-light); color:var(--success-dark);' : i === chosen ? 'border-color:var(--danger); background:var(--danger-light); color:var(--danger-dark);' : ''}">
-                                ${String.fromCharCode(65 + i)}. ${escapeHtml(opt)} ${i === correct ? '<i class="fa-solid fa-circle-check"></i>' : ''} ${i === chosen && !isRight ? '<i class="fa-solid fa-circle-xmark"></i>' : ''}
+                            <div class="option-label" style="display:flex; align-items:center; ${i === correct ? 'border-color:var(--success); background:var(--success-light);' : i === chosen ? 'border-color:var(--danger); background:var(--danger-light);' : ''}">
+                                <div class="option-content">
+                                    <span class="option-letter" style="${i === correct ? 'background:var(--success); color:#fff;' : i === chosen ? 'background:var(--danger); color:#fff;' : ''}">${String.fromCharCode(65 + i)}</span>
+                                    <span class="option-text" style="color:${i === correct ? 'var(--success-dark)' : i === chosen ? 'var(--danger-dark)' : 'var(--text-color)'};">${escapeHtml(opt)} ${i === correct ? '<i class="fa-solid fa-circle-check"></i>' : ''} ${i === chosen && !isRight ? '<i class="fa-solid fa-circle-xmark"></i>' : ''}</span>
+                                </div>
                             </div>`).join('')}
                     </div>`;
             }
