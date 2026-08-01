@@ -203,84 +203,39 @@ window.getActiveProfile = getActiveProfile;
 window.getProfiles = getProfiles;
 window.setActiveProfile = setActiveProfile;
 
-// ---------- IDIOMAS SUPORTADOS ----------
-// Para adicionar um novo idioma, veja I18N.md.
-const LANGS = ['pt-br', 'en-us'];
-const LANG_NAMES = {
-    'pt-br': 'Português (BR)',
-    'en-us': 'English (US)'
-};
+// ---------- IDIOMA FIXO EM PT-BR (Inglês apenas no módulo/questões de inglês) ----------
+const ENGLISH_CATEGORIES = ['English', 'english'];
+let I18N = { lang: {} };
+const CURRENT_LANG = 'pt-br';
 
-let I18N = { strings: {}, questions: {} };
-let CURRENT_LANG = 'pt-br';
-
-function getSavedLang() {
-    try { return storeGet(LANG_KEY) || 'pt-br'; } catch (e) { return 'pt-br'; }
+// Resolve o idioma para questões/conteúdo (inglês apenas para categoria English).
+function resolveLang(category) {
+    if (category && ENGLISH_CATEGORIES.includes(category)) return 'en-us';
+    return 'pt-br';
 }
 
-function setLang(lang) {
-    if (!LANGS.includes(lang)) return;
-    CURRENT_LANG = lang;
-    try { storeSet(LANG_KEY, lang); } catch (e) {}
-}
-
-// Resolve o conteúdo traduzido de um objeto com chaves por idioma.
-function l(obj) {
+// Resolve o conteúdo traduzido de um objeto.
+function l(obj, category) {
     if (!obj) return '';
-    if (obj[CURRENT_LANG]) return obj[CURRENT_LANG];
-    return obj['pt-br'] || obj['en-us'] || '';
+    const lang = resolveLang(category);
+    if (obj[lang]) return obj[lang];
+    if (obj['pt-br']) return obj['pt-br'];
+    return obj['en-us'] || '';
 }
 
-// Compatibilidade: retorna o idioma atual (era usado para variantes EN).
-function resolveLang() { return CURRENT_LANG; }
-
-// Tradução de strings de interface.
+// Tradução de strings de interface (fixo em pt-br).
 function t(key) {
-    const table = (I18N.lang && I18N.lang[CURRENT_LANG]) || {};
-    return table[key] || (I18N.lang && I18N.lang['pt-br'] && I18N.lang['pt-br'][key]) || key;
+    const table = (I18N.lang && I18N.lang['pt-br']) || {};
+    return table[key] || key;
 }
 
 async function initI18n() {
-    CURRENT_LANG = getSavedLang();
     try {
         I18N = await loadJSON(I18N_PATH);
     } catch (e) {
         I18N = { lang: {} };
     }
-    renderLangSelector();
     applyTranslations();
-}
-
-// Seletor de idioma na topbar.
-function renderLangSelector() {
-    const actions = document.querySelector('.topbar-actions');
-    if (!actions || document.getElementById('lang-select')) return;
-    const wrap = document.createElement('div');
-    wrap.className = 'lang-select-wrap';
-    wrap.style.cssText = 'display:flex; align-items:center; gap:0.4rem; position:relative;';
-    wrap.innerHTML = `
-        <i class="fa-solid fa-globe" style="color:var(--text-muted); font-size:0.9rem;"></i>
-        <select id="lang-select" class="lang-select" aria-label="Idioma" style="background:var(--card-bg); color:var(--text-color); border:1px solid var(--card-border); border-radius:8px; padding:0.3rem 0.5rem; font-size:0.85rem; cursor:pointer;">
-            ${LANGS.map(lang => `<option value="${lang}" ${lang === CURRENT_LANG ? 'selected' : ''}>${LANG_NAMES[lang]}</option>`).join('')}
-        </select>
-    `;
-    actions.insertBefore(wrap, actions.firstChild);
-
-    const select = document.getElementById('lang-select');
-    select.addEventListener('change', () => {
-        const prevLang = CURRENT_LANG;
-        setLang(select.value);
-        applyTranslations();
-        // Re-render: usa translateContent em cada página para texto dinâmico.
-        // Se não houver translateContent, recarrega a página (fallback).
-        if (prevLang !== CURRENT_LANG) {
-            if (typeof window.translateContent === 'function') {
-                window.translateContent();
-            } else {
-                setTimeout(() => location.reload(), 50);
-            }
-        }
-    });
 }
 
 // Aplica traduções a elementos com data-i18n.
