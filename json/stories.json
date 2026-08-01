@@ -1,0 +1,126 @@
+{
+    "total": 6,
+    "introduction": "O Evidence Bank resolve o maior problema das entrevistas: esquecer as próprias experiências. Cada história segue a estrutura STAR (Situação, Tarefa, Ação, Resultado) e pode ser reutilizada para responder várias perguntas. Edite os exemplos abaixo com seus dados reais.",
+    "stories": [
+        {
+            "id": "story-boticario-sql",
+            "title": "Validação de persistência de pedidos",
+            "client": "Grupo Boticário",
+            "company": "Prime Control",
+            "technology": "SQL",
+            "tags": ["SQL", "Data Validation", "ERP", "E-commerce"],
+            "situation": "O cliente precisava validar a criação de pedidos no sistema de e-commerce, garantindo que os dados persistiam corretamente no banco após o processamento.",
+            "task": "Validar a persistência dos pedidos no banco de dados e identificar qualquer inconsistência entre o que a aplicação exibia e o que estava gravado.",
+            "action": "Desenvolvi consultas SQL para cruzar as tabelas de pedidos, itens e clientes, comparando os dados exibidos na aplicação com o estado persistido. Criei uma rotina de validação de dados que conferia valores, status e integridade referencial após cada transação.",
+            "result": "Encontrei uma inconsistência de persistência que poderia causar um problema em produção — pedidos processados mas com status divergente no banco. O caso foi reportado com reprodução e o time corrigiu antes do release. O teste de validação virou parte da suíte de regressão.",
+            "businessImpact": "Prevenção de um problema em produção, evitando impacto financeiro e de experiência do cliente em um sistema de e-commerce de grande escala.",
+            "lessons": ["Validação de dados no banco é tão importante quanto a validação funcional.", "Consultas SQL bem estruturadas detectam inconsistências invisíveis na UI."],
+            "possibleQuestions": [
+                "Como você valida dados no banco durante testes de automação?",
+                "Conte um bug crítico que você encontrou.",
+                "Como você usa SQL no seu dia a dia?"
+            ],
+            "bestAnswer": "Em um projeto de e-commerce para o Grupo Boticário, eu validava a persistência de pedidos cruzando as tabelas do banco com os dados exibidos na aplicação. Encontrei uma inconsistência de status entre a aplicação e o banco que poderia afetar produção. Reportei com reprodução, o time corrigiu antes do release e o teste virou regressão permanente — isso evitou um incidente com impacto financeiro e de experiência do cliente."
+        },
+        {
+            "id": "story-sipal-robot",
+            "title": "Estabilização de automação legada",
+            "client": "SIPAL (interno)",
+            "company": "Prime Control",
+            "technology": "Robot Framework",
+            "tags": ["Robot Framework", "Python", "REST", "SAP", "Estabilidade"],
+            "situation": "Uma suíte de automação legada com testes instáveis rodava com 70% de taxa de sucesso, gerando retrabalho e falta de confiança no time.",
+            "task": "Diagnosticar e estabilizar os testes instáveis, tornando a suíte confiável o suficiente para rodar no pipeline de CI/CD.",
+            "action": "Analisei os logs e reports (log.html/output.xml) para identificar as causas raiz: esperas fixas (Sleep), dados de teste compartilhados e seletores frágeis. Substituí esperas fixas por esperas explícitas, isolei dados por teste e padronizei seletores estáveis. Criei uma política de retry apenas em ações de setup.",
+            "result": "A estabilidade da suíte subiu de 70% para 99% e o tempo de execução caiu, permitindo a integração com o pipeline de CI/CD e execução em cada release.",
+            "businessImpact": "Redução drástica de retrabalho e de bugs que escapavam para produção, com confiança renovada na automação.",
+            "lessons": ["Testes instáveis são um problema de engenharia, não de sorte — diagnóstico de causa raiz é essencial.", "Esperas explícitas superam Sleep em estabilidade e velocidade."],
+            "possibleQuestions": [
+                "Como você estabiliza testes instáveis?",
+                "Como você diagnostica um teste flaky?",
+                "Descreva sua experiência com Robot Framework."
+            ],
+            "bestAnswer": "Em um projeto interno (SIPAL), herdei uma suíte de automação com 70% de estabilidade. Analisei os logs e identifiquei as causas: Sleep fixos, dados compartilhados e seletores frágeis. Troquei por esperas explícitas, isolei dados por teste e padronizei seletores. A estabilidade subiu para 99%, o tempo caiu e a suíte passou a rodar no CI a cada release."
+        },
+        {
+            "id": "story-api-contract",
+            "title": "Contract testing que evitou incidente",
+            "client": "Consórcio / Parceiro bancário",
+            "company": "Prime Control",
+            "technology": "API",
+            "tags": ["API", "Contract Testing", "OpenAPI", "CI/CD"],
+            "situation": "Uma integração entre sistemas bancários dependia de contratos de API (schemas de request/response) que mudavam sem controle entre os parceiros.",
+            "task": "Garantir que mudanças de contrato fossem detectadas antes do deploy, evitando quebras em produção.",
+            "action": "Configurei a validação de contrato no pipeline de CI com schemas OpenAPI versionados. Cada mudança de contrato era validada automaticamente contra os consumidores, e os testes de contrato rodavam a cada PR.",
+            "result": "Quando um parceiro tornou um campo obrigatório no request, o contrato quebrou no CI antes do deploy, evitando um incidente em produção. O processo virou padrão para as integrações.",
+            "businessImpact": "Prevenção de incidentes de integração em ambiente bancário, protegendo transações e a confiança dos clientes.",
+            "lessons": ["Contract testing entrega feedback cedo e barato em integrações.", "Schemas versionados são a fonte da verdade."],
+            "possibleQuestions": [
+                "O que é contract testing?",
+                "Como você integra qualidade ao pipeline?",
+                "Conte sobre um problema de integração que você resolveu."
+            ],
+            "bestAnswer": "Em uma integração bancária, os contratos de API mudavam sem controle entre parceiros. Configurei a validação de contrato com schemas OpenAPI versionados no CI. Quando um parceiro tornou um campo obrigatório, o contrato quebrou no deploy, evitando um incidente em produção — o processo virou padrão."
+        },
+        {
+            "id": "story-regression-time",
+            "title": "Redução de 3 dias para 25 minutos na regressão",
+            "client": "Projeto corporativo",
+            "company": "Prime Control",
+            "technology": "CI/CD & E2E",
+            "tags": ["CI/CD", "Pirâmide de testes", "E2E", "Performance de suíte"],
+            "situation": "A regressão manual de um sistema corporativo levava 3 dias e era executada apenas em releases, permitindo que bugs escapassem.",
+            "task": "Reduzir o tempo da regressão e aumentar a frequência de execução sem perder cobertura.",
+            "action": "Automatizei os fluxos críticos e reorganizei a estratégia com base na pirâmide de testes: validações que não precisavam de UI foram movidas para testes de API, e o E2E ficou reservado aos fluxos essenciais. Paralelizei a execução no CI.",
+            "result": "A regressão automatizada passou a rodar em 25 minutos, a cada release e em nightly, com a mesma cobertura dos fluxos críticos. Bugs passaram a ser detectados em horas, não em semanas.",
+            "businessImpact": "Detecção precoce de regressões, redução de bugs em produção e confiança para releases mais frequentes.",
+            "lessons": ["A pirâmide de testes equilibra velocidade e cobertura.", "Paralelização e API tests transformam a frequência de qualidade."],
+            "possibleQuestions": [
+                "Como você reduziria o tempo de execução de uma suíte E2E?",
+                "Como você integra testes ao pipeline?",
+                "Qual projeto você tem mais orgulho?"
+            ],
+            "bestAnswer": "A regressão manual de um sistema corporativo levava 3 dias e rodava só em release. Automatizei os fluxos críticos, movi validações desnecessárias de UI para testes de API e paralelizei no CI. A regressão passou a rodar em 25 minutos, a cada release e nightly, detectando bugs em horas em vez de semanas."
+        },
+        {
+            "id": "story-auth-oauth",
+            "title": "Framework de autenticação OAuth2 reutilizável",
+            "client": "Projeto de API",
+            "company": "Prime Control",
+            "technology": "API & Python",
+            "tags": ["OAuth2", "Python", "requests", "Fixtures"],
+            "situation": "Os testes de API dependiam de tokens OAuth2 que expiravam, e cada teste fazia login do zero, gerando lentidão e falhas esporádicas.",
+            "task": "Criar um fluxo de autenticação reutilizável e confiável para a suíte de testes.",
+            "action": "Criei uma fixture de sessão (scope session) que autentica uma vez via OAuth2 (Client Credentials) e injeta o token em uma Session reutilizável. Implementei a renovação automática do token quando expirava e validei os cenários de 401/403 separadamente.",
+            "result": "A suíte ficou mais rápida (sem login repetido) e estável, e os testes de autenticação/autorização ganharam cobertura completa, incluindo token expirado e scope insuficiente.",
+            "businessImpact": "Confiança na suíte de API e cobertura de segurança de autenticação, crítica para sistemas bancários.",
+            "lessons": ["Setup via fixture evita duplicação e instabilidade.", "Testes de autenticação precisam cobrir os cenários negativos."],
+            "possibleQuestions": [
+                "Como você testa autenticação OAuth2 em APIs?",
+                "Como você usa fixtures no pytest?",
+                "Como você garante a estabilidade da sua suíte?"
+            ],
+            "bestAnswer": "Numa suíte de API, cada teste fazia login do zero e os tokens expiravam, gerando falhas. Criei uma fixture session que autentica via OAuth2 Client Credentials e injeta o token numa Session reutilizável, com renovação automática. A suíte ficou mais rápida e estável, e os cenários de 401/403 ganharam cobertura."
+        },
+        {
+            "id": "story-pagamento-critico",
+            "title": "Automação do fluxo crítico de pagamentos",
+            "client": "Cliente do setor financeiro",
+            "company": "Prime Control",
+            "technology": "API & SQL",
+            "tags": ["Pagamentos", "API", "SQL", "Regressão"],
+            "situation": "O fluxo de pagamentos era o mais crítico do cliente, mas era testado manualmente e apenas em releases, com risco alto de regressão.",
+            "task": "Automatizar a validação do fluxo de pagamentos, incluindo a persistência dos dados e os casos de erro.",
+            "action": "Desenvolvi testes de API cobrindo o happy path e os erros de negócio (saldo insuficiente, limite excedido), e validações SQL da persistência e da trilha de auditoria. Configurei a execução como smoke pós-deploy.",
+            "result": "O fluxo de pagamentos passou a ser validado automaticamente a cada deploy, detectando regressões em minutos. Um bug de arredondamento de valores foi detectado e corrigido antes de afetar os clientes.",
+            "businessImpact": "Proteção do fluxo financeiro mais crítico, evitando erros de valores e problemas regulatórios.",
+            "lessons": ["Fluxos financeiros críticos merecem automação em camadas (API + dados).", "Precisão de valores (DECIMAL vs FLOAT) é crítica em finanças."],
+            "possibleQuestions": [
+                "Como você testaria um fluxo de pagamentos?",
+                "Como você valida a precisão de valores financeiros?",
+                "Conte sobre um bug financeiro que você encontrou."
+            ],
+            "bestAnswer": "O fluxo de pagamentos era crítico e testado só em release. Automatizei testes de API (happy path + erros de negócio) e validações SQL de persistência e auditoria, rodando como smoke pós-deploy. Detectei um bug de arredondamento de valores que foi corrigido antes de afetar clientes."
+        }
+    ]
+}

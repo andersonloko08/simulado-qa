@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | InterviewOps Portugal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body data-page="dashboard">
+    <header class="topbar">
+        <a href="../index.html" class="topbar-content">
+            <i class="fa-solid fa-bullseye logo-icon"></i>
+            <span>InterviewOps Portugal</span>
+        </a>
+        <div class="topbar-actions">
+            <button id="theme-toggle" class="theme-toggle" aria-label="Alternar tema"><i class="fa-solid fa-moon"></i></button>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <div class="nav-links">
+            <a href="../index.html" class="nav-link" data-page="home"><i class="fa-solid fa-house"></i> Home</a>
+            <a href="index.html" class="nav-link" data-page="dashboard"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+            <a href="../modules/index.html" class="nav-link" data-page="modules"><i class="fa-solid fa-book-open"></i> Módulos</a>
+            <a href="../mock/index.html" class="nav-link" data-page="mock"><i class="fa-solid fa-microphone"></i> Mock Interview</a>
+            <a href="../career/index.html" class="nav-link" data-page="career"><i class="fa-solid fa-compass"></i> Career Engine</a>
+            <a href="../companies/index.html" class="nav-link" data-page="companies"><i class="fa-solid fa-building"></i> Empresas</a>
+            <a href="../english/index.html" class="nav-link" data-page="english"><i class="fa-solid fa-language"></i> English</a>
+            <a href="../tracker/index.html" class="nav-link" data-page="tracker"><i class="fa-solid fa-chart-line"></i> Gaps</a>
+            <a href="../roadmap/index.html" class="nav-link" data-page="roadmap"><i class="fa-solid fa-route"></i> Roadmap</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="breadcrumb">
+            <a href="../index.html">Home</a> <i class="fa-solid fa-chevron-right"></i> <span>Dashboard</span>
+        </div>
+
+        <div class="page-header">
+            <h1><i class="fa-solid fa-gauge-high" style="color: var(--primary);"></i> Dashboard</h1>
+            <p>Visão geral da sua preparação: progresso, pontos fortes, pontos fracos, streak de estudo e próximo módulo recomendado.</p>
+        </div>
+
+        <!-- Overall -->
+        <div class="content-section">
+            <h2><i class="fa-solid fa-flag-checkered"></i> Preparação geral</h2>
+            <div class="flex-between mb-2">
+                <span class="text-muted">Progresso combinado (lições + quizzes)</span>
+                <span class="badge" id="overall-badge">-</span>
+            </div>
+            <div class="progress-container" style="height:18px;"><div class="progress-bar" id="overall-bar" style="width:0%"></div></div>
+        </div>
+
+        <!-- Stats -->
+        <div class="grid-4 mt-2" id="dash-stats">
+            <div class="stat-box"><i class="fa-solid fa-spinner fa-spin"></i> Carregando...</div>
+        </div>
+
+        <div class="grid-2 mt-2">
+            <div class="content-section">
+                <h2><i class="fa-solid fa-fire" style="color: var(--warning);"></i> Módulos com progresso</h2>
+                <div id="progress-modules"></div>
+            </div>
+            <div class="content-section">
+                <h2><i class="fa-solid fa-compass"></i> Próximo passo recomendado</h2>
+                <div id="recommended"></div>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2><i class="fa-solid fa-strength"></i> Áreas fortes e fracas</h2>
+            <div class="grid-2" id="strength-grid"></div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>InterviewOps Portugal &copy; 2026. Desenvolvido para estudos.</p>
+    </footer>
+
+    <script src="../javascript/app.js"></script>
+    <script>
+        let MODULES = [];
+
+        function modulePct(m) {
+            const p = getModuleProgress(m.id);
+            const completed = (p && p.completed) || 0;
+            const total = (p && p.total) || m.totalQuestions || 0;
+            const lessonPct = total > 0 ? completed / total : 0;
+            const quizPct = (p && p.quizBest) ? p.quizBest / 100 : 0;
+            return Math.round((lessonPct * 0.6 + quizPct * 0.4) * 100);
+        }
+
+        function moduleActualProgress(m) {
+            const p = getModuleProgress(m.id);
+            return (p && (p.completed || p.quizBest)) ? true : false;
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const data = await loadJSON('../json/modules.json');
+                MODULES = data.modules || [];
+                renderDashboard();
+            } catch (e) {
+                document.getElementById('dash-stats').innerHTML = '<p class="text-muted">Não foi possível carregar. Execute via servidor local.</p>';
+            }
+        });
+
+        function renderDashboard() {
+            const overall = overallPreparation(MODULES);
+            const bar = document.getElementById('overall-bar');
+            bar.style.width = `${overall}%`;
+            bar.className = `progress-bar ${overall >= 70 ? 'success' : overall >= 40 ? 'warning' : 'danger'}`;
+            const badge = document.getElementById('overall-badge');
+            badge.innerText = `${overall}%`;
+            badge.className = `badge ${overall >= 70 ? 'badge-success' : overall >= 40 ? 'badge-warning' : 'badge-danger'}`;
+
+            const streak = updateStreak();
+            const started = MODULES.filter(moduleActualProgress).length;
+            const completedFull = MODULES.filter(m => modulePct(m) >= 70).length;
+            const weakCount = MODULES.filter(m => modulePct(m) > 0 && modulePct(m) < 40).length;
+
+            document.getElementById('dash-stats').innerHTML = `
+                <div class="stat-box"><div class="stat-value">${streak}</div><div class="stat-label"><i class="fa-solid fa-fire" style="color:var(--warning);"></i> Dias de streak</div></div>
+                <div class="stat-box"><div class="stat-value">${started}/${MODULES.length}</div><div class="stat-label">Módulos iniciados</div></div>
+                <div class="stat-box"><div class="stat-value" style="color:var(--success);">${completedFull}</div><div class="stat-label">Acima de 70%</div></div>
+                <div class="stat-box"><div class="stat-value" style="color:var(--danger);">${weakCount}</div><div class="stat-label">Áreas fracas (<40%)</div></div>
+            `;
+
+            // Progress modules (started only, sorted desc)
+            const withProgress = MODULES.filter(moduleActualProgress).sort((a, b) => modulePct(b) - modulePct(a));
+            document.getElementById('progress-modules').innerHTML = withProgress.length ? withProgress.map(m => {
+                const pct = modulePct(m);
+                return `<div class="progress-row">
+                    <div class="progress-label"><span><i class="fa-solid ${m.icon}"></i> ${escapeHtml(m.title)}</span><span class="pct">${pct}%</span></div>
+                    <div class="progress-container"><div class="progress-bar ${pct >= 70 ? 'success' : pct >= 40 ? 'warning' : 'danger'}" style="width:${pct}%"></div></div>
+                </div>`;
+            }).join('') : '<p class="text-muted">Você ainda não iniciou nenhum módulo. Comece pelo módulo SQL ou API.</p>';
+
+            // Recommended: lowest started progress or first not started
+            const notStarted = MODULES.filter(m => !moduleActualProgress(m));
+            let recommended;
+            if (notStarted.length) {
+                recommended = notStarted[0];
+            } else {
+                recommended = [...MODULES].sort((a, b) => modulePct(a) - modulePct(b))[0];
+            }
+            document.getElementById('recommended').innerHTML = `
+                <div class="module-card">
+                    <div class="module-icon"><i class="fa-solid ${recommended.icon}"></i></div>
+                    <h3>${escapeHtml(recommended.title)}</h3>
+                    <p>${escapeHtml(recommended.shortDescription)}</p>
+                    <span class="badge badge-info"><i class="fa-solid fa-clock"></i> ${recommended.duration}</span>
+                    <a href="../modules/module.html?id=${recommended.id}" class="primary-btn small-btn mt-2" style="color:#fff;"><i class="fa-solid fa-play"></i> Estudar agora</a>
+                </div>`;
+
+            // Strong/weak
+            const strong = [...MODULES].filter(m => modulePct(m) >= 70).sort((a, b) => modulePct(b) - modulePct(a)).slice(0, 5);
+            const weak = [...MODULES].filter(m => moduleActualProgress(m) && modulePct(m) < 40).sort((a, b) => modulePct(a) - modulePct(b)).slice(0, 5);
+            const grid = document.getElementById('strength-grid');
+            grid.innerHTML = `
+                <div>
+                    <h3 style="margin-bottom:0.75rem; color:var(--success);"><i class="fa-solid fa-thumbs-up"></i> Áreas fortes</h3>
+                    ${strong.length ? strong.map(m => `<div class="progress-row"><div class="progress-label"><span>${escapeHtml(m.title)}</span><span class="pct">${modulePct(m)}%</span></div><div class="progress-container"><div class="progress-bar success" style="width:${modulePct(m)}%"></div></div></div>`).join('') : '<p class="text-muted">Nenhuma área forte ainda. Continue estudando!</p>'}
+                </div>
+                <div>
+                    <h3 style="margin-bottom:0.75rem; color:var(--danger);"><i class="fa-solid fa-thumbs-down"></i> Áreas fracas</h3>
+                    ${weak.length ? weak.map(m => `<div class="progress-row"><div class="progress-label"><span>${escapeHtml(m.title)}</span><span class="pct">${modulePct(m)}%</span></div><div class="progress-container"><div class="progress-bar danger" style="width:${modulePct(m)}%"></div></div></div>`).join('') : '<p class="text-muted">Nenhuma área fraca registrada. Excelente!</p>'}
+                </div>`;
+        }
+    </script>
+</body>
+</html>

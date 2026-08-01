@@ -1,0 +1,172 @@
+{
+    "id": "testing",
+    "title": "Fundamentos de Teste",
+    "icon": "fa-vial",
+    "level": "Básico",
+    "duration": "1-2 semanas",
+    "shortDescription": "Estratégias, pirâmide, casos de teste e tipos de teste.",
+    "description": "A base da engenharia de teste: pirâmide de testes, níveis, técnicas de design de casos de teste e estratégias de cobertura. Este módulo é fundamental para qualquer entrevista de QA.",
+    "topics": ["Pirâmide", "Níveis", "Casos de teste"],
+    "concepts": [
+        {
+            "title": "Pirâmide de Testes & Níveis",
+            "theory": "A pirâmide de testes orienta a distribuição: muitos testes unitários (base, rápidos e baratos), menos testes de integração (no meio), e poucos testes E2E (topo, lentos e frágeis). Níveis de teste: unitário (componente isolado), integração (interação entre componentes/sistemas), sistema/E2E (fluxo completo), e aceitação (critérios do usuário). A regra prática: automatizar mais em camadas baixas e usar E2E para fluxos críticos.",
+            "examples": [
+                "Unitário: validar função de cálculo de juros isolada",
+                "Integração: API + banco, contrato entre sistemas",
+                "E2E: fluxo completo do pedido na UI",
+                "Aceitação: critérios de aceite do PO em Gherkin"
+            ],
+            "commonMistakes": [
+                "Inverter a pirâmide (muitos E2E e poucos unitários).",
+                "Confundir integração com E2E.",
+                "Depender de E2E para tudo (lento e flaky).",
+                "Sem testes unitários de regras de negócio."
+            ],
+            "projectExample": "Em um projeto de cartões, reorganizamos a estratégia: regras de negócio no unit, contrato e banco na integração, e apenas 20 fluxos críticos em E2E. O tempo da suíte caiu de 2h para 25min e a confiança subiu.",
+            "interviewQuestions": [
+                {
+                    "question": "Explique a pirâmide de testes e por que ela é importante.",
+                    "difficulty": "Fácil",
+                    "expectedAnswer": "A pirâmide orienta a distribuição ideal dos testes: a base tem muitos testes unitários (rápidos, baratos, isolados), o meio tem testes de integração (interação entre componentes), e o topo poucos testes E2E (lentos e frágeis). É importante porque maximiza a cobertura com o menor custo e tempo: feedback rápido na base, cobrindo regras de negócio, e E2E reservado para fluxos críticos. Uma pirâmide invertida (muitos E2E) gera suítes lentas e instáveis.",
+                    "followUps": [
+                        "Qual a diferença entre integração e E2E?",
+                        "Como você decide o que colocar em cada nível?"
+                    ],
+                    "mistakes": [
+                        "Não saber os níveis.",
+                        "Defender muitos E2E."
+                    ],
+                    "english": "The test pyramid guides the ideal distribution: many fast, cheap unit tests at the base, integration tests in the middle, and few slow, fragile E2E tests at the top. It maximizes coverage at the lowest cost and time, with fast feedback at the base and E2E reserved for critical flows. An inverted pyramid creates slow, flaky suites."
+                },
+                {
+                    "question": "Qual a diferença entre teste de integração e teste E2E?",
+                    "difficulty": "Intermediária",
+                    "expectedAnswer": "Teste de integração valida a interação entre componentes ou sistemas específicos (API + banco, contrato entre dois serviços) de forma isolada e determinística. Teste E2E valida um fluxo completo do início ao fim na perspectiva do usuário, atravessando UI, APIs e integrações, geralmente mais lento e frágil. A integração detecta problemas de contrato/interação cedo; o E2E confirma que o fluxo inteiro funciona junto.",
+                    "followUps": [
+                        "Dê um exemplo de cada.",
+                        "Como você evita excesso de E2E?"
+                    ],
+                    "mistakes": [
+                        "Tratar como a mesma coisa.",
+                        "E2E cobrindo o que a integração já cobre."
+                    ],
+                    "english": "Integration testing validates the interaction between specific components or systems in isolation, such as API plus database. E2E testing validates a complete user flow from start to finish, across UI, APIs and integrations, and is slower and more fragile. Integration catches contract issues early; E2E confirms the whole flow works together."
+                }
+            ],
+            "challenges": [
+                "Desenhe a pirâmide de testes de uma aplicação de pagamentos.",
+                "Classifique 8 cenários em unitário/integração/E2E."
+            ]
+        },
+        {
+            "title": "Design de Casos de Teste",
+            "theory": "Técnicas de design de casos de teste: análise de valor limite (limites válidos/inválidos), particionamento de equivalência (agrupar inputs que o sistema trata igual), tabela de decisão (combinações de condições), transição de estados (mudanças de estado), e uso de casos baseado em cenários. Casos bem escritos têm: ID, pré-condições, passos, dados e resultado esperado. O objetivo é maximizar detecção de defeitos com o menor número de casos.",
+            "examples": [
+                "Valor limite: campo aceita 1-100; testar 0, 1, 50, 100, 101",
+                "Particionamento: faixa etária 18-65 válida; fora inválida",
+                "Tabela de decisão: combinação de 'cliente VIP' x 'desconto' x 'limite'",
+                "Transição de estados: pedido Pendente -> Aprovado -> Enviado -> Entregue"
+            ],
+            "commonMistakes": [
+                "Testar apenas valores 'bonitos' no meio da faixa.",
+                "Casos sem resultado esperado.",
+                "Ignorar combinações de condições (tabela de decisão).",
+                "Casos dependentes uns dos outros."
+            ],
+            "projectExample": "Ao testar a regra de limite de crédito, apliquei particionamento + valor limite: valores abaixo, no limite e acima do teto. Encontrei um bug no exato valor do teto (off-by-one) que os testes de negócio não cobriam. Esse caso virou teste automatizado de regressão.",
+            "interviewQuestions": [
+                {
+                    "question": "O que é análise de valor limite e como você a aplica?",
+                    "difficulty": "Fácil",
+                    "expectedAnswer": "Análise de valor limite foca nos limites dos domínios de entrada, onde bugs são mais comuns. Para um campo que aceita 1 a 100, testo: 0 e 101 (inválidos), 1 e 100 (limites válidos) e um valor central. Aplico sempre em regras numéricas, datas, tamanhos e faixas, porque erros de fronteira (off-by-one) são frequentes.",
+                    "followUps": [
+                        "Dê um exemplo com data de validade.",
+                        "Qual a diferença para particionamento de equivalência?"
+                    ],
+                    "mistakes": [
+                        "Testar só valores centrais.",
+                        "Não conhecer a técnica."
+                    ],
+                    "english": "Boundary value analysis focuses on the edges of input domains, where bugs are most common. For a field accepting 1 to 100, I test 0 and 101 as invalid, 1 and 100 as valid boundaries, and a central value. I apply it to numeric rules, dates, sizes and ranges because off-by-one errors are frequent."
+                },
+                {
+                    "question": "Explique particionamento de equivalência e tabela de decisão.",
+                    "difficulty": "Intermediária",
+                    "expectedAnswer": "Particionamento de equivalência divide o domínio de entrada em partições que o sistema trata da mesma forma; testar um representante de cada partição cobre o grupo. Tabela de decisão mapeia combinações de condições para ações/resultados, útil quando múltiplas condições interagem (ex.: cliente VIP + desconto + limite). Uso a primeira para domínios simples e a segunda para regras com combinações lógicas.",
+                    "followUps": [
+                        "Quando a tabela de decisão é essencial?",
+                        "Como você combina as duas técnicas?"
+                    ],
+                    "mistakes": [
+                        "Não diferenciar as técnicas.",
+                        "Testar todas as combinações sem priorizar."
+                    ],
+                    "english": "Equivalence partitioning divides the input domain into partitions the system treats the same; testing one representative of each partition covers the group. Decision tables map combinations of conditions to actions or results, useful when multiple conditions interact. I use partitioning for simple domains and decision tables for logical combinations."
+                }
+            ],
+            "challenges": [
+                "Aplique valor limite a uma regra de 'senha com 8 a 16 caracteres'.",
+                "Monte uma tabela de decisão para uma regra de frete grátis."
+            ]
+        },
+        {
+            "title": "Tipos de Teste & Estratégia de Cobertura",
+            "theory": "Tipos de teste: funcional, regressão, smoke, aceitação, exploratório, performance, segurança, usabilidade, compatibilidade e acessibilidade. A estratégia define o que testar em cada release: smoke após deploy, regressão nos fluxos críticos, exploratório em mudanças significativas, performance nos picos. Cobertura: de código (linhas, branches) e de requisitos. O QA prioriza pelo risco de negócio: o que quebrar tem maior impacto?",
+            "examples": [
+                "Smoke pós-deploy: health checks e fluxos críticos",
+                "Regressão: suíte automatizada dos fluxos essenciais",
+                "Exploratório: sessões em novas funcionalidades",
+                "Performance: testes de carga nos períodos de pico"
+            ],
+            "commonMistakes": [
+                "Testar tudo igualmente, sem priorização por risco.",
+                "Ignorar testes exploratórios (só scripts).",
+                "Cobertura de código como meta cega (alto % mas baixa relevância).",
+                "Sem smoke pós-deploy."
+            ],
+            "projectExample": "Definimos a estratégia por risco: smoke automático após cada deploy, regressão dos fluxos de pagamento em cada release, e sessões exploratórias em mudanças de regras de crédito. Isso concentrou esforço onde o impacto de falha era maior.",
+            "interviewQuestions": [
+                {
+                    "question": "Como você define a estratégia de testes de um release?",
+                    "difficulty": "Intermediária",
+                    "expectedAnswer": "Baseada em risco de negócio: identifico o que mudou, o impacto de falha por fluxo e a probabilidade de regressão. Defino: smoke automático pós-deploy, regressão automatizada dos fluxos críticos, testes de integração das mudanças, sessões exploratórias direcionadas e testes de performance se houver mudança relevante. Documento o escopo testado e o que ficou de fora (risco residual), comunicando claramente ao time.",
+                    "followUps": [
+                        "Como você prioriza quando o tempo é curto?",
+                        "Como mede o risco residual?"
+                    ],
+                    "mistakes": [
+                        "Plano genérico sem risco.",
+                        "Não comunicar o que não foi testado."
+                    ],
+                    "english": "Based on business risk: I identify what changed, the impact of failure per flow and the probability of regression. I define automated smoke after deploy, automated regression of critical flows, integration tests for changes, targeted exploratory sessions, and performance tests when relevant. I document the tested scope and residual risk, communicating clearly to the team."
+                },
+                {
+                    "question": "Qual a diferença entre testes automatizados e exploratórios?",
+                    "difficulty": "Intermediária",
+                    "expectedAnswer": "Automatizados são scriptados, repetíveis e determinísticos — ideais para regressão e validação contínua de comportamentos conhecidos. Exploratórios são sessões sem roteiro rígido, com aprendizado simultâneo do sistema, ideais para descobrir bugs inesperados, questões de usabilidade e áreas complexas. Não se substituem: automação cobre o conhecido, exploração cobre o desconhecido.",
+                    "followUps": [
+                        "Como documentar sessões exploratórias?",
+                        "Quando priorizar exploração?"
+                    ],
+                    "mistakes": [
+                        "Achar que automação substitui exploração.",
+                        "Exploração sem registro."
+                    ],
+                    "english": "Automated tests are scripted, repeatable and deterministic, ideal for regression and continuous validation of known behaviors. Exploratory testing is unscripted sessions with simultaneous learning, ideal for discovering unexpected bugs, usability issues and complex areas. They complement each other: automation covers the known, exploration covers the unknown."
+                }
+            ],
+            "challenges": [
+                "Monte a estratégia de testes de um release com mudança em uma regra financeira.",
+                "Liste 3 casos onde a exploração encontraria o que a automação não cobre."
+            ]
+        }
+    ],
+    "quiz": [
+        { "question": "Na pirâmide de testes, a base é composta por:", "options": { "A": "Testes E2E", "B": "Testes unitários", "C": "Testes manuais", "D": "Testes de aceitação" }, "answer": "B", "explanation": "A base é de testes unitários: rápidos, baratos e em grande quantidade." },
+        { "question": "Qual técnica testa valores nos limites dos domínios?", "options": { "A": "Particionamento de equivalência", "B": "Análise de valor limite", "C": "Tabela de decisão", "D": "Transição de estados" }, "answer": "B", "explanation": "Valor limite foca nas fronteiras, onde erros off-by-one são comuns." },
+        { "question": "Uma tabela de decisão é mais útil quando:", "options": { "A": "Há um único input", "B": "Múltiplas condições interagem", "C": "Não há regras", "D": "Só há saídas" }, "answer": "B", "explanation": "Combinações de condições são mapeadas para ações/resultados." },
+        { "question": "Teste que valida a interação entre componentes de forma isolada:", "options": { "A": "Unitário", "B": "Integração", "C": "E2E", "D": "Smoke" }, "answer": "B", "explanation": "Integração valida interações específicas (API + banco, contratos)." },
+        { "question": "Sessões sem roteiro rígido para descobrir bugs inesperados são:", "options": { "A": "Testes automatizados", "B": "Testes exploratórios", "C": "Testes de regressão", "D": "Testes de carga" }, "answer": "B", "explanation": "Exploração combina aprendizado e descoberta, cobrindo o desconhecido." }
+    ]
+}

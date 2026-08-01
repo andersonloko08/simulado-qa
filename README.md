@@ -1,0 +1,108 @@
+# InterviewOps Portugal
+
+## The Ultimate Interview Preparation Platform for QA Automation Engineers
+
+**Version:** 1.0
+**Author:** Anderson Vinicius dos Santos Pereira
+
+---
+
+## 🎯 Visão do Projeto
+
+InterviewOps Portugal não é mais um repositório de perguntas de entrevista.
+
+É uma plataforma de engenharia projetada para transformar anos de experiência profissional em prontidão para entrevistas.
+
+Em vez de estudar tecnologias isoladamente, a plataforma ensina o candidato a conectar:
+
+- Conhecimento técnico
+- Experiência profissional real
+- Contexto de negócio
+- Comunicação
+- Resolução de problemas
+- Confiança
+
+> Transformar um profissional tecnicamente competente em alguém capaz de comunicar essa competência com clareza durante entrevistas.
+
+## 🏛 Arquitetura do Projeto
+
+```
+InterviewOps/
+├── index.html              # Home / Landing
+├── dashboard/              # Dashboard (progresso, pontos fortes/fracos, streak)
+├── modules/                # Módulos técnicos (API, SQL, Robot, Playwright...)
+├── companies/              # Company Playbooks (Natixis, KLx, Cardif...)
+├── career/                 # Career Engine, Story Builder, Evidence Bank
+├── english/                # Módulo de Inglês para entrevistas
+├── mock/                   # Mock Interview Engine (simulador de entrevista)
+├── tracker/                # Gap Tracker e Progress Tracking
+├── roadmap/                # Review Engine (spaced repetition)
+├── json/                   # Banco de dados (modules, questions, companies, stories, english)
+├── css/                    # Design system compartilhado
+├── javascript/             # Lógica compartilhada (tema, progresso, helpers)
+├── assets/                 # Imagens e mídia
+└── docs/                   # Documentação
+```
+
+## ✨ Principais Funcionalidades
+
+- **Dashboard:** visão geral da preparação com barras de progresso, streak de estudo, áreas fracas e fortes e módulo recomendado.
+- **Módulos Técnicos (15):** API, SQL, Python, Robot Framework, Playwright, Git, CI/CD, Docker, Kubernetes, SAP, Agile, BDD, Testing, Security e Performance. Estrutura padronizada: teoria, exemplos, erros comuns, exemplo de projeto real, questões de entrevista (com resposta esperada, follow-ups e versão em inglês), desafios e quiz.
+- **Mock Interview Engine:** o sistema vira o entrevistador. Pergunta aparece, timer inicia, o candidato responde e o sistema revela pontos fortes, pontos faltantes, perspectiva técnica e de negócio.
+- **Career Engine / Story Builder:** cada experiência profissional vira uma história reutilizável de entrevista (Problema → Ação → Resultado → Valor de negócio).
+- **Evidence Bank:** banco de evidências por tecnologia — projetos, falhas, sucessos, lições aprendidas e impacto no negócio.
+- **Company Playbooks:** uma página por empresa (Natixis, KLx, Cardif, Siemens, Hitachi Rail) com cultura, stack, perguntas esperadas, gaps comuns e histórias recomendadas.
+- **Gap Tracker:** mostra o conhecimento que falta (atual vs. alvo) com lições e exercícios recomendados.
+- **Review Engine:** recomendações diárias (spaced repetition) para prevenir a perda de conhecimento.
+- **English Module:** vocabulário, perguntas comuns, explicações técnicas e apresentação profissional em inglês.
+- **Dark Mode:** suportado, com persistência.
+- **Mobile First:** totalmente responsivo e compatível com GitHub Pages.
+
+## 🚀 Tecnologias
+
+- **HTML5, CSS3 (Vanilla), JavaScript ES6+** — sem frameworks, rápido, zero custo de hospedagem.
+- **JSON** como banco de dados estático — GitHub Pages friendly, sem backend.
+- **localStorage** para progresso, streak e estado do mock interview.
+- **Python** como linguagem de apoio para geração/manutenção de conteúdo JSON.
+
+## 💻 Como Rodar
+
+1. Clonar este repositório.
+2. Abrir `index.html` (ou servir com `python -m http.server 8000` para melhor experiência com fetch de JSON).
+3. Navegar pelos módulos e começar a preparação.
+
+> Nota: como a plataforma carrega dados via `fetch` de arquivos JSON, o uso de um servidor local simples (`python -m http.server 8000`) é recomendado, ou abrir os arquivos de forma que o fetch seja permitido.
+
+## 📚 Módulos Técnicos
+
+API | SQL | Python | Robot Framework | Playwright | Git | CI/CD | Docker | Kubernetes | SAP | Agile | BDD | Testing | Security | Performance
+
+## 🏢 Company Playbooks
+
+Natixis | KLx | Cardif | Siemens | Hitachi Rail
+
+## 🛤 Roadmap de Desenvolvimento
+
+- **Fase 1 — Fundação:** layout, navegação, dashboard, módulos.
+- **Fase 2 — Conteúdo:** QA, API, SQL, Robot, Python.
+- **Fase 3 — Career Engine:** resume parser, Story Builder, Evidence Bank.
+- **Fase 4 — Empresas:** playbooks das 5 empresas.
+- **Fase 5 — Interview Engine:** questões, timer, avaliação, revisão adaptativa.
+- **Fase 6 — Inglês:** entrevista técnica, RH, vocabulário.
+- **Fase 7 — IA (futuro):** simulador de entrevista, recomendações personalizadas, análise de fraquezas.
+
+## ⚖️ Principio Central
+
+> Não memorize respostas.
+>
+> Construa evidências.
+>
+> Conte histórias.
+>
+> Demonstre engenharia.
+>
+> Inspire confiança.
+
+---
+
+InterviewOps Portugal &copy; 2026. Desenvolvido para estudos e open-source.

@@ -1,0 +1,171 @@
+{
+    "id": "agile",
+    "title": "Agile & Scrum",
+    "icon": "fa-people-group",
+    "level": "Básico",
+    "duration": "1 semana",
+    "shortDescription": "Scrum, Kanban, cerimônias e o papel do QA no time.",
+    "description": "Metodologias ágeis são a forma padrão de trabalho em quase todas as empresas. Este módulo cobre Scrum, Kanban, cerimônias, artefatos e o papel do QA no fluxo ágil.",
+    "topics": ["Scrum", "Kanban", "Papel do QA"],
+    "concepts": [
+        {
+            "title": "Scrum: Papéis, Cerimônias e Artefatos",
+            "theory": "Scrum é um framework ágil: Product Owner (prioriza o backlog), Scrum Master (remove impedimentos, garante o processo), e Time de Desenvolvimento (auto-organizado, inclui o QA). Cerimônias: Sprint Planning, Daily, Sprint Review e Retrospectiva. Artefatos: Product Backlog, Sprint Backlog e Incremento. O Sprint tem timebox fixo (ex.: 2 semanas). O QA participa de todas as cerimônias, colabora na definição de pronto (Definition of Done) e garante a qualidade do incremento.",
+            "examples": [
+                "Definition of Done inclui: testes automatizados passando, cobertura dos cenários críticos, sem bugs críticos conhecidos",
+                "Sprint Planning: o QA contribui no refinamento das histórias (critérios de aceite)",
+                "Retrospectiva: QA traz dados de bugs e estabilidade da suíte"
+            ],
+            "commonMistakes": [
+                "QA isolado testando 'no final' da sprint (shift-left violado).",
+                "Definition of Done sem critérios de qualidade.",
+                "Sprint entregue sem testes automatizados.",
+                "Confundir papéis de PO e Scrum Master."
+            ],
+            "projectExample": "Em uma squad ágil, o QA deixou de ser testador final e passou a participar do refinamento, escrevendo critérios de aceite e testes de contrato junto com o dev. Bugs em produção caíram e a sprint passou a terminar com testes automatizados rodando no pipeline.",
+            "interviewQuestions": [
+                {
+                    "question": "Qual o papel do QA dentro de um time Scrum?",
+                    "difficulty": "Intermediária",
+                    "expectedAnswer": "O QA é membro do time de desenvolvimento e promove a qualidade em todo o fluxo, não apenas no final: participa do refinamento escrevendo critérios de aceite testáveis, colabora com testes de contrato e automação, garante a Definition of Done (testes passando, sem bugs críticos), e traz dados objetivos (bugs, cobertura, estabilidade) para planning e retrospectivas. O objetivo é o shift-left: prevenir defeitos, não só detectá-los.",
+                    "followUps": [
+                        "Como você contribui no refinamento das histórias?",
+                        "O que coloca na Definition of Done?"
+                    ],
+                    "mistakes": [
+                        "Testador no final da sprint.",
+                        "Não citar shift-left."
+                    ],
+                    "english": "The QA is a member of the development team promoting quality across the whole flow, not just at the end: participating in refinement with testable acceptance criteria, collaborating on contracts and automation, guaranteeing the Definition of Done, and bringing objective data to planning and retrospectives. The goal is shift-left: preventing defects, not only detecting them."
+                },
+                {
+                    "question": "O que é a Definition of Done e por que ela importa para o QA?",
+                    "difficulty": "Intermediária",
+                    "expectedAnswer": "Definition of Done é um acordo do time sobre o que significa uma entrega concluída, garantindo consistência e qualidade mínima. Para o QA, ela deve incluir: critérios de aceite atendidos, testes automatizados implementados e passando, cobertura dos cenários críticos, sem bugs críticos/bloqueadores, código revisado e deployável. Sem DoD clara, cada item entrega com nível de qualidade diferente, e o QA carrega o risco sozinho.",
+                    "followUps": [
+                        "Quem define a DoD?",
+                        "Qual a diferença entre critérios de aceite e DoD?"
+                    ],
+                    "mistakes": [
+                        "Tratar DoD como opcional.",
+                        "Confundir com critérios de aceite."
+                    ],
+                    "english": "The Definition of Done is a team agreement on what means a completed delivery, ensuring consistency and minimum quality. For QA it includes acceptance criteria met, automated tests implemented and passing, critical scenarios covered, no critical blockers, reviewed and deployable code. Without a clear DoD, quality varies per item."
+                }
+            ],
+            "challenges": [
+                "Escreva uma Definition of Done para uma história de API.",
+                "Liste como você contribuiria em cada cerimônia do Scrum."
+            ]
+        },
+        {
+            "title": "Kanban & Fluxo Contínuo",
+            "theory": "Kanban foca em fluxo contínuo: visualiza o trabalho em um quadro com colunas (To Do, In Progress, Done), limita o WIP (work in progress) e gerencia o lead time. Não tem sprints fixos. É comum em times de suporte, operações ou quando o trabalho é imprevisível. Para o QA: acompanhar o limite de WIP (evitar filas de testes), priorizar a validação de itens críticos e manter o quadro atualizado. A combinação Scrum/Kanban (Scrumban) é frequente.",
+            "examples": [
+                "Colunas: Backlog -> Em desenvolvimento -> Em teste -> Pronto",
+                "WIP limit por coluna (ex.: 3)",
+                "Métricas: lead time, cycle time, throughput",
+                "QA: itens entram em 'Em teste' somente quando prontos para teste"
+            ],
+            "commonMistakes": [
+                "Sem WIP limit, gerando filas gigantes de 'em teste'.",
+                "QA vira gargalo porque testa no final.",
+                "Quadro não reflete a realidade.",
+                "Medir apenas velocidade sem fluxo."
+            ],
+            "projectExample": "Num time de manutenção de automação, adotamos Kanban com WIP limitado. O QA participava da priorização e os itens entravam 'em teste' apenas quando o dev marcava pronto. O lead time caiu porque o teste deixou de ser um gargalo de fim de fila.",
+            "interviewQuestions": [
+                {
+                    "question": "Qual a diferença entre Scrum e Kanban?",
+                    "difficulty": "Fácil",
+                    "expectedAnswer": "Scrum usa sprints com timebox fixo, papéis definidos e cerimônias; o trabalho é planejado em lotes. Kanban é fluxo contínuo com quadro visual e limites de WIP, sem sprints fixos, focando em reduzir lead time e melhorar o fluxo. Em equipes com trabalho imprevisível ou contínuo, Kanban se adapta melhor. Na prática, muitas equipes usam Scrumban combinando os dois.",
+                    "followUps": [
+                        "Quando você escolheria Kanban sobre Scrum?",
+                        "O que é WIP e por que limitá-lo?"
+                    ],
+                    "mistakes": [
+                        "Não saber as diferenças estruturais.",
+                        "Não citar WIP no Kanban."
+                    ],
+                    "english": "Scrum uses fixed timeboxed sprints, defined roles and ceremonies, planning work in batches. Kanban is continuous flow with a visual board and WIP limits, no fixed sprints, focused on reducing lead time. Teams with unpredictable or continuous work often prefer Kanban, and many use Scrumban."
+                },
+                {
+                    "question": "Como o QA contribui para reduzir o lead time sem sacrificar qualidade?",
+                    "difficulty": "Intermediária",
+                    "expectedAnswer": "Testando de forma contínua (shift-left): participar do refinamento, automatizar o quanto antes, ter testes rápidos (camadas de teste) para não criar fila, e usar automação para o retorno rápido. Também priorizo com o time o que precisa de validação manual e o que já está coberto por automação. Quadro atualizado e WIP respeitado evitam que eu vire gargalo.",
+                    "followUps": [
+                        "Como você decide o que automatizar?",
+                        "Qual a diferença entre lead time e cycle time?"
+                    ],
+                    "mistakes": [
+                        "Automação lenta criando fila.",
+                        "Testar tudo no final."
+                    ],
+                    "english": "By testing continuously with shift-left: participating in refinement, automating early, having fast test layers to avoid queues, and using automation for quick feedback. I prioritize with the team what needs manual validation versus what is covered by automation, and keep the board updated to avoid becoming a bottleneck."
+                }
+            ],
+            "challenges": [
+                "Desenhe um quadro Kanban com WIP limits e o fluxo do QA.",
+                "Explique como você evitaria virar gargalo em um time Kanban."
+            ]
+        },
+        {
+            "title": "Ágil na Prática: Refinamento, Estimativas e Colaboração",
+            "theory": "Refinamento do backlog: detalhar histórias com critérios de aceite testáveis e dividir em tamanhos entregáveis. Estimativas (Planning Poker com story points): relativas, não em horas. O QA ajuda a identificar complexidade de testes e riscos. Colaboração: pair testing com devs, testes exploratórios em conjunto, e o conceito de 'definição de pronto'. A prática de 3 amigos (produto, dev, QA) escrevendo os critérios de aceite juntos é um padrão forte.",
+            "examples": [
+                "Critérios de aceite em Given/When/Then (BDD)",
+                "Planning Poker: QA pontua complexidade de teste",
+                "3 amigos: Product + Dev + QA definem a história",
+                "Pair testing: QA e dev testam juntos um fluxo complexo"
+            ],
+            "commonMistakes": [
+                "Histórias vagas sem critérios de aceite.",
+                "Estimativas em horas falso-precisas.",
+                "QA fora do refinamento.",
+                "Testes só no final da sprint."
+            ],
+            "projectExample": "Implementamos a prática dos 3 amigos nas histórias de integração: o QA definia os cenários de contrato junto com o dev e o PO. Resultado: menos retrabalho, histórias testáveis desde o início e menos bugs escapando.",
+            "interviewQuestions": [
+                {
+                    "question": "Como você escreve critérios de aceite testáveis?",
+                    "difficulty": "Intermediária",
+                    "expectedAnswer": "Escrevo em formato Given/When/Then (BDD), focando no comportamento observável: estado inicial, ação e resultado esperado. Cada critério deve ser verificável (uma asserção), sem ambiguidade, e cobrir o caminho feliz e os principais casos de erro. Exemplo: 'Dado um usuário autenticado, quando ele cria um pedido válido, então o pedido recebe status 201 e é persistido'. Isso vira diretamente a base para o teste automatizado.",
+                    "followUps": [
+                        "Como você lida com critérios que dependem de dados?",
+                        "Como transforma critérios em testes?"
+                    ],
+                    "mistakes": [
+                        "Critérios vagos ('funciona corretamente').",
+                        "Só caminho feliz."
+                    ],
+                    "english": "I write acceptance criteria in Given/When/Then format, focusing on observable behavior: initial state, action, and expected result. Each criterion must be verifiable, unambiguous, and cover the happy path plus key error cases. This becomes the direct basis for the automated test."
+                },
+                {
+                    "question": "Como o QA participa do refinamento de backlog?",
+                    "difficulty": "Intermediária",
+                    "expectedAnswer": "O QA traz a perspectiva de testabilidade e risco: ajuda a clarear os critérios de aceite, identifica cenários de borda, dados necessários, dependências e complexidade de automação. Também sugere dividir histórias grandes em partes testáveis e questiona requisitos ambíguos antes de irem para o sprint. Isso reduz retrabalho e bugs.",
+                    "followUps": [
+                        "Qual pergunta você sempre faz no refinamento?",
+                        "Como estima a complexidade de testes?"
+                    ],
+                    "mistakes": [
+                        "Ficar calado no refinamento.",
+                        "Descobrir os requisitos só na hora de testar."
+                    ],
+                    "english": "The QA brings the perspective of testability and risk: clarifying acceptance criteria, identifying edge cases, test data, dependencies and automation complexity, and suggesting splitting large stories into testable parts. This reduces rework and defects."
+                }
+            ],
+            "challenges": [
+                "Escreva 3 critérios de aceite em Given/When/Then para uma história de login.",
+                "Liste 5 perguntas de testabilidade que você faria no refinamento."
+            ]
+        }
+    ],
+    "quiz": [
+        { "question": "Qual papel é responsável por priorizar o backlog?", "options": { "A": "Scrum Master", "B": "Product Owner", "C": "QA", "D": "Dev" }, "answer": "B", "explanation": "O Product Owner prioriza o Product Backlog." },
+        { "question": "O que é a Definition of Done?", "options": { "A": "Os critérios de aceite de uma história", "B": "O acordo do time sobre quando uma entrega está concluída", "C": "O backlog priorizado", "D": "O plano da sprint" }, "answer": "B", "explanation": "DoD é o acordo coletivo do que significa uma entrega concluída com qualidade." },
+        { "question": "Qual prática do Kanban ajuda a evitar que o QA vire gargalo?", "options": { "A": "Sprints fixos", "B": "Limitar o WIP", "C": "Estimativas em horas", "D": "Planning Poker" }, "answer": "B", "explanation": "Limites de WIP evitam acúmulo de itens 'em teste'." },
+        { "question": "O formato recomendado para critérios de aceite é:", "options": { "A": "Frases soltas", "B": "Given/When/Then", "C": "Somente números", "D": "Comentários de código" }, "answer": "B", "explanation": "Given/When/Then torna os critérios comportamentais e testáveis." },
+        { "question": "Shift-left no contexto de QA significa:", "options": { "A": "Testar mais no final", "B": "Prevenir defeitos desde o início do fluxo", "C": "Diminuir o time", "D": "Remover automação" }, "answer": "B", "explanation": "Shift-left move as atividades de qualidade para o início do desenvolvimento." }
+    ]
+}

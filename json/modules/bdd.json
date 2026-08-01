@@ -1,0 +1,171 @@
+{
+    "id": "bdd",
+    "title": "BDD & Gherkin",
+    "icon": "fa-comment-dots",
+    "level": "Intermediário",
+    "duration": "1-2 semanas",
+    "shortDescription": "Gherkin, Given/When/Then, colaboração e automação.",
+    "description": "Behavior Driven Development conecta negócio, desenvolvimento e testes através de uma linguagem comum. Este módulo cobre Gherkin, cenários colaborativos, mapeamento para automação e boas práticas de escrita.",
+    "topics": ["Gherkin", "G/W/T", "Automação"],
+    "concepts": [
+        {
+            "title": "Fundamentos do BDD & Gherkin",
+            "theory": "BDD é uma prática colaborativa onde os comportamentos do sistema são especificados em linguagem natural executável (Gherkin). O Gherkin usa keywords: Feature, Scenario, Given (contexto), When (ação), Then (resultado), And/But. A estrutura Given/When/Then descreve o comportamento observável. O objetivo é a colaboração dos '3 amigos' (negócio, dev, QA) e transformar as especificações em testes automatizados.",
+            "examples": [
+                "Scenario: Criar pedido válido \\n Given um usuário autenticado \\n When ele cria um pedido com item válido \\n Then o sistema retorna status 201",
+                "Scenario Outline com Examples (dados em tabela)",
+                "Feature: Pagamento de faturas"
+            ],
+            "commonMistakes": [
+                "Escrever Gherkin com detalhes técnicos (botão X, elemento Y) em vez de comportamento.",
+                "Cenários gigantes com múltiplas ações.",
+                "Repetição desnecessária de contextos.",
+                "Gherkin só decorativo, sem automação correspondente."
+            ],
+            "projectExample": "Em um projeto de automação de cartões, os cenários Gherkin escritos com o PO e devs viraram os testes de API reais. Isso criou uma única fonte de verdade entre negócio e automação, e o PO conseguia ler os testes.",
+            "interviewQuestions": [
+                {
+                    "question": "O que é BDD e qual o seu valor para o QA?",
+                    "difficulty": "Intermediária",
+                    "expectedAnswer": "BDD é uma prática de colaboração que descreve o comportamento do sistema em linguagem executável e compartilhada (Gherkin). O valor para o QA: os cenários viram a base dos testes automatizados, os critérios ficam testáveis e sem ambiguidade, e há uma linguagem comum entre negócio, dev e QA, reduzindo retrabalho e bugs. Não é uma ferramenta, mas uma forma de trabalhar.",
+                    "followUps": [
+                        "Como você garante que o Gherkin não vira 'inglês bonito' sem valor?",
+                        "BDD substitui testes exploratórios?"
+                    ],
+                    "mistakes": [
+                        "Reduzir BDD a uma ferramenta.",
+                        "Não conectar com automação."
+                    ],
+                    "english": "BDD is a collaborative practice describing system behavior in an executable shared language, Gherkin. Its value for QA: scenarios become the basis for automated tests, criteria are testable and unambiguous, and there is a common language between business, developers and QA, reducing rework and defects. It is a working approach, not a tool."
+                },
+                {
+                    "question": "Quais as diferenças entre Given, When e Then?",
+                    "difficulty": "Fácil",
+                    "expectedAnswer": "Given define o contexto/estado inicial (pré-condições). When descreve a ação executada pelo ator. Then declara o resultado esperado observável (asserção). And/But conectam múltiplos passos do mesmo tipo. Essa estrutura torna o cenário legível e mapeável para testes: Given vira setup, When a ação, Then a validação.",
+                    "followUps": [
+                        "Você coloca asserções no Given?",
+                        "Como trata pré-condições pesadas?"
+                    ],
+                    "mistakes": [
+                        "Colocar ações no Then.",
+                        "Given com detalhe de execução técnica."
+                    ],
+                    "english": "Given defines the initial context or preconditions, When describes the action performed, and Then declares the observable expected result. And/But connect multiple steps of the same type. This structure maps directly to tests: Given as setup, When as the action, Then as the assertion."
+                }
+            ],
+            "challenges": [
+                "Reescreva uma história vaga em um cenário Gherkin com Given/When/Then.",
+                "Crie um Scenario Outline com Examples para validação de múltiplos payloads."
+            ]
+        },
+        {
+            "title": "Boas Práticas de Escrita de Cenários",
+            "theory": "Cenários bons: focam em comportamento, são independentes, usam linguagem de negócio, cobrem caminho feliz e erros, e são pequenos. Evitar 'detalhes de UI', dependência entre cenários e vocabulário técnico no alto nível. Nível de abstração: o cenário diz O QUÊ, os passos de automação dizem COMO. Backgrouds para pré-condições comuns. Tags para organização e filtragem de execução.",
+            "examples": [
+                "RUIM: 'When clico no botão #123 que está no HTML'",
+                "BOM: 'When o usuário solicita a criação de um pedido'",
+                "Background: Given o sistema está acessível",
+                "@smoke Scenario: fluxo de login"
+            ],
+            "commonMistakes": [
+                "Misturar nível de abstração (UI no cenário).",
+                "Cenário dependente de outro.",
+                "Cenários com 15 passos.",
+                "Vocabulário inconsistente entre times."
+            ],
+            "projectExample": "Criamos um dicionário de passos (ubiquituous language) do domínio de faturas, e os cenários passaram a usar termos consistentes. O PO revisava os cenários como especificação, e a automação seguia o mesmo vocabulário, reduzindo ambiguidades.",
+            "interviewQuestions": [
+                {
+                    "question": "Quais são as características de um bom cenário Gherkin?",
+                    "difficulty": "Intermediária",
+                    "expectedAnswer": "Um bom cenário: foca em comportamento observável (não em detalhes de implementação/UI); é independente de outros cenários; usa linguagem de negócio consistente; cobre o caminho feliz e casos de erro relevantes; é pequeno e legível; e segue o nível de abstração que diz O QUÊ o sistema faz, deixando o COMO para a automação. Cenários assim viram testes e documentação ao mesmo tempo.",
+                    "followUps": [
+                        "Qual nível de detalhe você coloca no cenário?",
+                        "Como evita duplicação de cenários?"
+                    ],
+                    "mistakes": [
+                        "Detalhes técnicos no cenário.",
+                        "Cenário gigante e acoplado."
+                    ],
+                    "english": "A good scenario focuses on observable behavior, not implementation or UI details; is independent; uses consistent business language; covers the happy path and relevant error cases; is small and readable; and stays at the abstraction level of WHAT the system does, leaving HOW to automation. Such scenarios become both tests and documentation."
+                },
+                {
+                    "question": "Como você transforma um cenário Gherkin em automação?",
+                    "difficulty": "Intermediária",
+                    "expectedAnswer": "Mapeando cada step para keywords/funções de automação: Given vira o setup (criar dados via API, autenticar), When a ação (chamada HTTP, ação de UI), Then a validação (asserções de status, contrato, estado). Uso uma camada de steps (ex.: step definitions em Cucumber/Behave) e uma camada de keywords/helpers reutilizáveis. Cenários de nível de negócio chamam helpers de alto nível; a implementação concreta fica isolada e reutilizável.",
+                    "followUps": [
+                        "Qual ferramenta você usaria e por quê?",
+                        "Como mantém a camada de steps enxuta?"
+                    ],
+                    "mistakes": [
+                        "Step definitions gigantes com lógica embutida.",
+                        "Não reutilizar helpers."
+                    ],
+                    "english": "I map each step to automation: Given becomes setup such as creating data via API, When the action such as an HTTP call, Then the validation with assertions on status, contract and state. I use a layer of step definitions and a reusable layer of helpers. Business-level scenarios call high-level helpers, keeping the concrete implementation isolated and reusable."
+                }
+            ],
+            "challenges": [
+                "Escreva um cenário Gherkin de erro (422) e mapeie seus passos para chamadas de API.",
+                "Crie um Background para pré-condições comuns de uma feature."
+            ]
+        },
+        {
+            "title": "BDD no Pipeline & Ferramentas",
+            "theory": "Ferramentas: Cucumber (Ruby/Java), Behave (Python), Robot Framework com sintaxe Gherkin, SpecFlow (.NET). O pipeline roda os testes BDD (cucumber/behave) e publica os reports (HTML, JSON). Integração com o CI e notificações. BDD e contrato: os cenários podem validar contratos de API (payloads, status). Boas práticas: cenários como única fonte de verdade da automação, tags para smoke/regressão e reviews dos cenários em PR.",
+            "examples": [
+                "behave --tags @smoke",
+                "cucumber publish (report HTML)",
+                "Robot Framework com keywords Gherkin (Given/When/Then) em português",
+                "Tag @contrato para cenários que validam schema de API"
+            ],
+            "commonMistakes": [
+                "Cenários sem execução no CI (viram documento morto).",
+                "Gherkin em inglês quando o time fala português (ou o contrário, sem consistência).",
+                "Ferramenta escolhida sem suporte da equipe.",
+                "Reports não publicados."
+            ],
+            "projectExample": "Rodávamos os cenários BDD de contrato da API no CI com tag @smoke a cada PR e publicação do report. Quando um parceiro quebrava o contrato, o cenário falhava com a mensagem clara do cenário, não um stack trace.",
+            "interviewQuestions": [
+                {
+                    "question": "Como você integra cenários BDD ao pipeline de CI?",
+                    "difficulty": "Intermediária",
+                    "expectedAnswer": "Como qualquer suíte de testes: crio um job no pipeline que instala as dependências, executa os cenários (com filtro por tags — smoke no PR, completo em nightly) e publica os reports como artefatos. Os cenários fazem parte do gate de qualidade. Também reviso os cenários em PR como especificação, garantindo que automação e requisitos não divergem.",
+                    "followUps": [
+                        "Como você filtra por tags no pipeline?",
+                        "Como publica os relatórios?"
+                    ],
+                    "mistakes": [
+                        "Cenários que só rodam local.",
+                        "Sem publicação de report."
+                    ],
+                    "english": "Like any test suite: a pipeline job installs dependencies, runs the scenarios filtered by tags — smoke on PR, full nightly — and publishes reports as artifacts. The scenarios are part of the quality gate. I also review scenarios in PRs as specification to keep automation and requirements aligned."
+                },
+                {
+                    "question": "Em que situações o BDD agrega mais valor e quando ele pode atrapalhar?",
+                    "difficulty": "Avançada",
+                    "expectedAnswer": "Agrega valor quando há colaboração real entre negócio, dev e QA, e quando os cenários viram a fonte da verdade de automação e comunicação — comum em domínios com regras claras (financeiro, seguros). Pode atrapalhar quando é usado só como formalidade (Gherkin decorativo, ninguém lê), quando os cenários viram detalhe técnico, ou quando a ferramenta adiciona complexidade sem benefício. A decisão é sobre a prática de colaboração, não a ferramenta.",
+                    "followUps": [
+                        "Como você avalia se o BDD está agregando valor no time?",
+                        "BDD funciona para testes exploratórios?"
+                    ],
+                    "mistakes": [
+                        "Aplicar BDD sem colaboração.",
+                        "Tratar como solução universal."
+                    ],
+                    "english": "BDD adds value with real collaboration between business, developers and QA, where scenarios become the source of truth for automation and communication, common in regulated domains. It can hurt when used as a formality, when scenarios become technical detail, or when the tool adds complexity without benefit. The decision is about the collaboration practice, not the tool."
+                }
+            ],
+            "challenges": [
+                "Proponha o fluxo de cenários BDD no CI com tags e reports.",
+                "Liste sinais de que o BDD está agregando (ou não) valor no time."
+            ]
+        }
+    ],
+    "quiz": [
+        { "question": "Qual keyword do Gherkin descreve a ação do ator?", "options": { "A": "Given", "B": "When", "C": "Then", "D": "And" }, "answer": "B", "explanation": "When descreve a ação; Given o contexto e Then o resultado." },
+        { "question": "A estrutura Given/When/Then mapeia para testes como:", "options": { "A": "Ação/Setup/Validação", "B": "Setup/Ação/Validação", "C": "Validação/Setup/Ação", "D": "Setup/Validação/Ação" }, "answer": "B", "explanation": "Given = setup, When = ação, Then = validação." },
+        { "question": "Um bom cenário Gherkin deve:", "options": { "A": "Descrever detalhes de implementação", "B": "Focar em comportamento observável e ser independente", "C": "Ser dependente de outros cenários", "D": "Usar vocabulário técnico profundo" }, "answer": "B", "explanation": "Bons cenários focam em comportamento, são independentes e legíveis." },
+        { "question": "Qual é o '3 amigos' do BDD?", "options": { "A": "Dev, Devops, DBA", "B": "Produto, Desenvolvimento, QA", "C": "QA, QA, QA", "D": "Suporte, Produto, Financeiro" }, "answer": "B", "explanation": "Negócio/Produto, Dev e QA colaboram nos cenários." },
+        { "question": "Para executar apenas cenários smoke no pipeline, use:", "options": { "A": "Filtro por tags", "B": "Sleep", "C": "Rodar manualmente", "D": "Não automatizar" }, "answer": "A", "explanation": "Tags como @smoke permitem filtrar a execução no CI." }
+    ]
+}

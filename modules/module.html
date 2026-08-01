@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo | InterviewOps Portugal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body data-page="modules">
+    <header class="topbar">
+        <a href="../index.html" class="topbar-content">
+            <i class="fa-solid fa-bullseye logo-icon"></i>
+            <span>InterviewOps Portugal</span>
+        </a>
+        <div class="topbar-actions">
+            <button id="theme-toggle" class="theme-toggle" aria-label="Alternar tema"><i class="fa-solid fa-moon"></i></button>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <div class="nav-links">
+            <a href="../index.html" class="nav-link" data-page="home"><i class="fa-solid fa-house"></i> Home</a>
+            <a href="../dashboard/index.html" class="nav-link" data-page="dashboard"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+            <a href="index.html" class="nav-link" data-page="modules"><i class="fa-solid fa-book-open"></i> Módulos</a>
+            <a href="../mock/index.html" class="nav-link" data-page="mock"><i class="fa-solid fa-microphone"></i> Mock Interview</a>
+            <a href="../career/index.html" class="nav-link" data-page="career"><i class="fa-solid fa-compass"></i> Career Engine</a>
+            <a href="../companies/index.html" class="nav-link" data-page="companies"><i class="fa-solid fa-building"></i> Empresas</a>
+            <a href="../english/index.html" class="nav-link" data-page="english"><i class="fa-solid fa-language"></i> English</a>
+            <a href="../tracker/index.html" class="nav-link" data-page="tracker"><i class="fa-solid fa-chart-line"></i> Gaps</a>
+            <a href="../roadmap/index.html" class="nav-link" data-page="roadmap"><i class="fa-solid fa-route"></i> Roadmap</a>
+        </div>
+    </nav>
+
+    <main class="container" id="module-container">
+        <div class="breadcrumb">
+            <a href="../index.html">Home</a> <i class="fa-solid fa-chevron-right"></i>
+            <a href="index.html">Módulos</a> <i class="fa-solid fa-chevron-right"></i>
+            <span id="bc-module">...</span>
+        </div>
+        <div class="text-center" style="padding:3rem 0;"><i class="fa-solid fa-spinner fa-spin" style="font-size:2rem; color: var(--primary);"></i><p class="text-muted mt-2">Carregando módulo...</p></div>
+    </main>
+
+    <footer class="footer">
+        <p>InterviewOps Portugal &copy; 2026. Desenvolvido para estudos.</p>
+    </footer>
+
+    <script src="../javascript/app.js"></script>
+    <script>
+        const moduleId = new URLSearchParams(location.search).get('id') || 'api';
+
+        function difficultyBadge(d) {
+            const map = { 'Fácil': 'badge-success', 'Média': 'badge-warning', 'Intermediária': 'badge-warning', 'Avançada': 'badge-danger' };
+            return `<span class="badge ${map[d] || 'badge-info'}">${escapeHtml(d)}</span>`;
+        }
+
+        function renderQuestion(q, index, conceptTitle) {
+            const id = `${conceptTitle}-q${index}`.replace(/\s+/g, '-');
+            return `
+            <div class="q-card">
+                <div class="q-meta">
+                    <span class="badge badge-info">${escapeHtml(conceptTitle)}</span>
+                    ${difficultyBadge(q.difficulty)}
+                </div>
+                <div class="q-text">${index + 1}. ${escapeHtml(q.question)}</div>
+                <button class="outline-btn small-btn" onclick="toggleAnswer('${id}')"><i class="fa-solid fa-eye"></i> Ver resposta esperada</button>
+                <div class="q-answer" id="${id}">
+                    <p><strong>Resposta esperada:</strong> ${escapeHtml(q.expectedAnswer)}</p>
+                    ${(q.followUps && q.followUps.length) ? `<div class="followups"><strong><i class="fa-solid fa-angles-right"></i> Follow-ups:</strong><ul>${q.followUps.map(f => `<li>${escapeHtml(f)}</li>`).join('')}</ul></div>` : ''}
+                    ${(q.mistakes && q.mistakes.length) ? `<div class="callout callout-danger" style="margin:0.75rem 0 0;"><strong>Erros comuns:</strong> ${q.mistakes.map(m => escapeHtml(m)).join(' · ')}</div>` : ''}
+                    ${q.english ? `<div class="callout callout-info" style="margin:0.75rem 0 0;"><strong><i class="fa-solid fa-language"></i> English version:</strong> ${escapeHtml(q.english)}</div>` : ''}
+                </div>
+            </div>`;
+        }
+
+        window.toggleAnswer = function(id) {
+            const el = document.getElementById(id);
+            if (el) el.classList.toggle('show');
+        };
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const container = document.getElementById('module-container');
+            try {
+                const data = await loadJSON(`../json/modules/${moduleId}.json`);
+                document.getElementById('bc-module').innerText = data.title;
+                document.title = `${data.title} | InterviewOps Portugal`;
+
+                let conceptsHtml = data.concepts.map((c, ci) => {
+                    const learnedKey = `interviewops_learned_${moduleId}_${ci}`;
+                    const isLearned = localStorage.getItem(learnedKey) === '1';
+                    return `
+                    <section class="content-section">
+                        <h2><i class="fa-solid fa-book"></i> Conceito ${ci + 1}: ${escapeHtml(c.title)}</h2>
+                        <div class="callout callout-info"><strong><i class="fa-solid fa-lightbulb"></i> Teoria:</strong> ${escapeHtml(c.theory)}</div>
+                        <h3><i class="fa-solid fa-code"></i> Exemplos</h3>
+                        <ul>${(c.examples || []).map(e => `<li><code>${escapeHtml(e)}</code></li>`).join('')}</ul>
+                        ${(c.commonMistakes && c.commonMistakes.length) ? `<div class="callout callout-danger"><strong><i class="fa-solid fa-triangle-exclamation"></i> Erros comuns:</strong><ul>${c.commonMistakes.map(m => `<li>${escapeHtml(m)}</li>`).join('')}</ul></div>` : ''}
+                        ${c.projectExample ? `<div class="callout callout-success"><strong><i class="fa-solid fa-briefcase"></i> Exemplo de projeto real:</strong> ${escapeHtml(c.projectExample)}</div>` : ''}
+                        <h3><i class="fa-solid fa-comments"></i> Questões de entrevista</h3>
+                        ${(c.interviewQuestions || []).map((q, qi) => renderQuestion(q, qi, c.title)).join('')}
+                        ${(c.challenges && c.challenges.length) ? `<div class="callout callout-warning"><strong><i class="fa-solid fa-flask"></i> Desafios:</strong><ul>${c.challenges.map(ch => `<li>${escapeHtml(ch)}</li>`).join('')}</ul></div>` : ''}
+                        <div class="flex-between mt-2">
+                            <span class="badge ${isLearned ? 'badge-success' : 'badge-muted'}">${isLearned ? '<i class="fa-solid fa-check"></i> Conceito estudado' : 'Não estudado'}</span>
+                            <button class="${isLearned ? 'outline-btn' : 'success-btn'} small-btn" onclick="markLearned(${ci}, '${data.title.replace(/'/g, "\\'")}')">
+                                <i class="fa-solid fa-check-double"></i> ${isLearned ? 'Conceito concluído' : 'Marcar como estudado'}
+                            </button>
+                        </div>
+                    </section>`;
+                }).join('');
+
+                const totalConcepts = data.concepts.length;
+                const quizHtml = `
+                <section class="content-section" id="quiz-section">
+                    <h2><i class="fa-solid fa-clipboard-question"></i> Quiz do módulo</h2>
+                    <p class="text-muted mb-2">Responda e veja sua nota. A melhor pontuação conta para o progresso geral.</p>
+                    <div id="quiz-questions">
+                        ${(data.quiz || []).map((q, qi) => `
+                        <div class="q-card">
+                            <div class="q-text">${qi + 1}. ${escapeHtml(q.question)}</div>
+                            <div class="options-grid" id="quiz-options-${qi}">
+                                ${Object.entries(q.options).map(([k, v]) => `
+                                <label class="option-label" onclick="selectQuizOption(${qi}, '${k}')" id="qo-${qi}-${k}">
+                                    <input type="radio" name="q${qi}" value="${k}">
+                                    <div class="option-content"><span class="option-letter">${k}</span><span class="option-text">${escapeHtml(v)}</span></div>
+                                </label>`).join('')}
+                            </div>
+                            <div id="quiz-feedback-${qi}" class="feedback-box"></div>
+                        </div>`).join('')}
+                    </div>
+                    <button class="primary-btn w-100 mt-3" onclick="submitQuiz('${moduleId}')"><i class="fa-solid fa-check-double"></i> Corrigir Quiz</button>
+                </section>`;
+
+                container.innerHTML = `
+                    <div class="page-header">
+                        <div class="flex-between wrap gap-2 mb-2">
+                            <div class="module-icon" style="width:60px;height:60px;font-size:1.7rem;background:var(--primary-light);color:var(--primary);border-radius:12px;display:flex;align-items:center;justify-content:center;"><i class="fa-solid ${data.icon}"></i></div>
+                            <div class="flex gap-2 wrap">
+                                ${data.level === 'Avançado' ? '<span class="badge badge-danger">Avançado</span>' : data.level === 'Intermediário' ? '<span class="badge badge-warning">Intermediário</span>' : '<span class="badge badge-success">Básico</span>'}
+                                <span class="badge badge-info"><i class="fa-solid fa-clock"></i> ${data.duration}</span>
+                            </div>
+                        </div>
+                        <h1>${escapeHtml(data.title)}</h1>
+                        <p>${escapeHtml(data.description)}</p>
+                        <div class="flex gap-2 wrap mt-2">${(data.topics || []).map(t => `<span class="tag-badge">${escapeHtml(t)}</span>`).join('')}</div>
+                    </div>
+
+                    <div class="tabs" id="module-tabs">
+                        <button class="tab-btn active" data-tab="concepts" onclick="switchTab('concepts')"><i class="fa-solid fa-book"></i> Conceitos (${totalConcepts})</button>
+                        <button class="tab-btn" data-tab="quiz" onclick="switchTab('quiz')"><i class="fa-solid fa-clipboard-question"></i> Quiz (${(data.quiz || []).length})</button>
+                    </div>
+
+                    <div id="tab-concepts" class="tab-panel active">${conceptsHtml}</div>
+                    <div id="tab-quiz" class="tab-panel">${quizHtml}</div>
+                `;
+            } catch (e) {
+                console.error(e);
+                container.innerHTML = '<div class="glass-card text-center"><h2><i class="fa-solid fa-triangle-exclamation" style="color:var(--danger);"></i> Módulo não encontrado</h2><p class="text-muted">Execute via servidor local (python -m http.server) e verifique se o arquivo json/modules/' + moduleId + '.json existe.</p><a href="index.html" class="primary-btn mt-3" style="display:inline-flex;">Voltar aos módulos</a></div>';
+            }
+        });
+
+        window.switchTab = function(tab) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+            document.getElementById('tab-concepts').classList.toggle('active', tab === 'concepts');
+            document.getElementById('tab-quiz').classList.toggle('active', tab === 'quiz');
+        };
+
+        window.markLearned = function(conceptIndex, title) {
+            const key = `interviewops_learned_${moduleId}_${conceptIndex}`;
+            localStorage.setItem(key, '1');
+            const total = document.querySelectorAll('#tab-concepts .content-section').length;
+            const learnedCount = Array.from({ length: total }, (_, i) => localStorage.getItem(`interviewops_learned_${moduleId}_${i}`) === '1').filter(Boolean).length;
+            setModuleProgress(moduleId, { completed: learnedCount, total });
+            alert(`Conceito marcado como estudado em "${title}". Progresso atualizado!`);
+            location.reload();
+        };
+
+        window.selectQuizOption = function(qi, key) {
+            document.querySelectorAll(`#quiz-options-${qi} .option-label`).forEach(l => l.classList.remove('selected'));
+            const sel = document.getElementById(`qo-${qi}-${key}`);
+            sel.classList.add('selected');
+            sel.querySelector('input').checked = true;
+        };
+
+        window.submitQuiz = function(id) {
+            // load quiz data fresh
+            fetch(`../json/modules/${id}.json`).then(r => r.json()).then(data => {
+                let correct = 0;
+                const quiz = data.quiz || [];
+                quiz.forEach((q, qi) => {
+                    const selected = document.querySelector(`#quiz-options-${qi} input:checked`);
+                    const feedback = document.getElementById(`quiz-feedback-${qi}`);
+                    const userAnswer = selected ? selected.value : null;
+                    const isCorrect = userAnswer === q.answer;
+                    if (isCorrect) correct++;
+
+                    document.querySelectorAll(`#quiz-options-${qi} .option-label`).forEach(l => {
+                        const key = l.querySelector('input').value;
+                        l.classList.add('disabled');
+                        l.style.pointerEvents = 'none';
+                        if (key === q.answer) { l.style.borderColor = 'var(--success)'; l.style.background = 'var(--success-light)'; }
+                        else if (key === userAnswer) { l.style.borderColor = 'var(--danger)'; l.style.background = 'var(--danger-light)'; }
+                    });
+
+                    feedback.className = `feedback-box show ${isCorrect ? 'feedback-ok' : 'feedback-bad'}`;
+                    feedback.innerHTML = isCorrect
+                        ? `<div class="feedback-header"><i class="fa-solid fa-circle-check"></i> Correto!</div><div class="feedback-comment">${escapeHtml(q.explanation)}</div>`
+                        : `<div class="feedback-header"><i class="fa-solid fa-circle-xmark"></i> Errado — resposta: ${escapeHtml(q.answer)}</div><div class="feedback-comment">${escapeHtml(q.explanation)}</div>`;
+                });
+
+                const pct = quiz.length ? Math.round((correct / quiz.length) * 100) : 0;
+                setQuizBest(id, pct);
+
+                let msg = `Quiz corrigido: ${correct}/${quiz.length} (${pct}%).`;
+                const prevBest = localStorage.getItem(`interviewops_quiz_prev_${id}`);
+                if (prevBest !== null && parseInt(prevBest) >= pct) msg += ' Melhor pontuação mantida.';
+                else { localStorage.setItem(`interviewops_quiz_prev_${id}`, String(pct)); msg += ' Novo recorde registrado!'; }
+                alert(msg);
+            });
+        };
+    </script>
+</body>
+</html>

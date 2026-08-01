@@ -1,0 +1,130 @@
+{
+    "sections": [
+        {
+            "id": "vocabulary",
+            "title": "Vocabulário Técnico Essencial",
+            "icon": "fa-spell-check",
+            "items": [
+                { "pt": "Validação de dados", "en": "Data validation" },
+                { "pt": "Automação de testes", "en": "Test automation" },
+                { "pt": "Testes de regressão", "en": "Regression tests" },
+                { "pt": "Testes de API", "en": "API testing" },
+                { "pt": "Contrato de API", "en": "API contract" },
+                { "pt": "Cobertura de testes", "en": "Test coverage" },
+                { "pt": "Teste flaky / instável", "en": "Flaky test" },
+                { "pt": "Espera explícita", "en": "Explicit wait" },
+                { "pt": "Integração contínua", "en": "Continuous integration" },
+                { "pt": "Entrega contínua", "en": "Continuous delivery" },
+                { "pt": "Pipeline", "en": "Pipeline" },
+                { "pt": "Qualidade de código", "en": "Code quality" },
+                { "pt": "Revisão de código", "en": "Code review" },
+                { "pt": "Critérios de aceite", "en": "Acceptance criteria" },
+                { "pt": "Definição de pronto", "en": "Definition of Done" },
+                { "pt": "Casos de borda", "en": "Edge cases" },
+                { "pt": "Caminho feliz", "en": "Happy path" },
+                { "pt": "Ambiente de homologação", "en": "Staging environment" },
+                { "pt": "Ambiente de produção", "en": "Production environment" },
+                { "pt": "Rollback", "en": "Rollback" },
+                { "pt": "Mitigar risco", "en": "Mitigate risk" },
+                { "pt": "Rastreabilidade", "en": "Traceability" },
+                { "pt": "Tempo de resposta", "en": "Response time" },
+                { "pt": "Taxa de erro", "en": "Error rate" },
+                { "pt": "Conformidade", "en": "Compliance" },
+                { "pt": "Dados sensíveis", "en": "Sensitive data" },
+                { "pt": "Dados anônimos", "en": "Anonymized data" },
+                { "pt": "Evidência de teste", "en": "Test evidence" },
+                { "pt": "Relatório de teste", "en": "Test report" },
+                { "pt": "Gerenciar impedimentos", "en": "Manage blockers" }
+            ]
+        },
+        {
+            "id": "presentation",
+            "title": "Apresentação Profissional",
+            "icon": "fa-user-tie",
+            "items": [
+                { "pt": "Meu nome é... e sou Engenheiro de QA com X anos de experiência.", "en": "My name is... and I'm a QA Engineer with X years of experience." },
+                { "pt": "Minha principal área de atuação é automação de testes de API.", "en": "My main area of expertise is API test automation." },
+                { "pt": "Também tenho experiência com testes E2E e validação de dados.", "en": "I also have experience with E2E testing and data validation." },
+                { "pt": "Trabalhei em projetos dos setores bancário e de seguros.", "en": "I have worked on projects in the banking and insurance sectors." },
+                { "pt": "Sou apaixonado por construir frameworks de teste confiáveis.", "en": "I'm passionate about building reliable test frameworks." },
+                { "pt": "Minha contribuição principal foi reduzir o tempo de regressão em 70%.", "en": "My key contribution was reducing regression time by 70%." },
+                { "pt": "Estou buscando uma oportunidade onde eu possa...", "en": "I'm looking for an opportunity where I can..." }
+            ]
+        },
+        {
+            "id": "hr-interview",
+            "title": "Perguntas Comuns de RH",
+            "icon": "fa-handshake",
+            "items": [
+                { "pt": "Fale sobre você.", "en": "Tell me about yourself." },
+                { "pt": "Quais são seus pontos fortes?", "en": "What are your strengths?" },
+                { "pt": "Qual seu maior ponto fraco?", "en": "What is your biggest weakness?" },
+                { "pt": "Por que você quer trabalhar aqui?", "en": "Why do you want to work here?" },
+                { "pt": "Onde você se vê em 5 anos?", "en": "Where do you see yourself in five years?" },
+                { "pt": "Por que você está saindo da empresa atual?", "en": "Why are you leaving your current company?" },
+                { "pt": "Conte sobre um desafio profissional.", "en": "Tell me about a professional challenge." },
+                { "pt": "Como você lida com prazos apertados?", "en": "How do you handle tight deadlines?" }
+            ]
+        },
+        {
+            "id": "technical-interview",
+            "title": "Explicações Técnicas",
+            "icon": "fa-microchip",
+            "items": [
+                { "pt": "Testes de caixa preta focam no comportamento visível, sem conhecer a implementação.", "en": "Black-box testing focuses on visible behavior, without knowing the implementation." },
+                { "pt": "A pirâmide de testes equilibra testes unitários, de integração e E2E.", "en": "The test pyramid balances unit, integration and E2E tests." },
+                { "pt": "Uma API REST usa verbos HTTP e retorna status codes semânticos.", "en": "A REST API uses HTTP verbs and returns semantic status codes." },
+                { "pt": "Esperas explícitas reduzem testes flaky, evitando sleeps fixos.", "en": "Explicit waits reduce flaky tests by avoiding fixed sleeps." },
+                { "pt": "Contract testing valida que provedor e consumidor concordam com o contrato.", "en": "Contract testing validates that provider and consumer agree on the contract." },
+                { "pt": "Automatizo testes em camadas no pipeline: smoke no PR, regressão completa em nightly.", "en": "I automate tests in layers in the pipeline: smoke on PR, full regression nightly." },
+                { "pt": "Uso SQL para validar a persistência de dados.", "en": "I use SQL to validate data persistence." },
+                { "pt": "Trabalho com esperas baseadas em estado em vez de tempo fixo.", "en": "I work with state-based waits instead of fixed time." }
+            ]
+        },
+        {
+            "id": "business",
+            "title": "Comunicação de Negócio",
+            "icon": "fa-briefcase",
+            "items": [
+                { "pt": "Isso reduz o risco de bugs em produção.", "en": "This reduces the risk of bugs in production." },
+                { "pt": "A automação economiza 10 horas de trabalho manual por semana.", "en": "The automation saves 10 hours of manual work per week." },
+                { "pt": "Detectamos a falha antes de impactar os clientes.", "en": "We detected the failure before it impacted customers." },
+                { "pt": "O aumento na estabilidade dos testes aumenta a confiança do time.", "en": "The increase in test stability increases team confidence." },
+                { "pt": "Conformidade é um requisito crítico no setor financeiro.", "en": "Compliance is a critical requirement in the financial sector." },
+                { "pt": "Priorizo por risco de negócio: o que quebrar tem maior impacto.", "en": "I prioritize by business risk: what has the greatest impact if it breaks." },
+                { "pt": "O tempo de feedback caiu de horas para minutos.", "en": "The feedback time dropped from hours to minutes." }
+            ]
+        },
+        {
+            "id": "behavior",
+            "title": "Perguntas Comportamentais",
+            "icon": "fa-people-group",
+            "items": [
+                { "pt": "Como você lida com conflitos?", "en": "How do you handle conflicts?" },
+                { "pt": "Conte sobre uma falha que você teve.", "en": "Tell me about a failure you had." },
+                { "pt": "Como você dá feedback?", "en": "How do you give feedback?" },
+                { "pt": "Como você prioriza tarefas?", "en": "How do you prioritize tasks?" },
+                { "pt": "Descreva um momento em que você teve que aprender rápido.", "en": "Describe a time you had to learn quickly." },
+                { "pt": "Como você trabalha em equipe?", "en": "How do you work in a team?" }
+            ]
+        }
+    ],
+    "framingPhrases": [
+        { "pt": "Ótima pergunta. Deixe-me dar um exemplo real.", "en": "Great question. Let me give you a real example." },
+        { "pt": "Na minha experiência...", "en": "In my experience..." },
+        { "pt": "Para resumir...", "en": "To summarize..." },
+        { "pt": "O ponto principal é...", "en": "The main point is..." },
+        { "pt": "Isso está conectado com...", "en": "This is connected to..." },
+        { "pt": "Deixe-me pensar sobre isso por um segundo.", "en": "Let me think about that for a second." },
+        { "pt": "Poderia reformular a pergunta?", "en": "Could you rephrase the question?" },
+        { "pt": "Isso é uma ótima forma de explicar...", "en": "This is a great way to explain..." }
+    ],
+    "tips": [
+        "Pratique em voz alta por 90 segundos por resposta.",
+        "Use as mesmas histórias que usaria em português — não traduza literalmente.",
+        "Aprenda frases de apoio para ganhar tempo: 'Let me think about that for a second.'",
+        "Grave-se respondendo e revise a fluência.",
+        "Termine respostas técnicas conectando com valor de negócio.",
+        "Se não entender, peça para reformular — é normal e visto como boa comunicação."
+    ]
+}

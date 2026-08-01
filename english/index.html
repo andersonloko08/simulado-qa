@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Module | InterviewOps Portugal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body data-page="english">
+    <header class="topbar">
+        <a href="../index.html" class="topbar-content">
+            <i class="fa-solid fa-bullseye logo-icon"></i>
+            <span>InterviewOps Portugal</span>
+        </a>
+        <div class="topbar-actions">
+            <button id="theme-toggle" class="theme-toggle" aria-label="Alternar tema"><i class="fa-solid fa-moon"></i></button>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <div class="nav-links">
+            <a href="../index.html" class="nav-link" data-page="home"><i class="fa-solid fa-house"></i> Home</a>
+            <a href="../dashboard/index.html" class="nav-link" data-page="dashboard"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+            <a href="../modules/index.html" class="nav-link" data-page="modules"><i class="fa-solid fa-book-open"></i> Módulos</a>
+            <a href="../mock/index.html" class="nav-link" data-page="mock"><i class="fa-solid fa-microphone"></i> Mock Interview</a>
+            <a href="../career/index.html" class="nav-link" data-page="career"><i class="fa-solid fa-compass"></i> Career Engine</a>
+            <a href="../companies/index.html" class="nav-link" data-page="companies"><i class="fa-solid fa-building"></i> Empresas</a>
+            <a href="index.html" class="nav-link" data-page="english"><i class="fa-solid fa-language"></i> English</a>
+            <a href="../tracker/index.html" class="nav-link" data-page="tracker"><i class="fa-solid fa-chart-line"></i> Gaps</a>
+            <a href="../roadmap/index.html" class="nav-link" data-page="roadmap"><i class="fa-solid fa-route"></i> Roadmap</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="breadcrumb">
+            <a href="../index.html">Home</a> <i class="fa-solid fa-chevron-right"></i> <span>English Module</span>
+        </div>
+
+        <div class="page-header">
+            <h1><i class="fa-solid fa-language" style="color: var(--primary);"></i> English Module</h1>
+            <p>Preparação completa para entrevistas em inglês: vocabulário técnico, apresentação profissional, perguntas comuns e explicações técnicas.</p>
+        </div>
+
+        <div class="tabs" id="english-tabs">
+            <button class="tab-btn active" data-tab="vocabulary" onclick="switchTab(this)"><i class="fa-solid fa-spell-check"></i> Vocabulário</button>
+            <button class="tab-btn" data-tab="presentation" onclick="switchTab(this)"><i class="fa-solid fa-user-tie"></i> Apresentação</button>
+            <button class="tab-btn" data-tab="hr-interview" onclick="switchTab(this)"><i class="fa-solid fa-handshake"></i> Perguntas RH</button>
+            <button class="tab-btn" data-tab="technical-interview" onclick="switchTab(this)"><i class="fa-solid fa-microchip"></i> Técnico</button>
+            <button class="tab-btn" data-tab="business" onclick="switchTab(this)"><i class="fa-solid fa-briefcase"></i> Negócio</button>
+            <button class="tab-btn" data-tab="behavior" onclick="switchTab(this)"><i class="fa-solid fa-people-group"></i> Comportamental</button>
+        </div>
+
+        <div id="english-content"></div>
+
+        <div class="content-section" id="framing">
+            <h2><i class="fa-solid fa-comment-dots"></i> Frases de apoio</h2>
+            <div class="grid-2" id="framing-grid"></div>
+        </div>
+
+        <div class="content-section">
+            <h2><i class="fa-solid fa-lightbulb"></i> Dicas de prática</h2>
+            <ul style="margin:0 0 0 1.3rem;" id="tips-list"></ul>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>InterviewOps Portugal &copy; 2026. Desenvolvido para estudos.</p>
+    </footer>
+
+    <script src="../javascript/app.js"></script>
+    <script>
+        window.switchTab = function(btn) {
+            document.querySelectorAll('#english-tabs .tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderSection(btn.dataset.tab);
+        };
+
+        function renderSection(id) {
+            const data = ENGLISH.sections.find(s => s.id === id);
+            if (!data) return;
+            const content = document.getElementById('english-content');
+            content.innerHTML = `
+                <div class="content-section">
+                    <h2><i class="fa-solid ${data.icon}"></i> ${escapeHtml(data.title)}</h2>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Português</th><th>English</th></tr></thead>
+                            <tbody>${data.items.map(i => `<tr><td>${escapeHtml(i.pt)}</td><td><code style="background:var(--info-light); color:var(--info);">${escapeHtml(i.en)}</code></td></tr>`).join('')}</tbody>
+                        </table>
+                    </div>
+                </div>`;
+        }
+
+        let ENGLISH = { sections: [], framingPhrases: [], tips: [] };
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                ENGLISH = await loadJSON('../json/english.json');
+                renderSection('vocabulary');
+                document.getElementById('framing-grid').innerHTML = ENGLISH.framingPhrases.map(f => `
+                    <div class="q-card" style="padding:1rem;">
+                        <strong style="color:var(--primary);">${escapeHtml(f.en)}</strong>
+                        <p class="text-muted" style="font-size:0.9rem; margin-top:0.3rem;">${escapeHtml(f.pt)}</p>
+                    </div>`).join('');
+                document.getElementById('tips-list').innerHTML = ENGLISH.tips.map(t => `<li>${escapeHtml(t)}</li>`).join('');
+            } catch (e) {
+                document.getElementById('english-content').innerHTML = '<div class="content-section"><p class="text-muted">Não foi possível carregar o conteúdo. Execute via servidor local.</p></div>';
+            }
+        });
+    </script>
+</body>
+</html>

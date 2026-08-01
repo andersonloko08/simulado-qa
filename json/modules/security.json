@@ -1,0 +1,172 @@
+{
+    "id": "security",
+    "title": "Security Testing",
+    "icon": "fa-shield-halved",
+    "level": "Avançado",
+    "duration": "2 semanas",
+    "shortDescription": "OWASP, OAuth, vulnerabilidades e testes de segurança.",
+    "description": "Segurança é responsabilidade de todos no time, incluindo QA. Este módulo cobre OWASP Top 10, testes de autenticação/autorização, OAuth/JWT e boas práticas de segurança em APIs para entrevistas em bancos e seguradoras.",
+    "topics": ["OWASP", "OAuth", "JWT", "Pentest básico"],
+    "concepts": [
+        {
+            "title": "OWASP Top 10 & Vulnerabilidades Comuns",
+            "theory": "O OWASP Top 10 lista as vulnerabilidades web mais críticas: A01 Broken Access Control, A02 Cryptographic Failures, A03 Injection, A04 Insecure Design, A05 Security Misconfiguration, A06 Vulnerable Components, A07 Identification and Auth Failures, A08 Software and Data Integrity Failures, A09 Logging and Monitoring Failures, A10 SSRF. O QA valida: injeção (SQLi, XSS), controle de acesso (IDOR), exposição de dados sensíveis e configuração insegura.",
+            "examples": [
+                "Teste de IDOR: alterar o ID na URL e verificar acesso indevido",
+                "SQL Injection: payload ' OR '1'='1 em campos de busca",
+                "XSS: scripts refletidos em campos de entrada",
+                "Exposição: resposta de API com dados sensíveis (CPF) em logs"
+            ],
+            "commonMistakes": [
+                "Testar apenas funcionalidade, ignorando acesso por IDOR.",
+                "Não validar que erros não expõem detalhes de stack trace.",
+                "Ignorar headers de segurança.",
+                "Logar dados sensíveis (LGPD/PCI)."
+            ],
+            "projectExample": "Em uma API de contas, testei o cenário IDOR: usuário autenticado alterava o ID da conta na URL e acessava contas de terceiros. O teste automatizado de autorização detectou o bug antes do release, e o time corrigiu a validação de propriedade do recurso.",
+            "interviewQuestions": [
+                {
+                    "question": "O que é Broken Access Control e como você testa?",
+                    "difficulty": "Avançada",
+                    "expectedAnswer": "Broken Access Control (A01) ocorre quando um usuário pode acessar recursos sem a devida autorização — por exemplo, alterar o ID na URL (IDOR) e acessar recursos de terceiros. Testo: usuários sem papel acessando endpoints restritos (espero 403); alteração de IDs/parâmetros para acessar recursos alheios; métodos HTTP não autorizados; e acesso direto a recursos por caminho. Esses testes entram na matriz de autorização automatizada.",
+                    "followUps": [
+                        "Como você automatiza testes de autorização?",
+                        "O que é IDOR?"
+                    ],
+                    "mistakes": [
+                        "Testar só funcionalidade do usuário logado.",
+                        "Não conhecer IDOR."
+                    ],
+                    "english": "Broken Access Control happens when a user can access resources without proper authorization, such as changing the ID in the URL to access others' resources, known as IDOR. I test unprivileged users hitting restricted endpoints, ID tampering, unauthorized HTTP methods, and direct resource access, automating these in an authorization matrix."
+                },
+                {
+                    "question": "Como o QA contribui para a segurança de uma API além dos testes funcionais?",
+                    "difficulty": "Avançada",
+                    "expectedAnswer": "Validando: autenticação e autorização (tokens, scopes, RBAC), headers de segurança (CSP, HSTS, X-Content-Type-Options), tratamento de erros sem vazamento de dados, ausência de dados sensíveis em respostas e logs, injeções e erros de configuração. Também colaboro com os testes de segurança automatizados (DAST, scanners OWASP ZAP no CI) e reporto achados com contexto de negócio. Não substituo o pentest, mas reduzo a superfície antes dele.",
+                    "followUps": [
+                        "O que é DAST e SAST?",
+                        "Como você integra scanners de segurança ao CI?"
+                    ],
+                    "mistakes": [
+                        "Achar que segurança é só do pentester.",
+                        "Não citar scanners."
+                    ],
+                    "english": "By validating authentication and authorization, security headers, error handling without data leakage, absence of sensitive data in responses and logs, injections and configuration issues. I also collaborate on automated security testing with DAST tools like OWASP ZAP in CI and report findings with business context. I do not replace pentesting but reduce the surface before it."
+                }
+            ],
+            "challenges": [
+                "Escreva 3 casos de teste de Broken Access Control para uma API de documentos.",
+                "Liste os headers de segurança que você validaria em toda resposta."
+            ]
+        },
+        {
+            "title": "OAuth 2.0 & JWT: Segurança na Prática",
+            "theory": "OAuth 2.0 delega autorização: tokens de acesso, refresh tokens, scopes e grants. JWT é o formato comum de token: header (algoritmo), payload (claims como sub, exp, scope) e assinatura. Riscos: tokens expostos em URLs, expiração longa, claims confiados sem validação, algoritmos fracos (alg: none, HS256 com segredo fraco), e não validação de assinatura. O QA valida: expiração real, assinatura, claims, scopes, reuso de tokens e fluxo de refresh.",
+            "examples": [
+                "Alterar claim do JWT e verificar rejeição (assinatura inválida)",
+                "Usar token expirado e esperar 401",
+                "Token com scope insuficiente e esperar 403",
+                "Testar alg: none para verificar se o servidor aceita (deve rejeitar)"
+            ],
+            "commonMistakes": [
+                "Não validar assinatura do token.",
+                "Confiar em claims sem verificar expiração.",
+                "Expor tokens em logs de teste.",
+                "Ignorar validação de algoritmo (alg)."
+            ],
+            "projectExample": "Testando o fluxo de tokens de uma seguradora, validamos que o servidor rejeitava tokens com alg: none e com claims adulterados. Também validamos a expiração real e o refresh. Um token com expiração de 30 dias era um risco — sinalizado ao time e reduzido.",
+            "interviewQuestions": [
+                {
+                    "question": "Como você testa a segurança de tokens JWT?",
+                    "difficulty": "Avançada",
+                    "expectedAnswer": "Valido: assinatura (token adulterado deve ser rejeitado), expiração (token expirado gera 401), claims (alterar role/scope e verificar autorização), algoritmo (servidor deve rejeitar alg: none e algoritmos fracos), e scopes (token sem scope para o recurso gera 403). Também valido o fluxo de refresh e que tokens não vazam em URLs ou logs. Isso forma a matriz de testes de token.",
+                    "followUps": [
+                        "O que acontece se o servidor aceitar alg: none?",
+                        "Como você testa refresh tokens?"
+                    ],
+                    "mistakes": [
+                        "Testar apenas token válido.",
+                        "Não citar validação de assinatura/algoritmo."
+                    ],
+                    "english": "I validate the signature, so tampered tokens are rejected; expiration, so expired tokens return 401; claims, so altered roles or scopes affect authorization; the algorithm, so the server rejects alg none and weak algorithms; and scopes, so tokens without the right scope return 403. I also validate the refresh flow and that tokens do not leak in URLs or logs."
+                },
+                {
+                    "question": "Quais riscos existem ao armazenar JWT no cliente?",
+                    "difficulty": "Avançada",
+                    "expectedAnswer": "Principais riscos: XSS pode roubar o token se armazenado em localStorage; expiração longa aumenta a janela de uso de um token vazado; e a falta de revogação real (JWT válido até expirar). Boas práticas: expiração curta com refresh, armazenamento seguro (httpOnly cookies onde possível), validação de origem e escopo. Como QA, incluo testes de vazamento e de rejeição pós-uso indevido.",
+                    "followUps": [
+                        "localStorage vs httpOnly cookie?",
+                        "Como você revoga um JWT?"
+                    ],
+                    "mistakes": [
+                        "Achar que JWT é imune a roubo.",
+                        "Não citar expiração curta."
+                    ],
+                    "english": "The main risks: XSS can steal tokens stored in localStorage; long expiration widens the window of misuse; and JWTs lack real revocation until expiry. Best practices are short expiration with refresh, secure storage like httpOnly cookies, and origin and scope validation. I include tests for token leakage and rejection."
+                }
+            ],
+            "challenges": [
+                "Escreva a matriz de testes de um token JWT (6 cenários).",
+                "Explique como você validaria que tokens não aparecem em logs."
+            ]
+        },
+        {
+            "title": "Segurança em Testes Automatizados & Boas Práticas",
+            "theory": "Boas práticas: nunca versionar credenciais, usar secret managers/variáveis de ambiente, redação de dados sensíveis em evidências (logs, screenshots, reports), e validar que a automação em si não cria risco (ex.: perfis com excesso de privilégio em ambientes de teste). Integrar DAST (ZAP) no CI para varredura básica e usar scanners de dependências (dependabot, trivy). O QA também ajuda a classificar dados (PII) e respeitar LGPD/PCI.",
+            "examples": [
+                "OWASP ZAP em modo baseline no CI (varredura automática)",
+                "dependabot/trivy para vulnerabilidades de dependências",
+                "Mascarar CPF/email em logs e screenshots",
+                "Ambientes de teste com dados anônimos (LGPD)"
+            ],
+            "commonMistakes": [
+                "Credenciais de teste com privilégios de produção.",
+                "Screenshots/logs com dados reais de clientes.",
+                "Ignorar vulnerabilidades de dependências.",
+                "Usar dados reais de clientes em ambientes de teste (LGPD)."
+            ],
+            "projectExample": "Integramos o ZAP baseline no pipeline e o dependabot para dependências. O QA configurou a redação de CPF e email nas evidências e o uso de dados anônimos. Um alerta do ZAP (header faltando) foi corrigido antes do release.",
+            "interviewQuestions": [
+                {
+                    "question": "Como você integra segurança ao pipeline de testes sem substituir o pentest?",
+                    "difficulty": "Avançada",
+                    "expectedAnswer": "Adiciono camadas automatizadas: SAST (análise estática) no código, DAST (OWASP ZAP baseline) contra o ambiente de staging, scanners de dependências (trivy/dependabot), e testes de autorização/injeção na suíte funcional. Esses achados alimentam o backlog de segurança. O pentest humano continua para testes profundos e cenários complexos. Isso reduz a superfície e detecta regressões de segurança cedo.",
+                    "followUps": [
+                        "O que é SAST e DAST?",
+                        "Como você prioriza os achados do scanner?"
+                    ],
+                    "mistakes": [
+                        "Achar que o scanner substitui o pentest.",
+                        "Ignorar os alertas (falso positivo por falta de triagem)."
+                    ],
+                    "english": "I add automated layers: SAST on code, DAST with OWASP ZAP baseline against staging, dependency scanners like trivy, and authorization and injection tests in the functional suite. Findings feed the security backlog. Human pentesting continues for deep and complex scenarios. This reduces the surface and detects security regressions early."
+                },
+                {
+                    "question": "Como o QA ajuda a garantir conformidade LGPD/PCI nos testes?",
+                    "difficulty": "Avançada",
+                    "expectedAnswer": "Classificando dados (PII, dados de cartão), usando dados anônimos/sintéticos em ambientes de teste, garantindo que evidências (logs, screenshots, reports) não exponham dados reais, e validando que a aplicação trata os dados conforme os requisitos (consentimento, retenção, exclusão). Também sinalizo vazamentos de dados sensíveis em respostas/logs durante os testes. Isso reduz risco de exposição em todo o fluxo.",
+                    "followUps": [
+                        "Como você mascararia dados em evidências?",
+                        "O que validaria sobre consentimento?"
+                    ],
+                    "mistakes": [
+                        "Usar dados reais em ambientes de teste.",
+                        "Ignorar dados expostos em evidências."
+                    ],
+                    "english": "By classifying data, using anonymized and synthetic data in test environments, ensuring evidence such as logs, screenshots and reports do not expose real data, and validating that the application handles data per requirements around consent, retention and deletion. I also flag sensitive data leaks in responses and logs during testing."
+                }
+            ],
+            "challenges": [
+                "Liste como você mascararia CPF, email e cartão em evidências.",
+                "Proponha o fluxo de integração do ZAP baseline no CI."
+            ]
+        }
+    ],
+    "quiz": [
+        { "question": "O que significa IDOR?", "options": { "A": "Insecure Direct Object Reference", "B": "Integrated Data Operation Request", "C": "Injection Detection Override", "D": "International Order Routing" }, "answer": "A", "explanation": "IDOR ocorre ao referenciar objetos (IDs) diretamente sem validação de autorização." },
+        { "question": "Alterar o ID na URL para acessar recursos de terceiros é um teste de:", "options": { "A": "SQL Injection", "B": "Broken Access Control", "C": "XSS", "D": "SSRF" }, "answer": "B", "explanation": "Esse é o clássico teste de autorização quebrada (IDOR)." },
+        { "question": "Um token JWT adulterado deve ser rejeitado porque:", "options": { "A": "A assinatura não confere", "B": "É muito grande", "C": "Está em base64", "D": "O header é JSON" }, "answer": "A", "explanation": "A validação da assinatura garante que o token não foi alterado." },
+        { "question": "Qual scanner faz varredura de vulnerabilidades em aplicações em execução (DAST)?", "options": { "A": "dependabot", "B": "OWASP ZAP", "C": "gitleaks", "D": "SonarQube" }, "answer": "B", "explanation": "ZAP é um DAST que varre a aplicação em execução; dependabot cuida de dependências." },
+        { "question": "Em ambientes de teste, o correto em relação a dados é:", "options": { "A": "Usar dados reais de clientes", "B": "Usar dados anônimos/sintéticos", "C": "Publicar os dados", "D": "Não se importar" }, "answer": "B", "explanation": "Dados anônimos/sintéticos respeitam LGPD/PCI e evitam exposição." }
+    ]
+}

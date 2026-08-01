@@ -1,0 +1,172 @@
+{
+    "id": "kubernetes",
+    "title": "Kubernetes",
+    "icon": "fa-cubes",
+    "level": "Avançado",
+    "duration": "2 semanas",
+    "shortDescription": "Pods, deployments, serviços e testes em clusters.",
+    "description": "Kubernetes orquestra containers em produção. Para o QA, é essencial entender como validar aplicações em clusters: pods, deployments, services, probes de prontidão e como executar testes em ambientes Kubernetes.",
+    "topics": ["Pods", "Deployments", "Services", "Probes"],
+    "concepts": [
+        {
+            "title": "Pods, Deployments & Services",
+            "theory": "Pod é a menor unidade de execução (um ou mais containers compartilhando rede/storage). Deployment gerencia réplicas de pods e atualizações declarativas. Service é uma abstração estável de rede que roteia para os pods (ClusterIP, NodePort, LoadBalancer). ConfigMap/Secret separam configuração e segredos. O QA precisa saber ler manifests, descrever um deployment, ver logs de pods e diagnosticar falhas de rollout.",
+            "examples": [
+                "kubectl get pods, deployments, services",
+                "kubectl describe pod app-7d5c9b78-abcde",
+                "kubectl logs -f deployment/app",
+                "kubectl rollout status deployment/app"
+            ],
+            "commonMistakes": [
+                "Confundir pod com deployment.",
+                "Não entender o papel do Service (rótulos/seletores).",
+                "Mirar em pod específico em vez do Service.",
+                "Não usar liveness/readiness probes."
+            ],
+            "projectExample": "Ao validar um serviço após deploy no cluster, meu smoke apontava para o Service, não para o pod. Quando o rollout falhava (CrashLoopBackOff), o kubectl describe revelava a causa (probe falhando). Essa triagem rápida virou parte do nosso playbook de testes pós-deploy.",
+            "interviewQuestions": [
+                {
+                    "question": "Qual a diferença entre Pod, Deployment e Service no Kubernetes?",
+                    "difficulty": "Intermediária",
+                    "expectedAnswer": "Pod é a menor unidade de execução com um ou mais containers. Deployment é o controller que garante o estado desejado de réplicas de pods e controla atualizações/rollout. Service é uma abstração de rede estável que seleciona pods por labels e roteia tráfego, independente de qual pod está em execução. Como QA, testo sempre contra o Service (estável), não contra pods individuais (efêmeros).",
+                    "followUps": [
+                        "Como o Service seleciona os pods?",
+                        "O que acontece quando um pod morre?"
+                    ],
+                    "mistakes": [
+                        "Tratar os três como a mesma coisa.",
+                        "Testar contra pods específicos."
+                    ],
+                    "english": "A Pod is the smallest execution unit. A Deployment is the controller ensuring the desired state of pod replicas and managing rollouts. A Service is a stable network abstraction that selects pods by labels. I always test against the Service, not individual pods, because pods are ephemeral."
+                },
+                {
+                    "question": "Como você diagnostica um rollout que falhou no Kubernetes?",
+                    "difficulty": "Avançada",
+                    "expectedAnswer": "Sigo uma sequência: kubectl rollout status para ver o estado; kubectl get pods para ver o status (CrashLoopBackOff, ImagePullBackOff, Pending); kubectl describe pod para eventos e razões; kubectl logs para logs do container; e verifico probes, imagem, recursos e secrets. Muitas falhas vêm de probes mal configurados, imagem com tag errada ou credenciais ausentes. Depois de corrigir, faço o rollout e valido com smoke.",
+                    "followUps": [
+                        "O que significa CrashLoopBackOff?",
+                        "Como você usa os eventos para diagnóstico?"
+                    ],
+                    "mistakes": [
+                        "Pular o describe/logs e chutar.",
+                        "Não citar probes e secrets."
+                    ],
+                    "english": "I follow a sequence: rollout status, get pods, describe pod for events, and logs for container output. Common causes are misconfigured probes, wrong image tags, or missing credentials. After fixing, I rerun the rollout and validate with smoke tests."
+                }
+            ],
+            "challenges": [
+                "Descreva mentalmente um Deployment YAML com liveness/readiness probes e replicas.",
+                "Liste os comandos para diagnosticar um pod em CrashLoopBackOff."
+            ]
+        },
+        {
+            "title": "Probes, Health Checks & Validando Aplicações no Cluster",
+            "theory": "Liveness probe detecta se o container deve ser reiniciado; readiness probe indica se o pod está pronto para receber tráfego; startup probe para aplicações de inicialização lenta. O QA valida: endpoints de health check, comportamento sob falha de dependências (o readiness deve falhar se o banco cair, o liveness não deve reiniciar o pod por isso), e smoke pós-deploy contra o Service. Testes em cluster: rodar jobs de teste (kubectl run / K8s Job) ou execução externa contra o ingress.",
+            "examples": [
+                "readinessProbe: httpGet: path: /healthz, port: 8080",
+                "livenessProbe: failureThreshold: 3, periodSeconds: 10",
+                "kubectl run teste --rm -i --image=myqa -- python smoke.py",
+                "kubectl port-forward svc/app 8080:80"
+            ],
+            "commonMistakes": [
+                "Confundir liveness com readiness (reiniciar pod desnecessariamente).",
+                "Não usar probes, deixando tráfego para pod quebrado.",
+                "Testar em ambiente que não é o cluster.",
+                "Smoke pós-deploy sem validar readiness."
+            ],
+            "projectExample": "Numa app de seguros, um bug fazia a dependência de banco cair; o liveness reiniciava o pod em loop, mascarando o problema. Reconfiguramos probes: readiness passou a falhar quando a dependência caía, e o liveness só para loops mortais. Nossos testes pós-deploy passaram a validar readiness antes de liberar tráfego.",
+            "interviewQuestions": [
+                {
+                    "question": "Qual a diferença entre liveness e readiness probes?",
+                    "difficulty": "Intermediária",
+                    "expectedAnswer": "Liveness verifica se o container está vivo; se falhar, o kubelet reinicia o container (loop de recuperação). Readiness verifica se o pod está pronto para receber tráfego; se falhar, o pod é removido do Service (não recebe requests), mas não é reiniciado. É um equívoco comum usar liveness para dependências externas (banco): se o banco cair, o liveness reiniciaria o pod em loop. Readiness é o correto para dependências.",
+                    "followUps": [
+                        "Como você testaria o comportamento de cada probe?",
+                        "O que é startup probe?"
+                    ],
+                    "mistakes": [
+                        "Inverter os conceitos.",
+                        "Não citar o caso do banco cair."
+                    ],
+                    "english": "Liveness checks if the container is alive and restarts it on failure. Readiness checks if the pod is ready to receive traffic and removes it from the Service on failure without restarting. Using liveness for external dependencies like the database causes unnecessary restarts — readiness is correct for that."
+                },
+                {
+                    "question": "Como você executa e valida testes em um cluster Kubernetes?",
+                    "difficulty": "Avançada",
+                    "expectedAnswer": "Duas abordagens: (1) testes externos rodando no CI apontando para o ingress/Service do cluster, o que valida o caminho real do tráfego; (2) jobs de teste dentro do cluster (K8s Job) para validar rede interna e serviços não expostos. Começo com smoke no health check após o deploy, depois testes funcionais/API críticos, e monitoro métricas de erro. Uso port-forward para depuração pontual. O importante é testar o mesmo Service que recebe tráfego real.",
+                    "followUps": [
+                        "Quando usar Job dentro do cluster vs testes externos?",
+                        "Como você valida readiness no fluxo?"
+                    ],
+                    "mistakes": [
+                        "Testar direto no pod, ignorando o Service.",
+                        "Não citar as duas abordagens."
+                    ],
+                    "english": "Two approaches: external tests from CI pointing to the cluster ingress or Service to validate real traffic paths, and K8s Jobs inside the cluster to validate internal networking. I start with smoke on health checks after deploy, then critical API tests, monitoring error metrics. I always test the same Service that receives real traffic."
+                }
+            ],
+            "challenges": [
+                "Escreva mentalmente os probes de um Deployment e explique quando cada um falha.",
+                "Desenhe o fluxo de smoke pós-deploy em um cluster."
+            ]
+        },
+        {
+            "title": "Kubernetes para QA: Configuração, Segredos e CI",
+            "theory": "ConfigMap guarda configuração não sensível; Secret guarda credenciais (base64, mas deve usar ferramenta de gestão como External Secrets/Vault). O QA valida: que as variáveis chegam corretas aos containers, que secrets não vazam para logs, e que a aplicação se comporta conforme a configuração de cada ambiente (feature flags via ConfigMap). CI: implantar com manifests versionados e validar rollout automaticamente.",
+            "examples": [
+                "kubectl create secret generic db --from-literal=password=...",
+                "ConfigMap com variáveis de ambiente por ambiente (dev, staging, prod)",
+                "kubectl get configmap -o yaml",
+                "CI: kubectl apply -f manifests/ && kubectl rollout status"
+            ],
+            "commonMistakes": [
+                "Colocar secrets em ConfigMap ou no YAML versionado.",
+                "Não validar que as variáveis corretas chegaram ao container.",
+                "Manifests não versionados (config drift).",
+                "Logar secrets nos testes."
+            ],
+            "projectExample": "Em um projeto, o teste de API falhava só em staging. Descobrimos que a feature flag de um parceiro não estava habilitada no ConfigMap de staging, enquanto estava em dev. Passamos a validar o ConfigMap como parte do smoke e a manter os manifests versionados no repositório.",
+            "interviewQuestions": [
+                {
+                    "question": "Como você garante que segredos não sejam expostos em ambientes e testes Kubernetes?",
+                    "difficulty": "Avançada",
+                    "expectedAnswer": "Secrets ficam em objetos Secret (não em ConfigMap/YAML versionado), com gestão externa (Vault/External Secrets) e rotação automática. Nos testes, valido que credenciais nunca aparecem em logs, relatórios ou evidências. Uso redação de dados sensíveis no framework (mascarar campos). Também reviso que a imagem não embuta secrets. A auditoria de acesso a secrets é parte da segurança do cluster.",
+                    "followUps": [
+                        "Como você mascara dados sensíveis nas evidências?",
+                        "O que é External Secrets?"
+                    ],
+                    "mistakes": [
+                        "Achar que base64 já é seguro.",
+                        "Não citar rotação e gestão externa."
+                    ],
+                    "english": "Secrets live in Secret objects, never in ConfigMap or versioned YAML, with external management like Vault and automatic rotation. In tests I validate credentials never appear in logs or reports, using data masking. I also verify images do not embed secrets."
+                },
+                {
+                    "question": "Como o QA valida a configuração por ambiente em Kubernetes?",
+                    "difficulty": "Intermediária",
+                    "expectedAnswer": "Validando que as variáveis de ambiente, feature flags e URLs corretas estão aplicadas em cada ambiente (ConfigMap/Secret por namespace ou ambiente). Faço parte do smoke: verificar o health check, o endpoint correto e o comportamento esperado por ambiente. Uso manifestos versionados e infraestrutura como código para que a divergência entre ambientes seja detectável e evitável.",
+                    "followUps": [
+                        "Como detecta divergência entre ambientes?",
+                        "O que é IaC nesse contexto?"
+                    ],
+                    "mistakes": [
+                        "Ignorar configuração por ambiente.",
+                        "Não versionar manifests."
+                    ],
+                    "english": "I validate that environment variables, feature flags and correct URLs are applied in each environment, checking them as part of the smoke: health checks, correct endpoints and expected behavior per environment. Versioned manifests and IaC make environment divergence detectable and avoidable."
+                }
+            ],
+            "challenges": [
+                "Desenhe um smoke pós-deploy que valida health, readiness e variáveis do ConfigMap.",
+                "Proponha como versionar manifests e validar rollout automaticamente no CI."
+            ]
+        }
+    ],
+    "quiz": [
+        { "question": "Qual é a menor unidade de execução no Kubernetes?", "options": { "A": "Service", "B": "Pod", "C": "Deployment", "D": "Node" }, "answer": "B", "explanation": "Pod é a menor unidade de execução, com um ou mais containers." },
+        { "question": "Qual recurso é uma abstração de rede estável que roteia para pods?", "options": { "A": "Deployment", "B": "ConfigMap", "C": "Service", "D": "Secret" }, "answer": "C", "explanation": "Service seleciona pods por labels e roteia tráfego de forma estável." },
+        { "question": "Qual probe remove o pod do tráfego sem reiniciá-lo quando falha?", "options": { "A": "Liveness", "B": "Readiness", "C": "Startup", "D": "Health" }, "answer": "B", "explanation": "Readiness falha remove o pod do Service; liveness reinicia o container." },
+        { "question": "O que significa CrashLoopBackOff?", "options": { "A": "O pod está iniciando", "B": "O container falha repetidamente e é reiniciado em loop", "C": "O pod não tem rede", "D": "O deployment foi pausado" }, "answer": "B", "explanation": "CrashLoopBackOff indica falha repetida do container com reinícios em backoff." },
+        { "question": "Onde devem ficar credenciais sensíveis no Kubernetes?", "options": { "A": "Em ConfigMap", "B": "No YAML versionado", "C": "Em objetos Secret com gestão externa", "D": "Em variáveis hardcodadas" }, "answer": "C", "explanation": "Secrets em objetos Secret com gestão externa (Vault/External Secrets) e rotação." }
+    ]
+}

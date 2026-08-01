@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evidence Bank | InterviewOps Portugal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body data-page="career">
+    <header class="topbar">
+        <a href="../index.html" class="topbar-content">
+            <i class="fa-solid fa-bullseye logo-icon"></i>
+            <span>InterviewOps Portugal</span>
+        </a>
+        <div class="topbar-actions">
+            <button id="theme-toggle" class="theme-toggle" aria-label="Alternar tema"><i class="fa-solid fa-moon"></i></button>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <div class="nav-links">
+            <a href="../index.html" class="nav-link" data-page="home"><i class="fa-solid fa-house"></i> Home</a>
+            <a href="../dashboard/index.html" class="nav-link" data-page="dashboard"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+            <a href="../modules/index.html" class="nav-link" data-page="modules"><i class="fa-solid fa-book-open"></i> Módulos</a>
+            <a href="../mock/index.html" class="nav-link" data-page="mock"><i class="fa-solid fa-microphone"></i> Mock Interview</a>
+            <a href="index.html" class="nav-link" data-page="career"><i class="fa-solid fa-compass"></i> Career Engine</a>
+            <a href="../companies/index.html" class="nav-link" data-page="companies"><i class="fa-solid fa-building"></i> Empresas</a>
+            <a href="../english/index.html" class="nav-link" data-page="english"><i class="fa-solid fa-language"></i> English</a>
+            <a href="../tracker/index.html" class="nav-link" data-page="tracker"><i class="fa-solid fa-chart-line"></i> Gaps</a>
+            <a href="../roadmap/index.html" class="nav-link" data-page="roadmap"><i class="fa-solid fa-route"></i> Roadmap</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="breadcrumb">
+            <a href="../index.html">Home</a> <i class="fa-solid fa-chevron-right"></i>
+            <a href="index.html">Career Engine</a> <i class="fa-solid fa-chevron-right"></i> <span>Evidence Bank</span>
+        </div>
+
+        <div class="page-header">
+            <h1><i class="fa-solid fa-book" style="color: var(--primary);"></i> Evidence Bank</h1>
+            <p id="bank-intro">Histórias reutilizáveis de entrevista, no formato STAR.</p>
+        </div>
+
+        <div class="flex gap-2 wrap mb-2" id="filter-tags"></div>
+        <div id="stories-grid"></div>
+    </main>
+
+    <footer class="footer">
+        <p>InterviewOps Portugal &copy; 2026. Desenvolvido para estudos.</p>
+    </footer>
+
+    <script src="../javascript/app.js"></script>
+    <script>
+        let STORIES = [];
+
+        function renderStories(filter) {
+            const list = filter ? STORIES.filter(s => s.technology === filter || (s.tags || []).includes(filter)) : STORIES;
+            const grid = document.getElementById('stories-grid');
+            grid.innerHTML = list.map(s => `
+                <div class="content-section">
+                    <div class="flex-between wrap gap-2 mb-2">
+                        <h2 style="margin:0;"><i class="fa-solid fa-star" style="color: var(--warning);"></i> ${escapeHtml(s.title)}</h2>
+                        <span class="badge badge-info">${escapeHtml(s.technology)}</span>
+                    </div>
+                    <div class="flex gap-2 wrap mb-2">${(s.tags || []).map(t => `<span class="tag-badge">${escapeHtml(t)}</span>`).join('')}</div>
+                    <div class="criteria">
+                        <div class="criteria-box criteria-tech"><strong><i class="fa-solid fa-briefcase"></i> Situação</strong><p style="margin-top:0.4rem;">${escapeHtml(s.situation)}</p></div>
+                        <div class="criteria-box criteria-business"><strong><i class="fa-solid fa-list-check"></i> Tarefa</strong><p style="margin-top:0.4rem;">${escapeHtml(s.task)}</p></div>
+                        <div class="criteria-box criteria-good"><strong><i class="fa-solid fa-wand-magic-sparkles"></i> Ação</strong><p style="margin-top:0.4rem;">${escapeHtml(s.action)}</p></div>
+                        <div class="criteria-box criteria-missing"><strong><i class="fa-solid fa-chart-column"></i> Resultado</strong><p style="margin-top:0.4rem;">${escapeHtml(s.result)}</p></div>
+                    </div>
+                    <div class="callout callout-warning"><strong><i class="fa-solid fa-sack-dollar"></i> Valor de negócio:</strong> ${escapeHtml(s.businessImpact)}</div>
+                    <div class="callout callout-info"><strong><i class="fa-solid fa-lightbulb"></i> Lições aprendidas:</strong> ${(s.lessons || []).map(l => escapeHtml(l)).join(' · ')}</div>
+                    <div class="callout callout-success"><strong><i class="fa-solid fa-microphone"></i> Melhor resposta em entrevista:</strong><p style="margin-top:0.4rem;">"${escapeHtml(s.bestAnswer)}"</p></div>
+                    <div class="followups"><strong><i class="fa-solid fa-question"></i> Perguntas que esta história responde:</strong><ul>${(s.possibleQuestions || []).map(q => `<li>${escapeHtml(q)}</li>`).join('')}</ul></div>
+                </div>`).join('') || '<p class="text-muted">Nenhuma história para o filtro selecionado.</p>';
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const data = await loadJSON('../json/stories.json');
+                STORIES = data.stories || [];
+                document.getElementById('bank-intro').innerText = data.introduction || '';
+                const tags = [...new Set(STORIES.flatMap(s => [s.technology, ...(s.tags || [])]))];
+                const filterEl = document.getElementById('filter-tags');
+                filterEl.innerHTML = `<button class="tab-btn active" onclick="filterStories('')">Todas</button>` +
+                    tags.map(t => `<button class="tab-btn" onclick="filterStories('${t}')">${escapeHtml(t)}</button>`).join('');
+                renderStories('');
+            } catch (e) {
+                document.getElementById('stories-grid').innerHTML = '<p class="text-muted">Não foi possível carregar as histórias. Execute via servidor local.</p>';
+            }
+        });
+
+        window.filterStories = function(tag) {
+            document.querySelectorAll('#filter-tags .tab-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            renderStories(tag);
+        };
+    </script>
+</body>
+</html>

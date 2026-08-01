@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulos Técnicos | InterviewOps Portugal</title>
+    <meta name="description" content="15 módulos técnicos de preparação para entrevistas de QA Automation.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body data-page="modules">
+    <header class="topbar">
+        <a href="../index.html" class="topbar-content">
+            <i class="fa-solid fa-bullseye logo-icon"></i>
+            <span>InterviewOps Portugal</span>
+        </a>
+        <div class="topbar-actions">
+            <button id="theme-toggle" class="theme-toggle" aria-label="Alternar tema"><i class="fa-solid fa-moon"></i></button>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <div class="nav-links">
+            <a href="../index.html" class="nav-link" data-page="home"><i class="fa-solid fa-house"></i> Home</a>
+            <a href="../dashboard/index.html" class="nav-link" data-page="dashboard"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+            <a href="index.html" class="nav-link" data-page="modules"><i class="fa-solid fa-book-open"></i> Módulos</a>
+            <a href="../mock/index.html" class="nav-link" data-page="mock"><i class="fa-solid fa-microphone"></i> Mock Interview</a>
+            <a href="../career/index.html" class="nav-link" data-page="career"><i class="fa-solid fa-compass"></i> Career Engine</a>
+            <a href="../companies/index.html" class="nav-link" data-page="companies"><i class="fa-solid fa-building"></i> Empresas</a>
+            <a href="../english/index.html" class="nav-link" data-page="english"><i class="fa-solid fa-language"></i> English</a>
+            <a href="../tracker/index.html" class="nav-link" data-page="tracker"><i class="fa-solid fa-chart-line"></i> Gaps</a>
+            <a href="../roadmap/index.html" class="nav-link" data-page="roadmap"><i class="fa-solid fa-route"></i> Roadmap</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="breadcrumb">
+            <a href="../index.html">Home</a> <i class="fa-solid fa-chevron-right"></i> <span>Módulos Técnicos</span>
+        </div>
+
+        <div class="page-header">
+            <h1><i class="fa-solid fa-book-open" style="color: var(--primary);"></i> Módulos Técnicos</h1>
+            <p>Cada módulo segue a mesma estrutura: conceito → teoria → exemplos → erros comuns → exemplo de projeto real → questões de entrevista (com resposta esperada, follow-ups e versão em inglês) → desafios → quiz.</p>
+        </div>
+
+        <div class="search-bar">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="module-search" placeholder="Buscar módulo (ex.: SQL, Robot, API...)" oninput="filterModules(this.value)">
+        </div>
+
+        <div class="grid-3" id="module-grid">
+            <div class="stat-box"><i class="fa-solid fa-spinner fa-spin"></i> Carregando módulos...</div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>InterviewOps Portugal &copy; 2026. Desenvolvido para estudos.</p>
+    </footer>
+
+    <script src="../javascript/app.js"></script>
+    <script>
+        let MODULES = [];
+
+        function levelBadge(level) {
+            if (level === 'Avançado') return '<span class="badge badge-danger">Avançado</span>';
+            if (level === 'Intermediário') return '<span class="badge badge-warning">Intermediário</span>';
+            return '<span class="badge badge-success">Básico</span>';
+        }
+
+        function moduleProgressPct(m) {
+            const p = getModuleProgress(m.id);
+            const completed = (p && p.completed) || 0;
+            const total = (p && p.total) || m.totalQuestions || 0;
+            if (!total) return 0;
+            const lessonPct = completed / total;
+            const quizPct = (p && p.quizBest) ? p.quizBest / 100 : 0;
+            return Math.round((lessonPct * 0.6 + quizPct * 0.4) * 100);
+        }
+
+        function renderModules(list) {
+            const grid = document.getElementById('module-grid');
+            if (!list.length) {
+                grid.innerHTML = '<p class="text-muted" style="grid-column:1/-1; text-align:center;">Nenhum módulo encontrado.</p>';
+                return;
+            }
+            grid.innerHTML = list.map(m => {
+                const pct = moduleProgressPct(m);
+                return `
+                <a href="module.html?id=${m.id}" class="module-card">
+                    <div class="flex-between">
+                        <div class="module-icon"><i class="fa-solid ${m.icon || 'fa-code'}"></i></div>
+                        ${levelBadge(m.level)}
+                    </div>
+                    <h3>${escapeHtml(m.title)}</h3>
+                    <p>${escapeHtml(m.shortDescription || m.description)}</p>
+                    <div>
+                        <div class="progress-container"><div class="progress-bar ${pct >= 70 ? 'success' : pct >= 40 ? 'warning' : 'danger'}" style="width:${pct}%"></div></div>
+                        <div class="flex-between text-muted" style="font-size:0.8rem; margin-top:0.35rem;">
+                            <span>Progresso</span><span>${pct}%</span>
+                        </div>
+                    </div>
+                    <span class="badge badge-info"><i class="fa-solid fa-clock"></i> ${m.duration}</span>
+                </a>`;
+            }).join('');
+        }
+
+        window.filterModules = function(q) {
+            if (!q) { renderModules(MODULES); return; }
+            const term = q.toLowerCase();
+            renderModules(MODULES.filter(m =>
+                m.title.toLowerCase().includes(term) ||
+                (m.topics || []).join(' ').toLowerCase().includes(term) ||
+                (m.description || '').toLowerCase().includes(term)
+            ));
+        };
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const data = await loadJSON('../json/modules.json');
+                MODULES = data.modules || [];
+                renderModules(MODULES);
+            } catch (e) {
+                document.getElementById('module-grid').innerHTML = '<p class="text-muted">Não foi possível carregar os módulos. Execute via servidor local (python -m http.server).</p>';
+            }
+        });
+    </script>
+</body>
+</html>

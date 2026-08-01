@@ -1,0 +1,172 @@
+{
+    "id": "git",
+    "title": "Git & Versionamento",
+    "icon": "fa-code-branch",
+    "level": "Básico",
+    "duration": "1 semana",
+    "shortDescription": "Branches, rebase, cherry-pick, fluxo de trabalho em equipe.",
+    "description": "Git é ferramenta obrigatória em qualquer squad ágil. Este módulo cobre branches, merge vs rebase, resolução de conflitos, cherry-pick e workflows como Git Flow — habilidades verificadas em quase todas as entrevistas de QA.",
+    "topics": ["Branches", "Rebase", "GitFlow", "Conflitos"],
+    "concepts": [
+        {
+            "title": "Fundamentos & Branches",
+            "theory": "Git é um sistema de controle de versão distribuído. Conceitos essenciais: working directory, staging area (index), e repositório (HEAD). Comandos: git init, add, commit, status, log, branch, checkout/switch, merge. Um branch é um ponteiro para um commit; criar branches por feature permite trabalho isolado. Boa prática: commits pequenos e semânticos, mensagens claras, e nunca commitar arquivos de build ou credenciais.",
+            "examples": [
+                "git checkout -b feature/validacao-pedidos",
+                "git add tests/api/test_orders.py && git commit -m \"test: adiciona validacao de status 201 em pedidos\"",
+                "git log --oneline --graph",
+                "git switch main && git pull --rebase"
+            ],
+            "commonMistakes": [
+                "Commitar arquivos de ambiente (.env, node_modules) — vazamento de segredos.",
+                "Mensagens vagas ('fix', 'atualiza').",
+                "Trabalhar direto na main.",
+                "Commitar arquivos binários de output de teste."
+            ],
+            "projectExample": "Em um projeto de automação, organizamos os commits por funcionalidade e usamos Conventional Commits (feat, fix, test). Isso permitiu gerar changelogs automáticos e reverts limpos quando um commit introduzia regressão.",
+            "interviewQuestions": [
+                {
+                    "question": "Qual a diferença entre git merge e git rebase?",
+                    "difficulty": "Intermediária",
+                    "expectedAnswer": "Merge cria um commit de merge que combina as linhas de história, preservando o histórico original (diverge e converge). Rebase reescreve os commits de uma branch sobre a outra, criando uma história linear. Merge é mais seguro para colaboração (não reescreve história compartilhada); rebase é útil para manter a branch atualizada com a main antes de um PR, mas deve ser evitado em branches compartilhadas, pois reescreve a história.",
+                    "followUps": [
+                        "Quando você usaria cada um?",
+                        "Por que não fazer rebase de uma branch pública?"
+                    ],
+                    "mistakes": [
+                        "Confundir os efeitos no histórico.",
+                        "Não alertar sobre rebase em branches compartilhadas."
+                    ],
+                    "english": "Merge creates a merge commit preserving the original history. Rebase rewrites commits onto another branch, creating a linear history. Merge is safer for shared branches; rebase is useful to update a feature branch before opening a PR, but must not be used on shared branches."
+                },
+                {
+                    "question": "Como você resolve um conflito de merge e evita que ele aconteça?",
+                    "difficulty": "Intermediária",
+                    "expectedAnswer": "Conflito acontece quando duas branches alteram as mesmas linhas. Resolvo editando os arquivos marcados (<<<<<<< / ======= / >>>>>>>), escolhendo ou combinando as mudanças, depois git add e commit. Para evitar: commits pequenos, atualização frequente da branch com a main (rebase), e comunicação no time sobre arquivos compartilhados (como seletores de testes).",
+                    "followUps": [
+                        "O que significam as marcações de conflito?",
+                        "Como você evita conflitos em arquivos de automação?"
+                    ],
+                    "mistakes": [
+                        "Não saber interpretar as marcações.",
+                        "Resolver conflito escolhendo sempre o seu lado."
+                    ],
+                    "english": "Conflicts happen when two branches change the same lines. I resolve them by editing the marked files, choosing or combining changes, then add and commit. To prevent them: small commits, frequent rebases with main, and team communication about shared files."
+                }
+            ],
+            "challenges": [
+                "Simule um conflito e resolva manualmente as marcações.",
+                "Escreva as mensagens de commit ideais para 3 mudanças (fix, feat, test) usando Conventional Commits."
+            ]
+        },
+        {
+            "title": "Workflows de Equipe: Git Flow & Trunk-Based",
+            "theory": "Git Flow usa branches main, develop, feature/, release/ e hotfix/. É robusto para releases agendadas. Trunk-Based Development usa uma branch principal única com feature branches curtas e integração contínua. O QA precisa entender onde os testes rodam: em feature branches (PR), em develop (integração) e em release (estabilização). Também é essencial: pull request com revisão, proteção de branches (CI obrigatório) e cherry-pick para hotfix.",
+            "examples": [
+                "Git Flow: feature/* -> develop -> release/* -> main",
+                "Trunk: feature-curta -> main com PR e CI obrigatório",
+                "git cherry-pick <commit_hash>  (aplicar fix específico em outra branch)",
+                "git tag v1.2.0 && git push origin v1.2.0"
+            ],
+            "commonMistakes": [
+                "Misturar modelos: usar trunk mas manter branches longas.",
+                "Fazer merge na main sem PR/review.",
+                "Não usar tags para releases.",
+                "Cherry-pick sem verificar se o commit já está na branch."
+            ],
+            "projectExample": "Numa seguradora, usávamos Git Flow com develop como ambiente de integração. O QA rodava a suíte smoke automaticamente em cada merge para develop e a regressão completa antes de release. Quando um bug crítico ia para produção, aplicávamos hotfix com cherry-pick.",
+            "interviewQuestions": [
+                {
+                    "question": "Explique a diferença entre Git Flow e Trunk-Based Development.",
+                    "difficulty": "Intermediária",
+                    "expectedAnswer": "Git Flow define branches fixas (main, develop, feature, release, hotfix), adequado para releases planejadas com ciclos definidos. Trunk-Based usa uma branch única (main) com feature branches muito curtas e integração contínua, ideal para CI/CD e deploy contínuo. Trunk é mais simples e suporta deploy rápido; Git Flow dá mais controle para releases em lote, comum em bancos e seguradoras com auditoria.",
+                    "followUps": [
+                        "Qual se encaixaria melhor em um banco e por quê?",
+                        "Onde o QA roda cada nível de teste em cada modelo?"
+                    ],
+                    "mistakes": [
+                        "Não conhecer as branches de cada modelo.",
+                        "Não conectar com onde o QA executa testes."
+                    ],
+                    "english": "Git Flow defines fixed branches for planned releases. Trunk-Based uses a single main branch with very short feature branches and continuous integration. Trunk is simpler and faster for CD; Git Flow gives more control for batch releases common in banking and insurance."
+                },
+                {
+                    "question": "Como o QA garante que o código que ele testa é o mesmo que vai para produção?",
+                    "difficulty": "Avançada",
+                    "expectedAnswer": "Através de integração contínua e rastreabilidade: o pipeline de CI roda os testes no mesmo commit do código, e o artefato que sobe para o ambiente de teste é o mesmo candidato a produção (build imutável). Uso tags e verificação de checksum/versão. Também confiro que o ambiente de teste está no mesmo build/versão do que está em homologação, e valido o commit/PR no registro de deploy. Isso evita a clássica divergência entre 'testei aqui' e 'subiu outro build'.",
+                    "followUps": [
+                        "O que é build imutável?",
+                        "Como você valida a versão no ambiente?"
+                    ],
+                    "mistakes": [
+                        "Testar manualmente sem rastreabilidade de build.",
+                        "Não citar build imutável."
+                    ],
+                    "english": "Through continuous integration and traceability: CI runs tests on the same commit, and the artifact deployed to test is the same release candidate for production, an immutable build. I validate tags, checksums and version on the environment to prevent divergence between what was tested and what was deployed."
+                }
+            ],
+            "challenges": [
+                "Desenhe o fluxo Git Flow com os pontos onde o QA executa cada nível de teste.",
+                "Explique como faria um hotfix com cherry-pick sem quebrar a develop."
+            ]
+        },
+        {
+            "title": "Boas Práticas no Repositório de Automação",
+            "theory": "Repositório de automação precisa de boas práticas: .gitignore para outputs (results/, node_modules/, .env), proteção de branch main com CI obrigatório, revisão de PR focada, versionamento de dados de teste, e evitar arquivos binários. Também: usar tags/releases para versões do framework, documentar comandos no README, e manter os testes o mais recentes possível com o código (não em branches separadas por muito tempo).",
+            "examples": [
+                ".gitignore: results/, node_modules/, .env, *.log, output.xml",
+                "Branch protection: requer PR aprovado e CI passando para merge na main",
+                "CI roda: robot --include smoke",
+                "Release do framework: git tag qa-framework-1.4.0"
+            ],
+            "commonMistakes": [
+                "Commitar outputs de teste (log.html, output.xml) gerando ruído no repositório.",
+                "Arquivos .env versionados com credenciais.",
+                "Branches de automação longas que divergem do código.",
+                "Sem revisão de PR no repositório de testes."
+            ],
+            "projectExample": "Configuramos proteção de branch na main do repositório de automação: PR obrigatório com revisão e CI rodando lint e smoke. Com isso, o código quebrado nunca chegava à main, e a suíte principal ficava sempre em estado executável.",
+            "interviewQuestions": [
+                {
+                    "question": "Quais boas práticas você aplica ao manter um repositório de automação de testes?",
+                    "difficulty": "Intermediária",
+                    "expectedAnswer": "Eu aplicaria: .gitignore correto (excluindo outputs, dependências e .env), proteção da main com CI obrigatório e revisão de PR, Conventional Commits para rastreabilidade, versionamento de dados de teste, README com instruções de execução, e sincronia com o código principal. Nunca versionar credenciais, e tratar o repositório de automação como um produto de software, não um dumping de scripts.",
+                    "followUps": [
+                        "Como você evita que credenciais vazem no repositório?",
+                        "Como organiza dados de teste versionados?"
+                    ],
+                    "mistakes": [
+                        "Tratar o repo de automação como scripts descartáveis.",
+                        "Não citar proteção de branch e CI."
+                    ],
+                    "english": "I apply a correct .gitignore, branch protection with mandatory CI and PR review, Conventional Commits, versioned test data, a README with run instructions, and keep tests in sync with the main code. I never version credentials and treat the automation repository as a software product."
+                },
+                {
+                    "question": "Como você detecta e evita o vazamento de segredos no repositório?",
+                    "difficulty": "Intermediária",
+                    "expectedAnswer": "Prevenção: nunca versionar .env e arquivos de credenciais (no .gitignore), usar variáveis de ambiente ou secret managers no CI, e scanners de segredo (gitleaks, trufflehog) no CI que falham o build se detectarem segredos. Se um segredo vazar, além de remover o histórico, o segredo deve ser rotacionado imediatamente. Como QA, também valido no smoke se o ambiente não expõe credenciais.",
+                    "followUps": [
+                        "O que fazer se um segredo for commitado?",
+                        "Como usar secrets no GitHub Actions?"
+                    ],
+                    "mistakes": [
+                        "Achar que apagar do histórico resolve sem rotacionar.",
+                        "Não usar secret scanners."
+                    ],
+                    "english": "Prevention: never version .env files, use environment variables and secret managers in CI, and secret scanners like gitleaks that fail the build. If a secret leaks, it must be rotated immediately, not just removed from history."
+                }
+            ],
+            "challenges": [
+                "Crie um .gitignore para um projeto de automação (resultados, dependências, secrets).",
+                "Proponha a política de proteção de branch para um repositório de testes."
+            ]
+        }
+    ],
+    "quiz": [
+        { "question": "Qual comando cria uma nova branch e muda para ela?", "options": { "A": "git branch nova", "B": "git checkout -b nova", "C": "git add nova", "D": "git commit nova" }, "answer": "B", "explanation": "git checkout -b cria a branch e faz o switch para ela." },
+        { "question": "O que o git rebase faz?", "options": { "A": "Cria um commit de merge", "B": "Reescreve os commits de uma branch sobre outra", "C": "Apaga commits", "D": "Cria uma tag" }, "answer": "B", "explanation": "Rebase move a base dos commits para outra branch, criando história linear." },
+        { "question": "Qual modelo usa branches fixas main, develop, feature, release e hotfix?", "options": { "A": "Trunk-Based", "B": "Git Flow", "C": "Single branch", "D": "Feature Branch Puro" }, "answer": "B", "explanation": "Git Flow define essas branches fixas para releases planejadas." },
+        { "question": "Para aplicar um commit específico em outra branch, use:", "options": { "A": "git merge", "B": "git cherry-pick", "C": "git stash", "D": "git revert" }, "answer": "B", "explanation": "git cherry-pick aplica um commit específico em outra branch." },
+        { "question": "O que deve estar no .gitignore de um projeto de automação?", "options": { "A": "Código-fonte", "B": "Outputs de teste, .env e dependências", "C": "Documentação", "D": "Arquivos de configuração" }, "answer": "B", "explanation": "Outputs, .env (segredos) e dependências devem ser ignorados." }
+    ]
+}

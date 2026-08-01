@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gap Tracker | InterviewOps Portugal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body data-page="tracker">
+    <header class="topbar">
+        <a href="../index.html" class="topbar-content">
+            <i class="fa-solid fa-bullseye logo-icon"></i>
+            <span>InterviewOps Portugal</span>
+        </a>
+        <div class="topbar-actions">
+            <button id="theme-toggle" class="theme-toggle" aria-label="Alternar tema"><i class="fa-solid fa-moon"></i></button>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <div class="nav-links">
+            <a href="../index.html" class="nav-link" data-page="home"><i class="fa-solid fa-house"></i> Home</a>
+            <a href="../dashboard/index.html" class="nav-link" data-page="dashboard"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+            <a href="../modules/index.html" class="nav-link" data-page="modules"><i class="fa-solid fa-book-open"></i> Módulos</a>
+            <a href="../mock/index.html" class="nav-link" data-page="mock"><i class="fa-solid fa-microphone"></i> Mock Interview</a>
+            <a href="../career/index.html" class="nav-link" data-page="career"><i class="fa-solid fa-compass"></i> Career Engine</a>
+            <a href="../companies/index.html" class="nav-link" data-page="companies"><i class="fa-solid fa-building"></i> Empresas</a>
+            <a href="../english/index.html" class="nav-link" data-page="english"><i class="fa-solid fa-language"></i> English</a>
+            <a href="index.html" class="nav-link" data-page="tracker"><i class="fa-solid fa-chart-line"></i> Gaps</a>
+            <a href="../roadmap/index.html" class="nav-link" data-page="roadmap"><i class="fa-solid fa-route"></i> Roadmap</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="breadcrumb">
+            <a href="../index.html">Home</a> <i class="fa-solid fa-chevron-right"></i> <span>Gap Tracker</span>
+        </div>
+
+        <div class="page-header">
+            <h1><i class="fa-solid fa-chart-line" style="color: var(--primary);"></i> Gap Tracker</h1>
+            <p>Compare seu nível atual com a meta de 80% por módulo e priorize os próximos estudos com ações concretas.</p>
+        </div>
+
+        <div class="content-section">
+            <div class="flex-between mb-2">
+                <span class="text-muted"><i class="fa-solid fa-circle-info"></i> Meta de preparação: 80% por módulo</span>
+                <span class="badge" id="ready-badge">-</span>
+            </div>
+            <div id="gap-summary"></div>
+        </div>
+
+        <div class="content-section">
+            <h2><i class="fa-solid fa-list-check"></i> Prioridade de estudo por lacuna</h2>
+            <div class="table-wrap">
+                <table id="gap-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Módulo</th>
+                            <th>Atual</th>
+                            <th>Lacuna para 80%</th>
+                            <th>Prioridade</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody id="gap-body"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2><i class="fa-solid fa-bullseye"></i> Recomendação de hoje</h2>
+            <div id="recommendation"></div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>InterviewOps Portugal &copy; 2026. Desenvolvido para estudos.</p>
+    </footer>
+
+    <script src="../javascript/app.js"></script>
+    <script>
+        let MODULES = [];
+
+        function modulePct(m) {
+            const p = getModuleProgress(m.id);
+            const completed = (p && p.completed) || 0;
+            const total = (p && p.total) || m.totalQuestions || 0;
+            const lessonPct = total > 0 ? completed / total : 0;
+            const quizPct = (p && p.quizBest) ? p.quizBest / 100 : 0;
+            return Math.round((lessonPct * 0.6 + quizPct * 0.4) * 100);
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const data = await loadJSON('../json/modules.json');
+                MODULES = data.modules || [];
+                renderGaps();
+            } catch (e) {
+                document.getElementById('gap-body').innerHTML = '<tr><td colspan="6" class="text-muted">Não foi possível carregar. Execute via servidor local.</td></tr>';
+            }
+        });
+
+        function renderGaps() {
+            const TARGET = 80;
+            const rows = MODULES.map((m, i) => {
+                const pct = modulePct(m);
+                const gap = Math.max(0, TARGET - pct);
+                return { m, i, pct, gap };
+            }).sort((a, b) => b.gap - a.gap);
+
+            const ready = rows.filter(r => r.pct >= TARGET).length;
+            document.getElementById('ready-badge').innerText = `${ready}/${MODULES.length} no alvo`;
+            document.getElementById('ready-badge').className = `badge ${ready >= MODULES.length * 0.7 ? 'badge-success' : ready > 0 ? 'badge-warning' : 'badge-danger'}`;
+
+            let rank = 0;
+            let lastGap = -1;
+            const body = rows.map(r => {
+                if (r.gap !== lastGap) { rank++; lastGap = r.gap; }
+                const priority = r.gap === 0 ? '<span class="badge badge-success">Meta atingida</span>'
+                    : r.gap >= 60 ? '<span class="badge badge-danger">Crítica</span>'
+                    : r.gap >= 30 ? '<span class="badge badge-warning">Alta</span>'
+                    : '<span class="badge badge-info">Média</span>';
+                const action = r.gap === 0
+                    ? '<span class="text-muted"><i class="fa-solid fa-check"></i> Manter</span>'
+                    : `<a class="secondary-btn small-btn" href="../modules/module.html?id=${r.m.id}"><i class="fa-solid fa-arrow-up-right-from-square"></i> Estudar</a>`;
+                return `<tr>
+                    <td>${rank}</td>
+                    <td><i class="fa-solid ${r.m.icon}"></i> ${escapeHtml(r.m.title)}</td>
+                    <td><span class="pct">${r.pct}%</span> <div class="progress-container" style="min-width:80px;"><div class="progress-bar ${r.pct >= TARGET ? 'success' : 'warning'}" style="width:${r.pct}%"></div></div></td>
+                    <td><strong style="color:var(--danger);">${r.gap}%</strong></td>
+                    <td>${priority}</td>
+                    <td>${action}</td>
+                </tr>`;
+            }).join('');
+            document.getElementById('gap-body').innerHTML = body;
+
+            const top = rows.find(r => r.gap > 0);
+            document.getElementById('recommendation').innerHTML = top
+                ? `<div class="q-card">
+                    <h3 style="margin-bottom:0.5rem;"><i class="fa-solid ${top.m.icon}"></i> ${escapeHtml(top.m.title)}</h3>
+                    <p>${escapeHtml(top.m.shortDescription)}</p>
+                    <p class="text-muted">Lacuna atual: <strong style="color:var(--danger);">${top.gap}%</strong>. Foque neste módulo até atingir 80%.</p>
+                    <a class="primary-btn small-btn" href="../modules/module.html?id=${top.m.id}" style="color:#fff;"><i class="fa-solid fa-play"></i> Revisar lições</a>
+                </div>`
+                : `<div class="q-card"><p><i class="fa-solid fa-party-happy" style="color:var(--success);"></i> Parabéns! Todos os módulos estão no alvo de 80%. Reforce com <a href="../mock/index.html">Mock Interviews</a>.</p></div>`;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,195 @@
+{
+    "total": 5,
+    "companies": [
+        {
+            "id": "natixis",
+            "name": "Natixis",
+            "icon": "fa-landmark",
+            "sector": "Banco de Investimento & Asset Management",
+            "country": "França / Portugal",
+            "focus": ["Banking", "Investment", "API", "SQL", "Compliance"],
+            "overview": "Natixis é o banco de investimento e gestão de ativos do grupo BPCE (2º maior banco francês). Em Portugal, possui um centro de competências (Natixis in Portugal) focado em tecnologia, dados e engenharia de software, com forte presença em Lisboa. Trabalha com produtos financeiros complexos, gestão de risco, market data e plataformas de investimento.",
+            "culture": "Cultura corporativa francesa com operação em inglês em Portugal. Processos maduros, forte foco em compliance, auditoria e controle. Hierarquia clara mas com colaboração internacional. Reuniões em inglês; documentação extensa. Valoriza rigor técnico, conformidade e atenção a detalhes.",
+            "technologies": ["Java", "Spring", "Python", "SQL", "APIs REST", "Kafka", "Kubernetes", "CI/CD", "Regulatory Reporting"],
+            "business": "Negócios: investment banking, gestão de ativos, private equity, seguros de vida, e serviços financeiros corporativos. Áreas de QA: plataformas de trading, relatórios regulatórios, integrações de market data, sistemas de risk e compliance.",
+            "expectedQuestions": [
+                "Como você testa APIs em um contexto de integração com sistemas legados?",
+                "Descreva sua experiência validando dados e relatórios financeiros.",
+                "Como você garante a qualidade em ambientes de alta conformidade?",
+                "Explique sua experiência com SQL e validação de dados.",
+                "Como você lida com testes de integração entre múltiplos sistemas?"
+            ],
+            "possibleInterviewers": ["QA Manager", "Engineering Manager", "Tech Lead", "HR/Recruiter", "Business Analyst"],
+            "technicalStack": "Testes: RestAssured/Java, Robot Framework, SQL Server/Oracle, Postman/Newman, Jenkins/GitLab CI, Selenium/Playwright. Ambientes: Linux, Docker/Kubernetes. Dados: Oracle, SQL Server, big data.",
+            "commonGaps": [
+                "Inglês fluente para reuniões internacionais.",
+                "Conhecimento de domínio financeiro (trading, market data, regulatory reporting).",
+                "Testes de integração com sistemas legados e message brokers (Kafka/JMS).",
+                "Validação de dados e relatórios com SQL complexo."
+            ],
+            "recommendedStories": [
+                "Projeto em que você automatizou testes de API em ambiente financeiro.",
+                "História de validação de dados com SQL que evitou um problema em produção.",
+                "Como você estabilizou uma suíte instável em um projeto grande."
+            ],
+            "topicsToStudy": ["REST APIs e contratos", "SQL avançado (joins, agregações, relatórios)", "CI/CD e gates de qualidade", "Testes de integração e message brokers", "Compliance e controle de qualidade em finanças", "Inglês técnico"],
+            "similarProjects": [
+                "Automação de testes de API para plataforma de investimento",
+                "Validação automatizada de relatórios regulatórios",
+                "Framework de testes de integração para market data"
+            ]
+        },
+        {
+            "id": "klx",
+            "name": "KLx",
+            "icon": "fa-building-columns",
+            "sector": "Banking & Software",
+            "country": "Brasil / Portugal",
+            "focus": ["Banking", "Credit Risk", "Workflow", "Agile", "API", "SQL"],
+            "overview": "KLx é uma empresa de software e consultoria com forte atuação em Banking e Crédito, especializada em plataformas de workflow para produtos bancários. Trabalha em projetos de crédito, financiamentos e operações bancárias, com metodologia ágil.",
+            "culture": "Cultura ágil, times multidisciplinares, proximidade com o negócio bancário. Valoriza autonomia, comunicação e entrega incremental. Ambiente de desenvolvimento com forte interação entre QA, devs e analistas de negócio.",
+            "technologies": ["Java", "Spring", "Angular", "SQL", "APIs REST", "Workflow (BPM)", "Docker", "CI/CD", "Agile/Scrum"],
+            "business": "Negócios: crédito bancário, operações de financiamento, workflow de aprovação de crédito, integração com sistemas bancários. Áreas de QA: fluxos de crédito, regras de negócio, integrações de API e validação de dados.",
+            "expectedQuestions": [
+                "Como você testaria o fluxo de aprovação de crédito?",
+                "Descreva sua experiência com testes de regra de negócio.",
+                "Como você valida dados e integrações bancárias?",
+                "Como você trabalha em um time ágil?",
+                "Explique como você automatizaria um workflow de crédito."
+            ],
+            "possibleInterviewers": ["Tech Lead", "QA Lead", "Product Owner", "HR"],
+            "technicalStack": "Testes: Robot Framework, RestAssured, Postman, SQL (consulta de dados), Selenium. Ambientes: Linux, Docker. Workflow: BPM/Flowable.",
+            "commonGaps": [
+                "Conhecimento de domínio de crédito e regras de negócio.",
+                "Automação de fluxos de workflow.",
+                "Testes de regra de negócio com dados paramétricos.",
+                "Comunicação com stakeholders de negócio."
+            ],
+            "recommendedStories": [
+                "Automação de um fluxo de crédito ponta a ponta.",
+                "Validação de regra de negócio que detectou bug de cálculo.",
+                "Como você trabalhou com analistas de negócio para definir critérios de aceite."
+            ],
+            "topicsToStudy": ["SQL", "APIs REST", "Workflow/BPM", "BDD e critérios de aceite", "Agile/Scrum", "Testes de regra de negócio", "Java (noções)"],
+            "similarProjects": [
+                "Automação de aprovação de crédito",
+                "Framework de testes para workflow bancário",
+                "Validação de integrações de API de crédito"
+            ]
+        },
+        {
+            "id": "cardif",
+            "name": "Cardif",
+            "icon": "fa-shield-heart",
+            "sector": "Insurance & Banking",
+            "country": "França / Internacional",
+            "focus": ["Insurance", "BDD", "Karate", "Cypress", "Performance"],
+            "overview": "BNP Paribas Cardif é uma seguradora global (joint venture do BNP Paribas), com forte presença em seguros de proteção (vida, residencial, crédito) vendidos através de bancos e parceiros. Opera em vários países, incluindo operações na América Latina.",
+            "culture": "Cultura internacional com forte ênfase em inovação, conformidade e experiência do cliente. Operação em vários países, com comunicação em inglês em níveis globais. Valoriza engenharia de qualidade, automação e performance.",
+            "technologies": ["Java", "Spring Boot", "Karate", "Cypress", "Postman/Newman", "JMeter/k6", "SQL", "APIs REST", "Kubernetes", "CI/CD"],
+            "business": "Negócios: seguros de proteção (vida, residencial, crédito), distribuição por bancos e parceiros, plataformas de cotação e emissão. Áreas de QA: cotação de seguros, emissão de apólices, integrações com bancos parceiros, performance de plataformas.",
+            "expectedQuestions": [
+                "Como você testaria o fluxo de cotação de um seguro?",
+                "Descreva sua experiência com BDD e Karate.",
+                "Como você mede e valida performance de APIs?",
+                "Como você testa integrações com bancos parceiros?",
+                "Explique sua estratégia de testes para um fluxo crítico."
+            ],
+            "possibleInterviewers": ["QA Manager", "SDET", "Product Owner", "Engineering Manager", "HR"],
+            "technicalStack": "Testes: Karate (API), Cypress (E2E), JMeter/k6 (performance), Postman/Newman, SQL. BDD com Cucumber. CI/CD com Jenkins/GitLab.",
+            "commonGaps": [
+                "Conhecimento de domínio de seguros (cotação, emissão, apólices).",
+                "Experiência com Karate e Cypress.",
+                "Testes de performance em plataformas de seguro.",
+                "Testes de integração com parceiros bancários."
+            ],
+            "recommendedStories": [
+                "Automação do fluxo de cotação de seguro via API.",
+                "Teste de performance que identificou gargalo.",
+                "Uso de BDD para alinhar cenários com negócio."
+            ],
+            "topicsToStudy": ["Karate", "Cypress", "BDD/Gherkin", "Performance (JMeter/k6)", "Seguros (noções de domínio)", "Integração de APIs", "SQL"],
+            "similarProjects": [
+                "Framework de testes Karate para APIs de seguro",
+                "Automação E2E de cotação com Cypress",
+                "Testes de performance de plataforma de emissão"
+            ]
+        },
+        {
+            "id": "siemens",
+            "name": "Siemens",
+            "icon": "fa-industry",
+            "sector": "Industrial Automation & Technology",
+            "country": "Alemanha / Global",
+            "focus": ["Industrial Automation", "PLC", "Electronics", "SAP", "Integration"],
+            "overview": "Siemens é um conglomerado alemão líder em automação industrial, eletrificação, digitalização e software. Em Portugal, possui centros de competência em engenharia de software (Siemens SISW), incluindo áreas de testes de software industrial e integração com SAP.",
+            "culture": "Cultura alemã de engenharia: processos rigorosos, documentação, qualidade e segurança. Inglês como língua de trabalho em projetos internacionais. Valoriza engenharia sólida, análise e precisão.",
+            "technologies": ["SAP", "C/C++ (noções)", "Java", "Python", "SQL", "Testes de integração", "CI/CD", "SCADA", "Sistemas embarcados (noções)"],
+            "business": "Negócios: automação industrial (PLC, controladores), software de engenharia (PLM, CAD/CAE), digitalização de fábricas, integração de sistemas de produção com ERP (SAP). Áreas de QA: testes de software industrial, integração SAP, validação de fluxos de engenharia.",
+            "expectedQuestions": [
+                "Como você testa integrações com SAP?",
+                "Descreva sua experiência com testes de sistemas industriais ou de integração.",
+                "Como você valida dados em sistemas de produção?",
+                "Como você garante qualidade em sistemas críticos?",
+                "Explique sua experiência com automação de testes em ambiente corporativo."
+            ],
+            "possibleInterviewers": ["Engineering Manager", "Project Manager", "QA Lead", "Tech Lead"],
+            "technicalStack": "Testes: SAP (GUI/BAPI), Robot Framework, Python, SQL, Postman. Ambientes: Windows/Linux, SAP, sistemas industriais.",
+            "commonGaps": [
+                "Conhecimento de SAP (fluxos, integrações, BAPI).",
+                "Testes de integração de sistemas legados.",
+                "Contexto industrial (PLC, SCADA, automação).",
+                "Inglês técnico para projetos internacionais."
+            ],
+            "recommendedStories": [
+                "Automação de um fluxo SAP ponta a ponta.",
+                "Validação de integração entre sistemas de produção e ERP.",
+                "Como você lidou com sistemas legados e estáveis."
+            ],
+            "topicsToStudy": ["SAP Testing", "Integração de sistemas", "Python/Robot Framework", "SQL", "Processos industriais (noções)", "Inglês técnico"],
+            "similarProjects": [
+                "Automação de testes SAP para integração industrial",
+                "Framework de testes de integração de sistemas",
+                "Validação de dados em sistemas de produção"
+            ]
+        },
+        {
+            "id": "hitachi",
+            "name": "Hitachi Rail",
+            "icon": "fa-train",
+            "sector": "Railway & Critical Systems",
+            "country": "Japão / Global",
+            "focus": ["Railway", "Critical Systems", "Playwright", "Containers", "Continuous Integration"],
+            "overview": "Hitachi Rail é a divisão ferroviária da Hitachi, líder em sinalização, controle de trens e sistemas de mobilidade. Em Portugal, possui operação em sistemas de transporte e engenharia de software crítica (sinalização, controle e monitoramento).",
+            "culture": "Cultura de engenharia japonesa com padrões internacionais: segurança em primeiro lugar, processos rigorosos, rastreabilidade e excelência. Sistemas críticos exigem testes rigorosos, documentação e conformidade com normas de segurança ferroviária.",
+            "technologies": ["Playwright", "TypeScript/JavaScript", "Docker", "Kubernetes", "CI/CD", "APIs", "SQL", "Sistemas de controle", "Python"],
+            "business": "Negócios: sinalização ferroviária, sistemas de controle de trens, bilhetagem, monitoramento, e software de mobilidade. Áreas de QA: testes E2E de dashboards de monitoramento, sistemas de controle, integrações de APIs e contêineres.",
+            "expectedQuestions": [
+                "Como você testa sistemas críticos com alta confiabilidade?",
+                "Descreva sua experiência com Playwright e testes E2E modernos.",
+                "Como você roda testes em containers e CI?",
+                "Como você garante a rastreabilidade dos testes?",
+                "Explique como você automatizaria um dashboard de monitoramento."
+            ],
+            "possibleInterviewers": ["QA Engineer Senior", "Tech Lead", "Engineering Manager", "Systems Engineer"],
+            "technicalStack": "Testes: Playwright, TypeScript, Docker Compose, CI/CD (GitHub Actions/Azure), SQL, APIs REST. Sistemas: dashboards web, serviços de controle.",
+            "commonGaps": [
+                "Conhecimento de Playwright e testes E2E modernos.",
+                "Containers e execução de testes em CI.",
+                "Contexto de sistemas críticos de transporte.",
+                "Inglês técnico."
+            ],
+            "recommendedStories": [
+                "Automação E2E de um sistema crítico com Playwright.",
+                "Como você configurou testes em containers no CI.",
+                "Validação de integrações de API em um sistema de monitoramento."
+            ],
+            "topicsToStudy": ["Playwright", "TypeScript (noções)", "Docker/Kubernetes", "CI/CD", "Testes de sistemas críticos", "Inglês técnico"],
+            "similarProjects": [
+                "Framework Playwright para dashboards de monitoramento",
+                "Execução de testes E2E em containers no CI",
+                "Automação de testes de sistemas de transporte"
+            ]
+        }
+    ]
+}
