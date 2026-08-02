@@ -39,6 +39,7 @@
       "consent_link": "Política de Privacidade",
       "consent_accept": "Aceitar",
       "consent_decline": "Recusar",
+      "consent_at": "Consentimento registrado em:",
       "privacy_title": "Política de Privacidade",
       "privacy_updated": "Última atualização:",
       "privacy_intro": "Este site armazena seus dados localmente no navegador (cookies), sem enviar nada a servidores.",

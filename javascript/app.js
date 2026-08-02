@@ -7,6 +7,7 @@ const THEME_KEY = 'theme';
 
 // ---------- LANGUAGE / I18N ----------
 const LANG_KEY = 'lang';
+const ENG_VARIANT_KEY = 'eng_variant';
 const I18N_PATH = 'json/i18n.json';
 
 // ---------- STORAGE LAYER (COOKIE + perfil) ----------
@@ -178,31 +179,6 @@ window.storeSet = storeSet;
 window.storeRemove = storeRemove;
 window.initStorage = initStorage;
 
-// ---------- PERFIS ----------
-function getActiveProfile() {
-    return storeGet(PROFILE_KEY) || '';
-}
-
-function getProfiles() {
-    const list = storeGet(PROFILES_KEY);
-    return Array.isArray(list) ? list : [];
-}
-
-function setActiveProfile(name) {
-    const slug = slugify(name);
-    if (!slug) return;
-    storeSet(PROFILE_KEY, name);
-    const list = getProfiles();
-    if (!list.includes(name)) {
-        list.push(name);
-        storeSet(PROFILES_KEY, list);
-    }
-}
-
-window.getActiveProfile = getActiveProfile;
-window.getProfiles = getProfiles;
-window.setActiveProfile = setActiveProfile;
-
 // ---------- IDIOMA FIXO EM PT-BR (Inglês apenas no módulo/questões de inglês) ----------
 const ENGLISH_CATEGORIES = ['English', 'english'];
 let I18N = { lang: {} };
@@ -238,77 +214,11 @@ async function initI18n() {
     applyTranslations();
 }
 
-// Aplica traduções a elementos com data-i18n.
-function applyTranslations() {
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        const val = t(key);
-        if (el.hasAttribute('data-i18n-html')) {
-            el.innerHTML = val;
-        } else if (el.childElementCount > 0) {
-            const nodes = Array.from(el.childNodes).filter(n => n.nodeType === Node.TEXT_NODE && n.textContent.trim());
-            if (nodes.length) { nodes[0].textContent = ' ' + val; }
-        } else {
-            el.textContent = val;
-        }
-        if (el.hasAttribute('placeholder')) el.setAttribute('placeholder', val);
-    });
-}
-
-window.t = t;
-window.l = l;
-window.resolveLang = resolveLang;
-window.translateContent = null;
-
-// ---------- PERFIL (seletor na topbar) ----------
-function renderProfileSelector() {
-    const actions = document.querySelector('.topbar-actions');
-    if (!actions || document.getElementById('profile-select')) return;
-    const current = getActiveProfile();
-    const profiles = getProfiles();
-    const wrap = document.createElement('div');
-    wrap.className = 'profile-select-wrap';
-    wrap.style.cssText = 'display:flex; align-items:center; gap:0.4rem; position:relative;';
-    wrap.innerHTML = `
-        <i class="fa-solid fa-user" style="color:var(--text-muted); font-size:0.9rem;" aria-hidden="true"></i>
-        <select id="profile-select" aria-label="Perfil" style="background:var(--card-bg); color:var(--text-color); border:1px solid var(--card-border); border-radius:8px; padding:0.3rem 0.5rem; font-size:0.85rem; cursor:pointer;">
-            <option value="">${t('profile_default')}</option>
-            ${profiles.map(p => `<option value="${escapeHtml(p)}" ${p === current ? 'selected' : ''}>${escapeHtml(p)}</option>`).join('')}
-            <option value="__new">${t('profile_new')}</option>
-        </select>
-    `;
-    actions.insertBefore(wrap, actions.firstChild);
-
-    const select = document.getElementById('profile-select');
-    select.addEventListener('change', () => {
-        const val = select.value;
-        if (!val) {
-            storeSet(PROFILE_KEY, '');
-            select.value = '';
-            location.reload();
-            return;
-        }
-        if (val === '__new') {
-            const name = prompt(t('profile_prompt') || 'Nome do novo perfil:', '');
-            const trimmed = String(name || '').trim();
-            if (!trimmed) {
-                select.value = current || '';
-                return;
-            }
-            setActiveProfile(trimmed);
-            location.reload();
-            return;
-        }
-        if (val !== current) {
-            setActiveProfile(val);
-            location.reload();
-        }
-    });
-}
-
 // ---------- CONSENTIMENTO LGPD ----------
 function initConsentBanner() {
-    if (consentState() !== 'pending') return;
+    // Se já aceitou, nunca mais mostra o banner
+    if (consentState() === 'accepted') return;
+
     const banner = document.createElement('div');
     banner.id = 'consent-banner';
     banner.setAttribute('role', 'dialog');
@@ -321,7 +231,6 @@ function initConsentBanner() {
         </div>
         <div style="display:flex; gap:0.5rem; flex-shrink:0;">
             <button id="consent-accept" style="background:var(--accent); color:#fff; border:none; border-radius:8px; padding:0.5rem 1rem; cursor:pointer; font-weight:600;">${t('consent_accept')}</button>
-            <button id="consent-decline" style="background:transparent; color:var(--text-color); border:1px solid var(--card-border); border-radius:8px; padding:0.5rem 1rem; cursor:pointer;">${t('consent_decline')}</button>
         </div>
     `;
     document.body.appendChild(banner);
@@ -334,16 +243,12 @@ function initConsentBanner() {
     banner.querySelector('#consent-privacy-link').setAttribute('href', privacyHref);
 
     document.getElementById('consent-accept').addEventListener('click', () => {
+        // Registra data/hora do consentimento
         storeSet(CONSENT_KEY, 'accepted');
-        banner.remove();
-    });
-    document.getElementById('consent-decline').addEventListener('click', () => {
-        storeSet(CONSENT_KEY, 'rejected');
+        storeSet('consent_accepted_at', new Date().toISOString());
         banner.remove();
     });
 }
-window.setLang = setLang;
-window.getSavedLang = getSavedLang;
 
 // ---------- THEME MANAGEMENT ----------
 
@@ -410,21 +315,18 @@ function saveProgressData(data) {
     storeSet(PROGRESS_KEY, data);
 }
 
-// Module progress is stored as { moduleId: { completed: n, total: n, quizBest: 0..100, lastStudy: 'YYYY-MM-DD' } }
 function getModuleProgress(moduleId) {
     const data = getProgressData();
-    return data.modules && data.modules[moduleId] || null;
+    return data[moduleId] || { completed: 0, total: 0, quizBest: 0, lastReview: null };
 }
 
-function setModuleProgress(moduleId, obj) {
+function setModuleProgress(moduleId, updates) {
     const data = getProgressData();
-    if (!data.modules) data.modules = {};
-    data.modules[moduleId] = Object.assign({}, data.modules[moduleId], obj);
-    data.modules[moduleId].lastStudy = new Date().toISOString();
+    data[moduleId] = { ...getModuleProgress(moduleId), ...updates };
     saveProgressData(data);
 }
 
-function markQuestionLearned(moduleId) {
+function incrementModuleProgress(moduleId) {
     const p = getModuleProgress(moduleId);
     const completed = (p && p.completed) || 0;
     const total = (p && p.total) || 0;
@@ -519,6 +421,9 @@ function renderProgressBar(id, pct, extraClass) {
 window.shuffleArray = shuffleArray;
 window.escapeHtml = escapeHtml;
 window.formatTime = formatTime;
+window.t = t;
+window.l = l;
+window.resolveLang = resolveLang;
 
 // ---------- INIT ----------
 document.addEventListener('DOMContentLoaded', async () => {
@@ -526,6 +431,5 @@ document.addEventListener('DOMContentLoaded', async () => {
     initTheme();
     initNav();
     await initI18n();
-    renderProfileSelector();
     initConsentBanner();
 });
