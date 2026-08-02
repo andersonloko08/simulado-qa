@@ -40,7 +40,7 @@
 
         <div class="page-header">
             <h1><i class="fa-solid fa-microphone" style="color: var(--primary);"></i> Mock Interview Engine</h1>
-            <p>O sistema vira o entrevistador. A pergunta aparece, o timer inicia, você responde — depois revelamos a resposta esperada, os pontos fortes e faltantes, a perspectiva técnica e de negócio, os follow-ups e a versão em inglês.</p>
+            <p>O sistema vira o entrevistador. A pergunta aparece, o timer inicia, você responde — depois revelamos a resposta esperada, os pontos que você pode ter esquecido, os follow-ups, exemplos reais e a versão em inglês.</p>
         </div>
 
         <!-- SETUP -->
@@ -326,12 +326,7 @@
                     <div class="q-text">${escapeHtml(qq)}</div>
                     ${answerBlock}
                     ${answerText ? `<div class="callout callout-success"><strong><i class="fa-solid fa-check"></i> ${t('show_answer')}:</strong> ${escapeHtml(answerText)}</div>` : ''}
-                    <div class="criteria">
-                        <div class="criteria-box criteria-good"><strong><i class="fa-solid fa-circle-check"></i> Pontos fortes a incluir</strong><p style="margin-top:0.4rem;">${escapeHtml(answerText) || escapeHtml(qq)}</p></div>
-                        <div class="criteria-box criteria-missing"><strong><i class="fa-solid fa-circle-xmark"></i> Pontos que você pode ter esquecido</strong><ul style="margin:0.4rem 0 0 1.2rem;">${(mistakes).map(m => `<li>${escapeHtml(m)}</li>`).join('') || '<li>—</li>'}</ul></div>
-                        <div class="criteria-box criteria-tech"><strong><i class="fa-solid fa-microchip"></i> Perspectiva técnica</strong><p style="margin-top:0.4rem;">Use termos como ${(followUps).slice(0, 2).join(', ') || 'trade-offs, contratos e determinismo'} na sua resposta.</p></div>
-                        <div class="criteria-box criteria-business"><strong><i class="fa-solid fa-briefcase"></i> Perspectiva de negócio</strong><p style="margin-top:0.4rem;">Conecte a resposta com valor para o negócio: redução de risco, tempo de entrega, conformidade e qualidade percebida pelo cliente.</p></div>
-                    </div>
+                    ${(mistakes && mistakes.length) ? `<div class="callout callout-danger"><strong><i class="fa-solid fa-circle-xmark"></i> Pontos que você pode ter esquecido</strong><ul style="margin:0.4rem 0 0 1.2rem;">${mistakes.map(m => `<li>${escapeHtml(m)}</li>`).join('')}</ul></div>` : ''}
                     ${(followUps && followUps.length) ? `<div class="followups"><strong><i class="fa-solid fa-angles-right"></i> Follow-ups esperados:</strong><ul>${followUps.map(f => `<li>${escapeHtml(f)}</li>`).join('')}</ul></div>` : ''}
                     ${realExample ? `<div class="callout callout-warning" style="margin-top:0.75rem;"><strong><i class="fa-solid fa-lightbulb"></i> Exemplo real (conte essa história):</strong> ${escapeHtml(realExample)}</div>` : ''}
                     ${english ? `<div class="callout callout-info" style="margin-top:0.75rem;"><strong><i class="fa-solid fa-language"></i> English answer:</strong> ${escapeHtml(english)}</div>` : ''}

@@ -62,6 +62,39 @@
             <h2><i class="fa-solid fa-lightbulb"></i> Dicas de prática</h2>
             <ul style="margin:0 0 0 1.3rem;" id="tips-list"></ul>
         </div>
+
+        <div class="content-section">
+            <h2><i class="fa-solid fa-ear-listen"></i> Como praticar: FALAR, LER e ESCREVER</h2>
+            <div class="grid-3" style="margin-top:1rem;">
+                <div class="q-card" style="padding:1rem;">
+                    <strong style="color:var(--primary);"><i class="fa-solid fa-comment-dots"></i> Falar</strong>
+                    <ul style="margin:0.6rem 0 0 1.2rem; font-size:0.9rem;">
+                        <li>Use o botão 🔊 para ouvir a frase e repita em voz alta (shadowing).</li>
+                        <li>Grave-se respondendo e compare com o áudio.</li>
+                        <li>Treine a pronúncia lendo a transcrição fonética 🔤 em voz alta.</li>
+                        <li>Cronometre 90 segundos por resposta, como na entrevista real.</li>
+                    </ul>
+                </div>
+                <div class="q-card" style="padding:1rem;">
+                    <strong style="color:var(--primary);"><i class="fa-solid fa-book-open-reader"></i> Ler</strong>
+                    <ul style="margin:0.6rem 0 0 1.2rem; font-size:0.9rem;">
+                        <li>Leia as frases em inglês em voz alta, depois com o áudio ligado.</li>
+                        <li>Não traduza literalmente — entenda o sentido da frase inteira.</li>
+                        <li>Releia o vocabulário técnico (tabelas) até reconhecer de imediato.</li>
+                        <li>Leia as explicações técnicas e conecte com o valor de negócio.</li>
+                    </ul>
+                </div>
+                <div class="q-card" style="padding:1rem;">
+                    <strong style="color:var(--primary);"><i class="fa-solid fa-pen-to-square"></i> Escrever</strong>
+                    <ul style="margin:0.6rem 0 0 1.2rem; font-size:0.9rem;">
+                        <li>Escreva suas respostas em inglês à mão ou no teclado, sem consultar.</li>
+                        <li>Adapte as frases de apoio à sua história real (nome, anos, ferramentas).</li>
+                        <li>Revise as respostas esperadas das questões do Mock Interview.</li>
+                        <li>Termine respostas técnicas conectando com redução de risco e valor ao cliente.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </main>
 
     <footer class="footer">
@@ -70,11 +103,138 @@
 
     <script src="../javascript/app.js"></script>
     <script>
+        // ---------- FONEMA (pronúncia aproximada para falantes de português) ----------
+        // Gera uma leitura fonética aproximada do inglês a partir do texto escrito.
+        const PHON_DICT = {
+            "the": "de", "a": "êi", "an": "ên", "and": "énd", "of": "óf", "to": "tú",
+            "in": "ín", "is": "iz", "it": "ít", "on": "ón", "for": "fór", "with": "uíth",
+            "you": "iú", "your": "iôr", "my": "mai", "me": "mi", "i": "ai", "we": "uí",
+            "this": "dhis", "that": "dhat", "are": "ár", "was": "uóz", "have": "háv",
+            "has": "ház", "not": "nót", "by": "bai", "but": "bát", "from": "fróm",
+            "as": "áz", "at": "ét", "can": "kén", "do": "dú", "does": "dáz", "will": "uíl",
+            "would": "uúd", "should": "xúd", "could": "kúd", "no": "nôu", "yes": "iés",
+            "about": "abáut", "after": "áfter", "again": "eguén", "all": "ól",
+            "also": "ólsôu", "before": "bifór", "between": "bituín", "day": "dêi",
+            "first": "férst", "good": "gúd", "great": "grêit", "how": "háu", "just": "djást",
+            "like": "láik", "look": "lúk", "many": "mêni", "more": "mór", "most": "môust",
+            "new": "niú", "now": "nau", "one": "uán", "only": "ôunli", "other": "áder",
+            "out": "áut", "over": "ôuver", "people": "pípol", "really": "ríali",
+            "right": "ráit", "same": "sêim", "say": "sêi", "see": "si", "so": "sôu",
+            "some": "sám", "something": "sámthín", "take": "têik", "tell": "tél",
+            "than": "dhén", "then": "dhén", "there": "dhér", "thing": "thín",
+            "think": "thínk", "time": "táim", "very": "véri", "want": "uónt",
+            "way": "uêi", "what": "uót", "when": "uén", "where": "uér", "which": "uítch",
+            "who": "rú", "why": "uai", "work": "uórk", "working": "uórkin", "year": "íer",
+            "years": "íers", "experience": "ikspíriens", "company": "cámpani",
+            "opportunity": "ápertúniti", "project": "prójet", "projects": "prójets",
+            "question": "kuéstion", "answer": "énser", "test": "tést", "tests": "tésts",
+            "testing": "téstin", "automation": "ótomêixon", "automate": "ótomeit",
+            "automated": "ótomeited", "automatic": "ótométic", "manual": "méniual",
+            "regression": "regréxon", "coverage": "cóveridj", "quality": "kuóliti",
+            "code": "kôud", "review": "reviú", "data": "dêita", "api": "êi-pi-ai",
+            "rest": "rést", "http": "eitch-ti-ti-pi", "response": "respóns",
+            "request": "requést", "server": "sérver", "client": "clái-ent",
+            "error": "éror", "errors": "érors", "bug": "bág", "bugs": "bágs",
+            "flaky": "flêiki", "wait": "uêit", "waits": "uêits", "sleeps": "slips",
+            "contract": "cóntract", "contracts": "cóntracts", "smoke": "smôuk",
+            "pipeline": "páiplain", "build": "bíld", "deploy": "diplói",
+            "environment": "envaírónment", "production": "prodákxon",
+            "compliance": "complaince", "requirement": "recuaíerment",
+            "requirements": "recuaíerments", "risk": "rísk", "risky": "ríski",
+            "business": "bízines", "value": "váliu", "impact": "ímpact",
+            "customers": "cástomers", "feedback": "fídbák", "minutes": "mínits",
+            "hours": "áuers", "week": "uík", "financial": "finánxal", "sector": "sécter",
+            "strengths": "strénkths", "weakness": "uíknes", "weaknesses": "uíknesis",
+            "challenge": "chálenjdj", "failure": "fêilier", "conflicts": "cónflicts",
+            "prioritize": "praióritaiz", "tasks": "tásks", "team": "tím", "learn": "lérn",
+            "quickly": "kuíkli", "describe": "discráib", "story": "stóri", "storytelling": "stóritelin",
+            "validation": "váleidêixon", "explicit": "iksplísit", "continuous": "kontíniuss",
+            "integration": "integreixton", "delivery": "delíveri", "yourself": "iorsélf",
+            "handle": "hándol", "fixed": "fíkst", "give": "guív", "let": "lét",
+            "i'm": "aim", "main": "mêin", "area": "ériia", "expertise": "ékspertáiz",
+            "also": "ólsôu", "working": "uórkin", "banking": "bénkin", "insurance": "inxiórens",
+            "sectors": "sécters", "passionate": "páxenát", "building": "bíldin",
+            "reliable": "reláibbol", "frameworks": "frêimwórks", "key": "ki",
+            "contribution": "kontribiúxon", "reducing": "ridiúsin", "looking": "lúkin",
+            "biggest": "bíguesst", "current": "kárrent", "professional": "proféxonal",
+            "tight": "táit", "deadlines": "dédlains", "pyramid": "píramid",
+            "balances": "bálansis", "unit": "iúnit", "visible": "vízibol", "behavior": "bêiviôr",
+            "implementation": "implimenteixon", "knowing": "nôuín", "automatize": "ótomeitaiz",
+            "automates": "ótomeits", "layers": "lêiers", "smoke": "smôuk", "nightly": "náitli",
+            "persistence": "persístens", "state-based": "stêit-bêist", "instead": "instéd",
+            "reduces": "ridiúsiz", "saves": "sêivz", "detected": "ditécted", "impacted": "impácted",
+            "stability": "stebíliti", "increases": "inkrísis", "confidence": "cónfidens",
+            "critical": "crítical", "greatest": "grêitest", "breaks": "brêiks",
+            "feedback": "fídbák", "dropped": "drópt", "rephrase": "rifrêiz",
+            "second": "sécond", "explain": "iksplêin", "balancing": "bálansin",
+            "acceptance": "akséptans", "agree": "agrí", "anonymized": "anônimaized",
+            "avoiding": "avóidin", "black-box": "blék-bóks", "blockers": "blókers",
+            "cases": "kêisis", "codes": "kôuds", "connected": "konécted",
+            "consumer": "consiúmer", "criteria": "craitíria", "definition": "definíxan",
+            "done": "dán", "edge": "édj", "engineer": "endjiníer", "evidence": "évidens",
+            "example": "egzámbol", "five": "fáiv", "focuses": "fôukusis", "full": "fúl",
+            "had": "hád", "happy": "hépi", "here": "híer", "if": "íf",
+            "increase": "ínkríis", "leaving": "lívin", "manage": "ménidj",
+            "mitigate": "mítiguit", "name": "nêim", "path": "páth", "per": "pér",
+            "point": "póint", "provider": "prováider", "rate": "rêit", "real": "ríal",
+            "reduce": "ridiús", "report": "ripórt", "returns": "ritérns", "rollback": "rólbék",
+            "semantic": "simántic", "sensitive": "sénsitiv", "staging": "stêidjin",
+            "status": "stêitus", "summarize": "sámeraiz", "traceability": "trêisabíliti",
+            "use": "iúz", "uses": "iúzis", "validate": "váleidêit", "validates": "váleidêits",
+            "verbs": "vérbs", "without": "uizáut", "worked": "uórkt", "x": "éks"
+        };
+
+        function toFonema(text) {
+            if (!text) return '';
+            const words = text.replace(/[^a-zA-Zà-úÀ-Ú0-9'’\-\s]/g, ' ').split(/\s+/).filter(Boolean);
+            return words.map(w => {
+                const lower = w.toLowerCase().replace(/^['’]|['’]$/g, '');
+                if (PHON_DICT[lower]) return PHON_DICT[lower];
+                // Siglas comuns: fala letra a letra
+                if (/^[A-Z]{2,}$/.test(w) || ['api','e2e','qa','sql','ui','qa','ci','cd','pr'].includes(lower)) {
+                    return w.split('').join('-').toLowerCase();
+                }
+                // Números
+                if (/^\d+$/.test(w)) return { '10':'ten','70':'séventi','5':'faiv','3':'thri','2':'tu','1':'uán','90':'náinti','20':'tênti' }[w] || w;
+                if (w.endsWith('.') || w.endsWith('?')) return '';
+                return lower;
+            }).filter(Boolean).join(' ');
+        }
+
+        // ---------- ÁUDIO (Web Speech API) ----------
+        function speakEn(text) {
+            if (!('speechSynthesis' in window)) { alert('Seu navegador não suporta leitura em voz alta.'); return; }
+            window.speechSynthesis.cancel();
+            const u = new SpeechSynthesisUtterance(text);
+            u.lang = 'en-US';
+            u.rate = 0.9;
+            const voices = window.speechSynthesis.getVoices();
+            const en = voices.find(v => v.lang.startsWith('en') && v.localService) || voices.find(v => v.lang.startsWith('en'));
+            if (en) u.voice = en;
+            window.speechSynthesis.speak(u);
+        }
+        window.speakEn = speakEn;
+
+        // ---------- RENDER ----------
         window.switchTab = function(btn) {
             document.querySelectorAll('#english-tabs .tab-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             renderSection(btn.dataset.tab);
         };
+
+        function phonRow(en) {
+            const ph = toFonema(en);
+            const phHtml = ph ? `<div class="phon-ph" style="font-size:0.85rem; color:var(--text-muted); margin-top:0.2rem;">🔤 <em>${escapeHtml(ph)}</em></div>` : '';
+            return `<td>
+                <div style="display:flex; align-items:flex-start; gap:0.5rem;">
+                    <button class="outline-btn small-btn" style="flex-shrink:0; padding:0.2rem 0.6rem;" onclick="speakEn('${en.replace(/'/g, "\\'")}')" title="Ouvir pronúncia" aria-label="Ouvir pronúncia"><i class="fa-solid fa-volume-high"></i></button>
+                    <div>
+                        <code style="background:var(--info-light); color:var(--info);">${escapeHtml(en)}</code>
+                        ${phHtml}
+                    </div>
+                </div>
+            </td>`;
+        }
 
         function renderSection(id) {
             const data = ENGLISH.sections.find(s => s.id === id);
@@ -85,8 +245,8 @@
                     <h2><i class="fa-solid ${data.icon}"></i> ${escapeHtml(data.title)}</h2>
                     <div class="table-wrap">
                         <table>
-                            <thead><tr><th>Português</th><th>English</th></tr></thead>
-                            <tbody>${data.items.map(i => `<tr><td>${escapeHtml(i.pt)}</td><td><code style="background:var(--info-light); color:var(--info);">${escapeHtml(i.en)}</code></td></tr>`).join('')}</tbody>
+                            <thead><tr><th>Português</th><th>English · pronúncia · áudio</th></tr></thead>
+                            <tbody>${data.items.map(i => `<tr><td>${escapeHtml(i.pt)}</td>${phonRow(i.en)}</tr>`).join('')}</tbody>
                         </table>
                     </div>
                 </div>`;
@@ -100,8 +260,14 @@
                 renderSection('vocabulary');
                 document.getElementById('framing-grid').innerHTML = ENGLISH.framingPhrases.map(f => `
                     <div class="q-card" style="padding:1rem;">
-                        <strong style="color:var(--primary);">${escapeHtml(f.en)}</strong>
-                        <p class="text-muted" style="font-size:0.9rem; margin-top:0.3rem;">${escapeHtml(f.pt)}</p>
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:0.5rem;">
+                            <div>
+                                <strong style="color:var(--primary);">${escapeHtml(f.en)}</strong>
+                                <div class="phon-ph" style="font-size:0.85rem; color:var(--text-muted); margin-top:0.3rem;">🔤 <em>${escapeHtml(toFonema(f.en))}</em></div>
+                                <p class="text-muted" style="font-size:0.9rem; margin-top:0.3rem;">${escapeHtml(f.pt)}</p>
+                            </div>
+                            <button class="outline-btn small-btn" style="flex-shrink:0;" onclick="speakEn('${f.en.replace(/'/g, "\\'")}')" title="Ouvir pronúncia" aria-label="Ouvir pronúncia"><i class="fa-solid fa-volume-high"></i></button>
+                        </div>
                     </div>`).join('');
                 document.getElementById('tips-list').innerHTML = ENGLISH.tips.map(t => `<li>${escapeHtml(t)}</li>`).join('');
             } catch (e) {
