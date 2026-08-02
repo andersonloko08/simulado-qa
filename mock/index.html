@@ -388,11 +388,18 @@
                 <div class="stat-box"><div class="stat-value" style="color:var(--info);">${session.skipped}</div><div class="stat-label">Puladas</div></div>
                 <div class="stat-box"><div class="stat-value" style="color:var(--success);">${Math.max(prepared, 0)}%</div><div class="stat-label">Sente-se preparado</div></div>
             `;
-            document.getElementById('result-weak').innerHTML =
-                (session.skipped > 0 ? `<div class="callout callout-warning"><strong><i class="fa-solid fa-forward"></i> Você pulou ${session.skipped} ${session.skipped === 1 ? 'questão' : 'questões'}.</strong> Responder em voz alta é essencial para o treino — reveja as respostas esperadas das perguntas puladas.</div>` : '') +
-                (weakList.length
-                    ? `<div class="callout callout-warning"><strong><i class="fa-solid fa-fire"></i> Áreas para reforçar (adaptativo):</strong> ${weakList.map(([c, n]) => `${c} (${n}x)`).join(' · ')}</div>`
-                    : '<div class="callout callout-success"><strong>Ótimo!</strong> Nenhuma área difícil registrada nesta sessão. Continue praticando.</div>');
+            const skipNotice = session.skipped > 0
+                ? `<div class="callout callout-warning"><strong><i class="fa-solid fa-forward"></i> Você pulou ${session.skipped} ${session.skipped === 1 ? 'questão' : 'questões'}.</strong> Responder em voz alta é essencial para o treino — reveja as respostas esperadas das perguntas puladas.</div>`
+                : '';
+            const weakNotice = weakList.length
+                ? `<div class="callout callout-warning"><strong><i class="fa-solid fa-fire"></i> Áreas para reforçar (adaptativo):</strong> ${weakList.map(([c, n]) => `${c} (${n}x)`).join(' · ')}</div>`
+                : '';
+            // 'Ótimo' só aparece se todas as questões foram respondidas e nenhuma foi difícil.
+            const allAnswered = session.skipped === 0;
+            const praise = allAnswered && !weakList.length
+                ? '<div class="callout callout-success"><strong>Ótimo!</strong> Nenhuma área difícil registrada nesta sessão. Continue praticando.</div>'
+                : '';
+            document.getElementById('result-weak').innerHTML = skipNotice + weakNotice + praise;
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
     </script>
