@@ -2,10 +2,12 @@
 
 ## The Ultimate Interview Preparation Platform for QA Automation Engineers
 
-**Version:** 3.1
-**Author:** Anderson Vinicius dos Santos Pereira
-**Repo:** https://github.com/andersonloko08/simulado-qa
-**Live Site:** https://andersonloko08.github.io/simulado-qa/
+| | |
+|---|---|
+| **Versão** | 3.1 |
+| **Autor** | Anderson Vinicius dos Santos Pereira |
+| **Repositório** | https://github.com/andersonloko08/simulado-qa |
+| **Live Site** | https://andersonloko08.github.io/simulado-qa/ |
 
 ---
 
