@@ -2,6 +2,9 @@
 """
 InterviewOps QA Editor — Interface de Linha de Comando (CLI).
 
+Todas as operações delegam para qa_core (QAStore), garantindo as mesmas
+regras de validação das interfaces GUI e Web.
+
 Comandos:
     list                Lista questões (com filtros por categoria/idioma)
     add                 Adiciona uma questão interativamente
@@ -43,6 +46,7 @@ DEFAULT_DB = os.path.join(
 
 
 def _resolve_store(args):
+    """Instancia um QAStore apontando para o banco definido em args.db."""
     return QAStore(args.db)
 
 
@@ -52,6 +56,12 @@ def _resolve_store(args):
 
 
 def cmd_list(args):
+    """
+    Lista questões, com filtros opcionais por categoria, id e idioma.
+
+    Para cada questão, imprime o id, categoria, dificuldade e o enunciado
+    no idioma escolhido (padrão: pt-br).
+    """
     store = _resolve_store(args)
     qs = store.all_questions()
     if args.category:
@@ -154,6 +164,13 @@ def _lang_editor(q, lang, qtype):
 
 
 def cmd_add(args):
+    """
+    Adiciona uma nova questão interativamente.
+
+    Pede id (ou gera automaticamente pela categoria), categoria, dificuldade,
+    tipo (aberta/múltipla escolha) e o conteúdo por idioma. Valida e salva no
+    banco ao final.
+    """
     store = _resolve_store(args)
     q = {"id": "", "category": "", "difficulty": "Média", "type": TYPE_OPEN, "lang": {}}
     q["id"] = input("ID (ex.: SQL-05) [vazio = auto]: ").strip()
@@ -189,6 +206,7 @@ def cmd_add(args):
 
 
 def cmd_edit(args):
+    """Edita uma questão existente por id, permitindo alterar idiomas escolhidos."""
     store = _resolve_store(args)
     qid = args.id or input("ID da questão: ").strip()
     q = store.get_question(qid)
@@ -206,6 +224,7 @@ def cmd_edit(args):
 
 
 def cmd_delete(args):
+    """Remove uma questão por id, pedindo confirmação antes de executar."""
     store = _resolve_store(args)
     qid = args.id or input("ID da questão: ").strip()
     confirm = input(f"Remover '{qid}'? [s/N]: ").strip().lower()
@@ -222,6 +241,7 @@ def cmd_delete(args):
 
 
 def cmd_validate(args):
+    """Valida o banco inteiro; sai com código 1 e lista de erros se houver problemas."""
     store = _resolve_store(args)
     errors = []
     for q in store.all_questions():
@@ -240,6 +260,7 @@ def cmd_validate(args):
 
 
 def cmd_stats(args):
+    """Imprime estatísticas: total, distribuição por categoria e preenchimento por idioma."""
     store = _resolve_store(args)
     s = stats(store)
     print(f"Total de questões: {s['total']}")
@@ -252,6 +273,10 @@ def cmd_stats(args):
 
 
 def cmd_export(args):
+    """
+    Gera os artefatos para o front (GitHub Pages) em json/export/:
+    questions_all.json (banco completo) e questions_by_category.json.
+    """
     store = _resolve_store(args)
     out_dir = os.path.join(
         os.path.dirname(__file__), "..", "..", "json", "export"
@@ -264,6 +289,7 @@ def cmd_export(args):
 
 
 def cmd_translate(args):
+    """Propaga o conteúdo de um idioma-base para os idiomas vazios (não traduz)."""
     store = _resolve_store(args)
     count = fill_from_base(store, args.base_lang)
     store.save()
@@ -271,6 +297,7 @@ def cmd_translate(args):
 
 
 def cmd_next_id(args):
+    """Imprime o próximo id disponível para a categoria informada."""
     store = _resolve_store(args)
     print(store.find_next_id(args.category))
 

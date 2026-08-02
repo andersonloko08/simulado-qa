@@ -6,7 +6,19 @@ Fornece:
   1. API JSON (REST-like) para criar/editar/listar/validar questões — consumível
      pela GUI, por um admin web e por futuras integrações com IA.
   2. Página web de administração (UI mínima) em http://localhost:PORT/admin
-  3. Endpoint /export que gera os artefatos estáticos para o GitHub Pages.
+  3. Endpoint /api/export que gera os artefatos estáticos para o GitHub Pages.
+
+Rotas principais:
+    GET  /                    Índice com a lista de endpoints
+    GET  /api/questions       Lista todas as questões + categorias
+    GET  /api/questions/{id}  Busca uma questão
+    POST /api/questions       Cria uma questão
+    PUT  /api/questions/{id}  Atualiza uma questão
+    DELETE /api/questions/{id} Remove uma questão
+    GET  /api/categories      Lista categorias
+    GET  /api/stats           Estatísticas
+    POST /api/export          Gera json/export/ (front GitHub Pages)
+    GET  /admin               Página web de administração
 
 Uso:
     python qa_web.py --port 8001
@@ -253,12 +265,21 @@ refresh();
 
 
 class QAServer(BaseHTTPRequestHandler):
+    """
+    Handler HTTP do servidor web do QA Editor.
+
+    Despacha as rotas REST-like para as operações do QAStore e serve a
+    página /admin (ADMIN_HTML). Respostas são JSON (utf-8) com CORS
+    habilitado para permitir integrações externas (ex.: IA).
+    """
+
     def __init__(self, *args, store=None, **kwargs):
         self.store = store
         super().__init__(*args, **kwargs)
 
     # -- helpers -----------------------------------------------------------
     def _send(self, code, payload):
+        """Envia uma resposta JSON com status code e headers CORS."""
         body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
         self.send_response(code)
         self.send_header("Content-Type", "application/json; charset=utf-8")
@@ -270,6 +291,7 @@ class QAServer(BaseHTTPRequestHandler):
         self.wfile.write(body)
 
     def _send_html(self, code, html):
+        """Envia uma resposta HTML (usada pela página /admin)."""
         body = html.encode("utf-8")
         self.send_response(code)
         self.send_header("Content-Type", "text/html; charset=utf-8")
@@ -278,6 +300,7 @@ class QAServer(BaseHTTPRequestHandler):
         self.wfile.write(body)
 
     def _read_json(self):
+        """Lê e faz parse do corpo JSON da requisição."""
         length = int(self.headers.get("Content-Length", 0))
         if length == 0:
             return {}
@@ -285,11 +308,13 @@ class QAServer(BaseHTTPRequestHandler):
         return json.loads(raw)
 
     def _path_parts(self):
+        """Divide o path da URL em segmentos (ex.: ['api', 'questions'])."""
         path = urllib.parse.urlparse(self.path).path
         return [p for p in path.split("/") if p]
 
     # -- dispatch ----------------------------------------------------------
     def do_OPTIONS(self):
+        """Responde ao preflight CORS."""
         self.send_response(204)
         self.send_header("Access-Control-Allow-Origin", "*")
         self.send_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
@@ -297,6 +322,7 @@ class QAServer(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self):
+        """Despacha requisições GET (admin, api/questions, api/stats, etc.)."""
         parts = self._path_parts()
         if self.path == "/admin" or self.path == "/admin/":
             return self._send_html(200, ADMIN_HTML)
@@ -324,6 +350,7 @@ class QAServer(BaseHTTPRequestHandler):
         return self._send(404, {"error": "not found"})
 
     def do_POST(self):
+        """Despacha requisições POST (criar questão, exportar artefatos)."""
         parts = self._path_parts()
         if len(parts) == 2 and parts[1] == "export":
             try:
@@ -346,6 +373,7 @@ class QAServer(BaseHTTPRequestHandler):
         return self._send(404, {"error": "not found"})
 
     def do_PUT(self):
+        """Despacha requisições PUT (atualizar questão)."""
         parts = self._path_parts()
         if len(parts) == 3 and parts[1] == "questions":
             try:
@@ -358,6 +386,7 @@ class QAServer(BaseHTTPRequestHandler):
         return self._send(404, {"error": "not found"})
 
     def do_DELETE(self):
+        """Despacha requisições DELETE (remover questão)."""
         parts = self._path_parts()
         if len(parts) == 3 and parts[1] == "questions":
             try:
@@ -373,6 +402,7 @@ class QAServer(BaseHTTPRequestHandler):
 
 
 def main():
+    """Inicia o servidor HTTP com o banco configurado (--db) e imprime as rotas."""
     parser = argparse.ArgumentParser(description="InterviewOps QA Editor — Web Admin / API")
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=8001)

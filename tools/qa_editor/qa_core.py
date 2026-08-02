@@ -3,14 +3,25 @@
 InterviewOps QA Editor — Core da API.
 
 Banco de questões multilíngue (PT-BR, PT-PT, EN-US, EN-UK).
-Fornece: schema, validação, CRUD, tradução estrutural e exportação
-de artefatos para o front estático (GitHub Pages).
+Fornece: schema, validação, CRUD, migração de formato legado, tradução
+estrutural (propagação) e exportação de artefatos para o front estático
+(GitHub Pages).
+
+Este módulo é a camada única de verdade para os dados: todas as interfaces
+(GUI, Web, CLI) passam por aqui, garantindo consistência de schema e regras.
 
 Uso (como módulo):
     from qa_core import QAStore
     store = QAStore("../../json/questions.json")
     store.add_question(question_dict)
     store.save()
+
+Atributos principais:
+    LANGS (list[str]):            idiomas suportados pelo banco.
+    DEFAULT_LANG (str):           idioma padrão (pt-br).
+    DIFFICULTIES (list[str]):     níveis de dificuldade aceitos.
+    TYPE_OPEN / TYPE_CHOICE (str): tipos de questão.
+    SCHEMA_VERSION (str):         versão do schema persistida no JSON.
 """
 
 import json
@@ -45,7 +56,13 @@ _ID_RE = re.compile(r"^[A-Za-z0-9_\-]+$")
 
 
 def make_empty_lang():
-    """Cria a estrutura vazia de um idioma."""
+    """
+    Cria a estrutura vazia de um idioma.
+
+    Retorna um dicionário com os campos de texto (LANG_TEXT_FIELDS) vazios
+    (string vazia) e os campos de lista (LANG_LIST_FIELDS / LANG_OPTION_FIELDS)
+    como listas vazias. Usado como molde para preencher traduções.
+    """
     return (
         {f: "" for f in LANG_TEXT_FIELDS}
         | {f: [] for f in LANG_LIST_FIELDS}
@@ -54,7 +71,17 @@ def make_empty_lang():
 
 
 def make_question_template(qtype=TYPE_OPEN, n_options=4):
-    """Cria um template de questão preenchido com 4 idiomas vazios."""
+    """
+    Cria um template de questão preenchido com 4 idiomas vazios.
+
+    Args:
+        qtype (str): TYPE_OPEN (aberta) ou TYPE_CHOICE (múltipla escolha).
+        n_options (int): número de alternativas quando qtype é TYPE_CHOICE.
+
+    Returns:
+        dict: questão com id/category vazios, difficulty 'Média' e o campo
+        'lang' contendo make_empty_lang() para cada idioma em LANGS.
+    """
     lang = {lang: make_empty_lang() for lang in LANGS}
     if qtype == TYPE_CHOICE:
         for l in lang.values():
@@ -74,15 +101,34 @@ def make_question_template(qtype=TYPE_OPEN, n_options=4):
 
 
 class QAValidationError(Exception):
+    """Erro de validação de questão, usado para reportar dados inválidos ao usuário."""
     pass
 
 
 def validate_question(q, require_full=True):
     """
-    Valida uma questão.
-    - require_full=True: exige conteúdo em TODOS os idiomas.
-    - require_full=False: permite autoria parcial (idiomas vazios são válidos).
-    Levanta QAValidationError descrevendo o problema.
+    Valida uma questão contra o schema do banco.
+
+    Regras verificadas:
+        - id obrigatório e apenas com letras, números, '-' e '_';
+        - category obrigatória;
+        - difficulty dentro de DIFFICULTIES;
+        - type dentro de (open, choice);
+        - múltipla escolha: 'answer' inteiro e dentro do range de alternativas,
+          com pelo menos 2 alternativas preenchidas por idioma;
+        - por idioma: campos de lista devem ser listas; opcionalmente (require_full)
+          exige enunciado ('question') em todos os idiomas.
+
+    Args:
+        q (dict): questão a validar.
+        require_full (bool): se True, exige conteúdo em TODOS os idiomas;
+            se False, permite autoria parcial (idiomas vazios são válidos).
+
+    Returns:
+        bool: True se a questão é válida.
+
+    Raises:
+        QAValidationError: descrevendo o primeiro problema encontrado.
     """
     if not q.get("id"):
         raise QAValidationError("id é obrigatório")
@@ -156,11 +202,29 @@ def validate_question(q, require_full=True):
 
 
 class QAStore:
+    """
+    Store CRUD sobre o arquivo JSON do banco de questões.
+
+    Encapsula carregamento, normalização de formatos antigos, escrita e
+    operações de leitura/escrita sobre a lista de questões. As mudanças só
+    são persistidas em disco quando save() é chamado.
+
+    Args:
+        path (str): caminho do arquivo JSON do banco.
+    """
+
     def __init__(self, path):
         self.path = path
         self.data = self._load()
 
     def _load(self):
+        """
+        Carrega o banco do disco.
+
+        Se o arquivo não existir ou não tiver a chave 'questions', cria um
+        banco vazio. Questões no formato legado (flat, sem camada 'lang') são
+        migradas automaticamente via migrate_legacy_question().
+        """
         if not os.path.exists(self.path):
             return self._new_bank()
         with open(self.path, "r", encoding="utf-8") as f:
@@ -180,6 +244,7 @@ class QAStore:
         return data
 
     def _new_bank(self):
+        """Cria a estrutura mínima de um banco vazio."""
         return {
             "schema": SCHEMA_VERSION,
             "updatedAt": datetime.now().isoformat(),
@@ -189,6 +254,18 @@ class QAStore:
         }
 
     def save(self, target=None):
+        """
+        Persiste o estado atual do banco em disco (ou em target).
+
+        Atualiza 'total', 'categories' (ordenadas) e 'updatedAt' antes de
+        gravar o JSON com indentação e sem escapar caracteres acentuados.
+
+        Args:
+            target (str | None): caminho alternativo; se None usa self.path.
+
+        Returns:
+            str: caminho do arquivo gravado.
+        """
         path = target or self.path
         self.data["total"] = len(self.data["questions"])
         cats = sorted({q.get("category", "") for q in self.data["questions"]} - {""})
@@ -200,22 +277,47 @@ class QAStore:
 
     # -- leitura -----------------------------------------------------------
     def all_questions(self):
+        """Retorna a lista de todas as questões (referência interna)."""
         return self.data["questions"]
 
     def get_question(self, qid):
+        """
+        Busca uma questão pelo id.
+
+        Args:
+            qid (str): id da questão.
+
+        Returns:
+            dict | None: a questão, ou None se não existir.
+        """
         for q in self.data["questions"]:
             if q["id"] == qid:
                 return q
         return None
 
     def by_category(self, category):
+        """Retorna as questões de uma determinada categoria."""
         return [q for q in self.data["questions"] if q.get("category") == category]
 
     def categories(self):
+        """Retorna a lista de categorias presentes no banco."""
         return self.data.get("categories", [])
 
     # -- escrita -----------------------------------------------------------
     def add_question(self, q, require_full=False):
+        """
+        Adiciona uma nova questão ao banco (em memória).
+
+        Args:
+            q (dict): questão válida (veja validate_question).
+            require_full (bool): se True, exige conteúdo em todos os idiomas.
+
+        Returns:
+            str: o id da questão adicionada.
+
+        Raises:
+            QAValidationError: se a questão for inválida ou o id já existir.
+        """
         validate_question(q, require_full=require_full)
         if self.get_question(q["id"]):
             raise QAValidationError(f"já existe questão com id '{q['id']}'")
@@ -223,6 +325,20 @@ class QAStore:
         return q["id"]
 
     def update_question(self, qid, q, require_full=False):
+        """
+        Substitui o conteúdo de uma questão existente.
+
+        Args:
+            qid (str): id da questão a atualizar (preservado em q['id']).
+            q (dict): nova versão da questão.
+            require_full (bool): se True, exige conteúdo em todos os idiomas.
+
+        Returns:
+            str: o id da questão atualizada.
+
+        Raises:
+            QAValidationError: se a questão for inválida ou não existir.
+        """
         validate_question(q, require_full=require_full)
         q["id"] = qid  # mantém o id original
         for i, existing in enumerate(self.data["questions"]):
@@ -232,6 +348,18 @@ class QAStore:
         raise QAValidationError(f"questão '{qid}' não encontrada")
 
     def delete_question(self, qid):
+        """
+        Remove uma questão do banco (em memória).
+
+        Args:
+            qid (str): id da questão a remover.
+
+        Returns:
+            str: o id removido.
+
+        Raises:
+            QAValidationError: se a questão não existir.
+        """
         before = len(self.data["questions"])
         self.data["questions"] = [q for q in self.data["questions"] if q["id"] != qid]
         if len(self.data["questions"]) == before:
@@ -239,7 +367,19 @@ class QAStore:
         return qid
 
     def find_next_id(self, category):
-        """Gera o próximo id para a categoria, ex.: SQL-04."""
+        """
+        Gera o próximo id para a categoria, ex.: SQL-04.
+
+        O prefixo vem da categoria (até 4 caracteres alfanuméricos em
+        maiúsculas, ex.: 'Robot Framework' -> 'ROBO'), e o sufixo é o maior
+        número encontrado nos ids existentes + 1.
+
+        Args:
+            category (str): categoria alvo.
+
+        Returns:
+            str: próximo id no formato 'PREFIXO-NN'.
+        """
         prefix = re.sub(r"[^A-Za-z0-9]", "", category)[:4].upper() or "Q"
         existing = self.by_category(category)
         max_num = 0
@@ -256,7 +396,18 @@ class QAStore:
 
 
 def export_flat(store):
-    """Converte o banco para uma lista simples de questões (sem a camada 'lang')."""
+    """
+    Converte o banco para uma lista simples de questões (sem a camada 'lang').
+
+    Cada questão vira um objeto com os campos base (id, category, difficulty)
+    e uma chave por idioma contendo o conteúdo daquele idioma.
+
+    Args:
+        store (QAStore): banco de origem.
+
+    Returns:
+        list[dict]: lista de questões achatadas.
+    """
     out = []
     for q in store.all_questions():
         base = {"id": q["id"], "category": q["category"], "difficulty": q["difficulty"]}
@@ -269,10 +420,19 @@ def export_flat(store):
 
 def export_for_frontend(store, base_lang=None, target_lang=None):
     """
-    Gera um banco otimizado para o front.
+    Gera um banco otimizado para o front (GitHub Pages).
 
     Se base_lang e target_lang forem fornecidos e diferentes, cria uma visão
     'traduzida' (completa apenas no target_lang, mantendo base como fallback).
+
+    Args:
+        store (QAStore): banco de origem.
+        base_lang (str | None): idioma-base para a visão traduzida.
+        target_lang (str | None): idioma alvo da visão traduzida.
+
+    Returns:
+        dict: banco exportado com schema, updatedAt, total, categories,
+        languages e questions (formato achatado).
     """
     return {
         "schema": store.data.get("schema", SCHEMA_VERSION),
@@ -285,7 +445,15 @@ def export_for_frontend(store, base_lang=None, target_lang=None):
 
 
 def export_by_category(store):
-    """Agrupa questões por categoria (útil para o front carregar só o necessário)."""
+    """
+    Agrupa questões por categoria (útil para o front carregar só o necessário).
+
+    Args:
+        store (QAStore): banco de origem.
+
+    Returns:
+        dict[str, list[dict]]: mapeamento categoria -> questões.
+    """
     result = {}
     for q in store.all_questions():
         result.setdefault(q["category"], []).append(q)
@@ -293,6 +461,16 @@ def export_by_category(store):
 
 
 def write_json(data, path):
+    """
+    Grava um objeto JSON em disco, criando os diretórios pai se necessário.
+
+    Args:
+        data (dict | list): conteúdo a gravar.
+        path (str): caminho de destino.
+
+    Returns:
+        str: o caminho gravado.
+    """
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
@@ -350,6 +528,13 @@ def fill_from_base(store, base_lang=DEFAULT_LANG):
     """
     Para questões incompletas, copia o conteúdo do base_lang para os idiomas
     ainda vazios. Não traduz — apenas propaga (útil durante autoria parcial).
+
+    Args:
+        store (QAStore): banco a ser alterado.
+        base_lang (str): idioma que serve como fonte do conteúdo.
+
+    Returns:
+        int: quantidade de idiomas preenchidos pela operação.
     """
     count = 0
     for q in store.all_questions():
@@ -365,7 +550,16 @@ def fill_from_base(store, base_lang=DEFAULT_LANG):
 
 
 def stats(store):
-    """Estatísticas do banco para relatórios/CLI."""
+    """
+    Estatísticas do banco para relatórios/CLI.
+
+    Args:
+        store (QAStore): banco a analisar.
+
+    Returns:
+        dict: com 'total' (int), 'by_category' (dict) e 'by_language' (dict,
+        contando questões que possuem enunciado no idioma).
+    """
     langs = {l: 0 for l in LANGS}
     by_cat = {}
     for q in store.all_questions():

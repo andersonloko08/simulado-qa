@@ -1,6 +1,20 @@
 // ============================================
 // INTERVIEWOPS PORTUGAL — SHARED LOGIC
 // ============================================
+//
+// Lógica compartilhada entre todas as páginas do site (index, modules, mock,
+// career, dashboard, tracker, roadmap, english, privacidade). Carregada via
+// <script src="javascript/app.js"> (ajustando o path relativo em subdiretórios).
+//
+// Responsabilidades:
+//   1. THEME  — alternância claro/escuro persistida em cookie.
+//   2. I18N   — tradução de interface (data-i18n) e resolução de idioma de
+//      conteúdo (resolveLang: en-us para categorias English, pt-br nas demais).
+//   3. STORAGE — camada de cookies (LGPD): compressão deflate-raw (z1:),
+//      particionamento de payloads grandes, perfis nomeados e consentimento.
+//
+// Funções expostas no window: storeGet/storeSet/storeRemove/initStorage,
+// resolveLang/l/t/initI18n/applyTranslations, slugify, loadJSON.
 
 // ---------- THEME MANAGEMENT ----------
 const THEME_KEY = 'theme';

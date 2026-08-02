@@ -5,8 +5,15 @@ InterviewOps QA Editor — Interface Gráfica (Tkinter).
 Consome o mesmo core (qa_core) que a CLI e o servidor web, garantindo que a
 ferramenta é reutilizável e consistente em todas as interfaces.
 
+A janela mostra a lista de questões à esquerda (duplo clique para editar) e
+um editor por idioma à direita, com abas para PT-BR, PT-PT, EN-US e EN-UK.
+Para questões de múltipla escolha, habilita o campo 'answer' e as alternativas.
+
 Uso:
     python qa_gui.py
+
+Variáveis de ambiente:
+    QA_DB: caminho alternativo para o banco JSON (default: ../../json/questions.json)
 """
 
 import json
@@ -31,6 +38,15 @@ OPTION_FIELD = "options"
 
 
 class QAEditorApp:
+    """
+    Aplicação Tkinter de edição do banco de questões.
+
+    Atributos principais:
+        store (QAStore): instância do banco em memória.
+        current_id (str | None): id da questão em edição (None = nova).
+        editors (dict[str, dict]): mapa idioma -> campos de edição (Text/Entry).
+    """
+
     def __init__(self, root, db_path=DEFAULT_DB):
         self.root = root
         self.root.title("InterviewOps QA Editor — Multi-idioma")
@@ -45,6 +61,7 @@ class QAEditorApp:
 
     # ------------------------------------------------------------------ layout
     def _build_layout(self):
+        """Monta o layout: painel esquerdo (lista) e direito (editor + abas)."""
         paned = ttk.PanedWindow(self.root, orient=tk.HORIZONTAL)
         paned.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
@@ -107,6 +124,7 @@ class QAEditorApp:
         self.msg.pack(anchor="w")
 
     def _build_lang_frame(self, frame):
+        """Cria os campos de edição para um idioma (textos, alternativas e listas)."""
         fields = {}
         for field, label in FIELDS:
             ttk.Label(frame, text=label).pack(anchor="w", pady=(6, 2))
@@ -131,6 +149,7 @@ class QAEditorApp:
         return fields
 
     def _on_type_change(self):
+        """Habilita/desabilita o campo 'answer' e as alternativas conforme o tipo."""
         is_choice = self.combo_type.get() == TYPE_CHOICE
         self.combo_answer.config(state="readonly" if is_choice else "disabled")
         for lang in LANGS:
@@ -139,24 +158,29 @@ class QAEditorApp:
 
     # ------------------------------------------------------------------ dados
     def _qid(self, q):
+        """Retorna o id de uma questão (ou '?' se ausente)."""
         return q.get("id", "?")
 
     def _summary(self, q):
+        """Gera o resumo exibido na lista (id, categoria e início do enunciado)."""
         text = (q.get("lang", {}).get("pt-br", {}).get("question") or self._qid(q))
         return f"{self._qid(q)}  [{q.get('category')}]  {text[:70]}"
 
     def _refresh_list(self):
+        """Re-renderiza a lista de questões a partir do store."""
         self.listbox.delete(0, tk.END)
         for q in self.store.all_questions():
             self.listbox.insert(tk.END, self._summary(q))
         self.listbox_var = self.store.all_questions()
 
     def _set_status(self):
+        """Atualiza o título da janela com o total de questões e idiomas."""
         n = len(self.store.all_questions())
         self.root.title(f"InterviewOps QA Editor — {n} questões · {len(LANGS)} idiomas")
 
     # ------------------------------------------------------------------ ações
     def _new_question(self):
+        """Limpa o editor para criar uma nova questão."""
         self.current_id = None
         self.entry_id.delete(0, tk.END)
         self.entry_cat.delete(0, tk.END)
@@ -176,6 +200,7 @@ class QAEditorApp:
         self.msg.config(text="Nova questão. Preencha e clique em Salvar.", foreground="#1d4ed8")
 
     def _load_selected(self):
+        """Carrega a questão selecionada na lista para o editor."""
         sel = self.listbox.curselection()
         if not sel:
             return
@@ -209,6 +234,7 @@ class QAEditorApp:
         self.msg.config(text=f"Editando {q['id']}", foreground="#1d4ed8")
 
     def _collect(self):
+        """Lê todos os campos do editor e monta o objeto 'lang' multi-idioma."""
         lang_data = {}
         for lang, fields in self.editors.items():
             d = {}
@@ -225,10 +251,11 @@ class QAEditorApp:
         return lang_data
 
     def _render_lang(self):
-        # faz o notebook ir para a aba selecionada
+        """Faz o notebook ir para a aba selecionada."""
         self.notebook.select(self.lang_var.get())
 
     def _save(self):
+        """Salva a questão em edição: cria se nova ou atualiza se existente."""
         qtype = self.combo_type.get() or TYPE_OPEN
         q = {
             "id": self.entry_id.get().strip(),
@@ -255,6 +282,7 @@ class QAEditorApp:
             messagebox.showerror("Erro de validação", str(e))
 
     def _delete(self):
+        """Remove a questão selecionada, com confirmação do usuário."""
         sel = self.listbox.curselection()
         if not sel:
             return
@@ -270,6 +298,7 @@ class QAEditorApp:
 
 
 def main():
+    """Ponto de entrada da GUI: lê QA_DB (opcional) e inicia a janela Tkinter."""
     db = os.environ.get("QA_DB", DEFAULT_DB)
     root = tk.Tk()
     try:
