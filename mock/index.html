@@ -140,7 +140,7 @@
     <script src="../javascript/app.js"></script>
     <script>
         let QUESTION_DB = [];
-        let session = { questions: [], index: 0, correct: 0, weak: 0, startedAt: null, timer: null, remaining: 0, duration: 120 };
+        let session = { questions: [], index: 0, correct: 0, weak: 0, skipped: 0, startedAt: null, timer: null, remaining: 0, duration: 120 };
 
         const WEAK_KEY = 'weak_categories';
 
@@ -208,6 +208,7 @@
             session.startedAt = Date.now();
             session.correct = 0;
             session.weak = 0;
+            session.skipped = 0;
 
             document.getElementById('setup').style.display = 'none';
             document.getElementById('reveal').style.display = 'none';
@@ -346,6 +347,7 @@
         };
 
         window.nextQuestion = function(skipped) {
+            if (skipped) session.skipped++;
             if (session.index < session.questions.length - 1) {
                 session.index++;
                 document.getElementById('reveal').style.display = 'none';
@@ -375,15 +377,22 @@
             const weak = getWeakCategories();
             const weakList = Object.entries(weak).sort((a, b) => b[1] - a[1]).slice(0, 3);
 
+            // Preparo: apenas sobre questões efetivamente respondidas (não puladas).
+            const answered = Math.max(total - session.skipped, 0);
+            const prepared = total ? Math.round((answered - session.weak) / total * 100) : 0;
+
             document.getElementById('result-stats').innerHTML = `
                 <div class="stat-box"><div class="stat-value">${total}</div><div class="stat-label">Perguntas</div></div>
                 <div class="stat-box"><div class="stat-value" style="color:var(--warning);">${formatTime(elapsed)}</div><div class="stat-label">Duração</div></div>
                 <div class="stat-box"><div class="stat-value" style="color:var(--danger);">${session.weak}</div><div class="stat-label">Marcadas difíceis</div></div>
-                <div class="stat-box"><div class="stat-value" style="color:var(--success);">${Math.round((total - session.weak) / total * 100)}%</div><div class="stat-label">Sente-se preparado</div></div>
+                <div class="stat-box"><div class="stat-value" style="color:var(--info);">${session.skipped}</div><div class="stat-label">Puladas</div></div>
+                <div class="stat-box"><div class="stat-value" style="color:var(--success);">${Math.max(prepared, 0)}%</div><div class="stat-label">Sente-se preparado</div></div>
             `;
-            document.getElementById('result-weak').innerHTML = weakList.length
-                ? `<div class="callout callout-warning"><strong><i class="fa-solid fa-fire"></i> Áreas para reforçar (adaptativo):</strong> ${weakList.map(([c, n]) => `${c} (${n}x)`).join(' · ')}</div>`
-                : '<div class="callout callout-success"><strong>Ótimo!</strong> Nenhuma área difícil registrada nesta sessão. Continue praticando.</div>';
+            document.getElementById('result-weak').innerHTML =
+                (session.skipped > 0 ? `<div class="callout callout-warning"><strong><i class="fa-solid fa-forward"></i> Você pulou ${session.skipped} ${session.skipped === 1 ? 'questão' : 'questões'}.</strong> Responder em voz alta é essencial para o treino — reveja as respostas esperadas das perguntas puladas.</div>` : '') +
+                (weakList.length
+                    ? `<div class="callout callout-warning"><strong><i class="fa-solid fa-fire"></i> Áreas para reforçar (adaptativo):</strong> ${weakList.map(([c, n]) => `${c} (${n}x)`).join(' · ')}</div>`
+                    : '<div class="callout callout-success"><strong>Ótimo!</strong> Nenhuma área difícil registrada nesta sessão. Continue praticando.</div>');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
     </script>
