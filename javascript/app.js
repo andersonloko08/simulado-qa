@@ -214,6 +214,23 @@ async function initI18n() {
     applyTranslations();
 }
 
+// Aplica traduções a elementos com data-i18n (interface fixa em pt-br).
+function applyTranslations() {
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        const val = t(key);
+        if (el.hasAttribute('data-i18n-html')) {
+            el.innerHTML = val;
+        } else if (el.childElementCount > 0) {
+            const nodes = Array.from(el.childNodes).filter(n => n.nodeType === Node.TEXT_NODE && n.textContent.trim());
+            if (nodes.length) { nodes[0].textContent = ' ' + val; }
+        } else {
+            el.textContent = val;
+        }
+        if (el.hasAttribute('placeholder')) el.setAttribute('placeholder', val);
+    });
+}
+
 // ---------- CONSENTIMENTO LGPD ----------
 function initConsentBanner() {
     // Se já aceitou, nunca mais mostra o banner
@@ -242,12 +259,15 @@ function initConsentBanner() {
         ? '../privacidade/index.html' : 'privacidade/index.html';
     banner.querySelector('#consent-privacy-link').setAttribute('href', privacyHref);
 
-    document.getElementById('consent-accept').addEventListener('click', () => {
-        // Registra data/hora do consentimento
-        storeSet(CONSENT_KEY, 'accepted');
-        storeSet('consent_accepted_at', new Date().toISOString());
-        banner.remove();
-    });
+    const acceptBtn = banner.querySelector('#consent-accept');
+    if (acceptBtn) {
+        acceptBtn.addEventListener('click', () => {
+            // Registra data/hora do consentimento
+            storeSet(CONSENT_KEY, 'accepted');
+            storeSet('consent_accepted_at', new Date().toISOString());
+            banner.remove();
+        });
+    }
 }
 
 // ---------- THEME MANAGEMENT ----------

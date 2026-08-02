@@ -55,6 +55,12 @@
             <h2><i class="fa-solid fa-check-to-slot"></i> <span data-i18n="privacy_consent">Consentimento</span></h2>
             <p data-i18n="privacy_consent_body">Ao usar o site você é informado sobre o uso de cookies e pode aceitar ou recusar. Recusando, o progresso não é salvo entre sessões.</p>
 
+            <div class="callout callout-info" id="consent-status-box">
+                <strong><i class="fa-solid fa-clock-rotate-left"></i> Status do seu consentimento:</strong>
+                <p id="consent-status-text">Verificando...</p>
+                <button id="consent-accept-page" class="btn btn-primary" style="display:none; margin-top:0.5rem;">Aceitar cookies e registrar consentimento</button>
+            </div>
+
             <h2><i class="fa-solid fa-scale-balanced"></i> <span data-i18n="privacy_rights">Seus direitos</span></h2>
             <p data-i18n="privacy_rights_body">Você pode limpar os cookies do navegador (ou apagar o perfil) a qualquer momento, removendo todos os dados deste site.</p>
 
@@ -69,5 +75,29 @@
     </footer>
 
     <script src="../javascript/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            await initStorage();
+            const statusText = document.getElementById('consent-status-text');
+            const acceptBtn = document.getElementById('consent-accept-page');
+            const statusBox = document.getElementById('consent-status-box');
+            if (!statusText) return;
+
+            if (storeGet('consent') === 'accepted') {
+                const at = storeGet('consent_accepted_at');
+                statusText.textContent = 'Consentimento registrado em ' + (at ? new Date(at).toLocaleString('pt-BR') : '...') + '.';
+                acceptBtn.style.display = 'none';
+                statusBox.style.borderLeftColor = 'var(--success)';
+            } else {
+                statusText.textContent = 'Você ainda não aceitou o uso de cookies. Clique no botão abaixo para registrar seu consentimento.';
+                acceptBtn.style.display = 'inline-block';
+                acceptBtn.addEventListener('click', () => {
+                    storeSet('consent', 'accepted');
+                    storeSet('consent_accepted_at', new Date().toISOString());
+                    location.reload();
+                });
+            }
+        });
+    </script>
 </body>
 </html>
