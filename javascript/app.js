@@ -8,6 +8,7 @@ const THEME_KEY = 'theme';
 // ---------- LANGUAGE / I18N ----------
 const LANG_KEY = 'lang';
 const ENG_VARIANT_KEY = 'eng_variant';
+// Caminho do i18n.json relativo à raiz do site; initI18n ajusta se estiver em subdiretório.
 const I18N_PATH = 'json/i18n.json';
 
 // ---------- STORAGE LAYER (COOKIE + perfil) ----------
@@ -206,8 +207,18 @@ function t(key) {
 }
 
 async function initI18n() {
+    // Deriva o caminho relativo ao root do site a partir do src do próprio script.
+    // Home: src="javascript/app.js"  -> base ""  -> "json/i18n.json"
+    // Subdir: src="../javascript/app.js" -> base "../" -> "../json/i18n.json"
+    let base = '';
+    const scriptEl = document.querySelector('script[src$="app.js"]');
+    if (scriptEl) {
+        const idx = scriptEl.getAttribute('src').indexOf('javascript/');
+        if (idx > 0) base = scriptEl.getAttribute('src').slice(0, idx);
+    }
+    const i18nPath = base + 'json/i18n.json';
     try {
-        I18N = await loadJSON(I18N_PATH);
+        I18N = await loadJSON(i18nPath);
     } catch (e) {
         I18N = { lang: {} };
     }
@@ -240,14 +251,14 @@ function initConsentBanner() {
     banner.id = 'consent-banner';
     banner.setAttribute('role', 'dialog');
     banner.setAttribute('aria-label', 'Aviso de privacidade');
-    banner.style.cssText = 'position:fixed; bottom:0; left:0; right:0; z-index:9999; background:var(--card-bg); color:var(--text-color); border-top:2px solid var(--accent); box-shadow:0 -4px 20px rgba(0,0,0,0.2); padding:1rem 1.25rem; display:flex; flex-wrap:wrap; gap:0.75rem; align-items:center; justify-content:space-between; font-size:0.9rem;';
+    banner.style.cssText = 'position:fixed; bottom:0; left:0; right:0; z-index:9999; background:var(--card-bg); color:var(--text-color); border-top:2px solid var(--primary); box-shadow:0 -4px 20px rgba(0,0,0,0.2); padding:1rem 1.25rem; display:flex; flex-wrap:wrap; gap:0.75rem; align-items:center; justify-content:space-between; font-size:0.9rem;';
     banner.innerHTML = `
         <div style="flex:1; min-width:240px;">
             ${t('consent_text')}
-            <a id="consent-privacy-link" href="privacidade/index.html" style="color:var(--accent); text-decoration:underline;">${t('consent_link')}</a>
+            <a id="consent-privacy-link" href="privacidade/index.html" style="color:var(--primary); text-decoration:underline;">${t('consent_link')}</a>
         </div>
         <div style="display:flex; gap:0.5rem; flex-shrink:0;">
-            <button id="consent-accept" style="background:var(--accent); color:#fff; border:none; border-radius:8px; padding:0.5rem 1rem; cursor:pointer; font-weight:600;">${t('consent_accept')}</button>
+            <button id="consent-accept" style="background:var(--primary); color:#fff; border:none; border-radius:8px; padding:0.5rem 1rem; cursor:pointer; font-weight:600;">${t('consent_accept')}</button>
         </div>
     `;
     document.body.appendChild(banner);
