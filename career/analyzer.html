@@ -89,7 +89,8 @@
             { name: 'Git', label: 'Git', icon: 'fa-code-branch', keywords: ['git', 'branch', 'branches', 'rebase', 'merge', 'cherry-pick', 'pull request', 'pr', 'commit', 'gitflow', 'git flow', 'conflito', 'conflitos', 'tag', 'stash', 'checkout'], tip: 'Conte sobre fluxo de trabalho, gates no PR ou resolução de conflitos que protegeu a main.' },
             { name: 'Security', label: 'Security / Segurança', icon: 'fa-shield-halved', keywords: ['segurança', 'security', 'owasp', 'vulnerabilidade', 'rbac', 'autorização', 'autorizacao', 'autenticação', 'autenticacao', 'oauth', 'jwt', 'token', 'injection', 'xss', 'csrf', 'pentest', 'sql injection', 'criptografia', 'auditoria'], tip: 'Conte sobre a matriz RBAC, cenários negativos de auth e a falha que você encontrou antes de produção.' },
             { name: 'Performance', label: 'Performance / Carga', icon: 'fa-gauge-high', keywords: ['performance', 'carga', 'load', 'estresse', 'stress', 'jmeter', 'k6', 'latência', 'latencia', 'throughput', 'p95', 'p99', 'slas', 'sla', 'gargalo', 'concorrência', 'vus', 'threshold'], tip: 'Conte sobre o SLA definido, o gargalo encontrado sob carga e o impacto no negócio (ex.: lançamento).' },
-            { name: 'BDD', label: 'BDD / Gherkin', icon: 'fa-comment-dots', keywords: ['bdd', 'gherkin', 'given', 'when', 'then', 'e ', 'cenário', 'cenario', 'feature', 'cucumber', 'specflow', 'behavior', 'comportamento'], tip: 'Mostre colaboração com o time (3 amigos) e a ligação entre cenário Gherkin e automação.' },
+            { name: 'Testing', label: 'Testing / Automação de testes', icon: 'fa-vial', keywords: ['testes', 'teste', 'regressão', 'regressao', 'regression', 'automação', 'automacao', 'automatizei', 'suíte', 'suite', 'casos de teste', 'cobertura', 'smoke', 'qualidade', 'qa', 'automation', 'casos', 'cenários de teste'], tip: 'Conte o contexto (por que o bug existia), sua tarefa específica e o resultado mensurável (tempo, % de falhas, bugs evitados).' },
+            { name: 'BDD', label: 'BDD / Gherkin', icon: 'fa-comment-dots', keywords: ['bdd', 'gherkin', 'given', 'when', 'then', 'cenário', 'cenario', 'feature', 'cucumber', 'specflow', 'behavior', 'comportamento'], tip: 'Mostre colaboração com o time (3 amigos) e a ligação entre cenário Gherkin e automação.' },
             { name: 'SAP', label: 'SAP', icon: 'fa-industry', keywords: ['sap', 'sap gui', 'bapi', 'rfm', 'tcode', 'transaction', 'transação', 'idoc', 'ale', 'ecossistema sap', 's4', 'ecc'], tip: 'Conte sobre integrações legadas e automação de fluxos críticos no ecossistema SAP.' },
             { name: 'Agile', label: 'Agile / Scrum', icon: 'fa-people-group', keywords: ['ágil', 'agil', 'scrum', 'kanban', 'sprint', 'backlog', 'daily', 'retro', 'retrospectiva', 'cerimônias', 'cerimonias', 'stakeholder', 'product owner', 'po ', 'definição de pronto', 'definition of done', 'velocidade', 'planning'], tip: 'Mostre o seu papel no time ágil e como a qualidade participa das cerimônias e da Definition of Done.' },
             { name: 'English', label: 'English / Inglês', icon: 'fa-language', keywords: ['inglês', 'ingles', 'english', 'b1', 'b2', 'c1', 'internacional', 'cliente internacional', 'daily em inglês', 'report em inglês', 'vocabulário técnico'], tip: 'Conte sobre comunicação com cliente internacional, relatórios e vocabulário técnico em inglês.' },
@@ -138,14 +139,30 @@
         }
 
         // Remove acentos para matching confiável
+        // Keywords curtas (<=3 letras) casam por palavra completa (fronteira), tolerando plural,
+        // para evitar falsos positivos como 'pr' em 'producao' ou 'e' na conjunção.
+        // Keywords maiores usam substring (aceita variações/plurais naturais).
         function findInNorm(normText, keyword) {
-            return normText.includes(norm(keyword));
+            const k = norm(keyword).trim();
+            if (!k) return false;
+            if (k.length <= 3) {
+                const esc = k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                return new RegExp('\\b' + esc + '(es|s)?\\b').test(normText);
+            }
+            return normText.includes(k);
         }
 
         function analyzeThemes(normText) {
             const scored = THEMES.map(t => {
+                // Deduplica keywords que normalizam para a mesma palavra (ex.: 'regressão'/'regressao').
+                const seen = new Set();
                 let hits = 0;
-                t.keywords.forEach(k => { if (findInNorm(normText, k)) hits++; });
+                t.keywords.forEach(k => {
+                    const nk = norm(k);
+                    if (seen.has(nk)) return;
+                    seen.add(nk);
+                    if (findInNorm(normText, k)) hits++;
+                });
                 return { theme: t, hits };
             }).filter(x => x.hits > 0).sort((a, b) => b.hits - a.hits);
 
@@ -160,14 +177,28 @@
         function analyzeSTAR(normText) {
             const result = {};
             Object.entries(STAR).forEach(([key, def]) => {
-                const hits = def.keywords.filter(k => findInNorm(normText, k)).length;
+                const seen = new Set();
+                let hits = 0;
+                def.keywords.forEach(k => {
+                    const nk = norm(k);
+                    if (seen.has(nk)) return;
+                    seen.add(nk);
+                    if (findInNorm(normText, k)) hits++;
+                });
                 result[key] = { def, hits, present: hits > 0 };
             });
             return result;
         }
 
         function analyzeImpact(normText) {
-            const hits = IMPACT_WORDS.filter(k => findInNorm(normText, k));
+            const seen = new Set();
+            const hits = [];
+            IMPACT_WORDS.forEach(k => {
+                const nk = norm(k);
+                if (seen.has(nk)) return;
+                seen.add(nk);
+                if (findInNorm(normText, k)) hits.push(k);
+            });
             return { hits, count: hits.length };
         }
 
