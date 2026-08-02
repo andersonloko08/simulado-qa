@@ -1,0 +1,326 @@
+{
+  "id": "ai",
+  "title": "IA para QA & Vibe Coding",
+  "icon": "fa-robot",
+  "level": "Intermediário",
+  "duration": "2 semanas",
+  "shortDescription": "IA generativa, LLMs, engenharia de prompt, vibe coding, servidores e IA responsável.",
+  "description": "A Inteligência Artificial está transformando a engenharia de teste: da geração de casos ao review de código assistido. Este módulo cobre os fundamentos de IA generativa e LLMs, como aplicar no ciclo de QA, boas práticas de prompt, vibe coding, infraestrutura/servidores para IA e uso responsável com LGPD.",
+  "topics": [
+    "LLMs",
+    "Prompts",
+    "Vibe Coding",
+    "Infra",
+    "LGPD"
+  ],
+  "concepts": [
+    {
+      "title": "Fundamentos de IA Generativa & LLMs",
+      "theory": "LLMs (Large Language Models) são modelos treinados em grandes volumes de texto para prever e gerar linguagem. Conceitos essenciais: tokens (unidades de texto processadas — uma palavra pode ter 1 a 3 tokens), janela de contexto (quantidade de tokens que o modelo considera por vez, ex.: 8k a 128k+), temperatura (controla aleatoriedade da saída — alta para criatividade, baixa para determinismo), e parâmetros (tamanho do modelo, ex.: 7B, 70B). Modelos podem ser proprietários (GPT, Claude) via API, ou abertos/self-hosted (Llama, Mistral). Para QA, entender tokens e contexto é essencial: prompts com excesso de logs podem estourar a janela e degradar a resposta.",
+      "examples": [
+        "Uma pergunta de 10 palavras em pt-br pode consumir ~15-20 tokens",
+        "Janela de 8k tokens ≈ ~6.000 palavras — insuficiente para logs grandes inteiros",
+        "Temperatura 0.0 em geração de código de teste → saída mais consistente e reprodutível",
+        "temperature 0.7 para brainstorming de cenários → mais variedade de ideias"
+      ],
+      "commonMistakes": [
+        "Jogar um log de 5MB inteiro no prompt e esperar análise precisa (estoura o contexto).",
+        "Usar temperatura alta para tarefas que exigem precisão (código, schemas).",
+        "Achar que o modelo tem memória infinita — cada sessão tem limite de contexto.",
+        "Não saber diferenciar API proprietária de modelo self-hosted ao avaliar custo/LGPD."
+      ],
+      "projectExample": "Em uma automação de APIs, precisávamos entender uma falha intermitente. Em vez de colar um log gigante no chat, criei um script que extraía só os trechos de erro (janela de contexto), resumia o fluxo da requisição e então mandava para o modelo com contexto específico. Isso reduziu a taxa de 'alucinação' e achamos um problema de timeout de 30s que o time não tinha visto.",
+      "interviewQuestions": [
+        {
+          "question": "Explique o que é a janela de contexto de um LLM e como ela afeta o trabalho de um QA que usa IA.",
+          "difficulty": "Média",
+          "expectedAnswer": "A janela de contexto é a quantidade máxima de tokens que o modelo processa por vez. Ela define o 'tamanho do prompt + resposta' que o modelo consegue considerar. Para QA, isso importa porque: ao analisar logs ou evidências, precisamos resumir/pre-selecionar os trechos relevantes em vez de colar tudo; e ao gerar suites de teste, é melhor ir em partes. Estourar o contexto degrada a qualidade ou causa erro. Por isso eu costumo extrair só o essencial antes de mandar ao modelo.",
+          "followUps": [
+            "Como você reduziria um log de 1GB para caber no contexto?",
+            "O que acontece com a resposta quando o contexto estoura?"
+          ],
+          "mistakes": [
+            "Definir contexto sem citar tokens.",
+            "Não conectar com a prática de resumir logs/evidências."
+          ],
+          "english": "The context window is the maximum number of tokens a model processes at once. For QA it matters because logs and evidence must be summarized first, and test generation should be done in chunks to keep quality."
+        },
+        {
+          "question": "O que é temperatura em modelos generativos e como você a ajustaria para gerar casos de teste?",
+          "difficulty": "Média",
+          "expectedAnswer": "Temperatura controla a aleatoriedade: baixa (0-0.2) deixa a saída mais determinística e conservadora; alta (0.7-1.0) gera mais variedade e criatividade. Para gerar casos de teste funcionais e automação de código, eu uso temperatura baixa para consistência e reprodutibilidade. Para brainstorm de cenários de borda ou exploração de ideias, uso temperatura mais alta para obter sugestões variadas. Isso mostra entendimento do trade-off determinismo vs criatividade.",
+          "followUps": [
+            "E para revisar código de outra pessoa, qual temperatura?",
+            "Temperatura zero garante saída idêntica sempre?"
+          ],
+          "mistakes": [
+            "Confundir temperatura com tamanho do modelo.",
+            "Não justificar o ajuste por tipo de tarefa."
+          ],
+          "english": "Temperature controls randomness. For generating test cases and automation code I use a low temperature for consistency and reproducibility. For brainstorming edge scenarios I use a higher temperature to get more varied suggestions."
+        }
+      ],
+      "challenges": [
+        "Calcule quantos tokens aproximadamente tem um caso de teste de 3 parágrafos e uma suite de 20 casos.",
+        "Explique por que colar um arquivo de 10.000 linhas no prompt é ineficiente e proponha uma alternativa."
+      ]
+    },
+    {
+      "title": "IA no Ciclo de QA",
+      "theory": "A IA pode atuar em várias etapas do ciclo de teste: análise de requisitos (extrair cenários e regras de negócio), geração de casos de teste (partições de equivalência, análise de valor limite, tabelas de decisão), escrita de automação (código Playwright/Robot a partir de um cenário), revisão de testes existentes (gaps de cobertura, duplicação), triagem de falhas (classificar bugs, agrupar incidentes), e sugestão de consultas SQL de validação. O QA continua responsável pela orquestração: o que pedir, como validar e o que priorizar. O valor está na aceleração, não na substituição do julgamento.",
+      "examples": [
+        "Prompt para gerar cenários de valor limite para um campo de idade (18-120)",
+        "Pedir uma tabela de decisão a partir de uma regra de negócio descrita em texto",
+        "Gerar esqueleto de automação Playwright a partir de um cenário Gherkin",
+        "Revisar 50 casos de teste e apontar duplicações e gaps de cobertura"
+      ],
+      "commonMistakes": [
+        "Aceitar a saída da IA sem revisão humana (alucinação em cenários e asserts).",
+        "Pedir casos de teste genéricos sem contexto do domínio (banco, seguro).",
+        "Não criar uma estratégia de validação da saída gerada.",
+        "Delegar o design de testes por completo, perdendo o pensamento crítico."
+      ],
+      "projectExample": "Em um time de seguros, usamos IA para gerar uma primeira versão da matriz de casos do fluxo de cotação (valor do veículo, perfil do condutor, coberturas). A IA trouxe cobertura inicial em minutos, mas vários cenários misturavam regras de negócio incorretas (ex.: idade mínima errada). O time revisou cada caso contra a regra de negócio, corrigiu e os reutilizou como base. O resultado: corte de ~40% do tempo de design de casos, com qualidade garantida pela revisão humana.",
+      "interviewQuestions": [
+        {
+          "question": "Em quais etapas do ciclo de QA a IA generativa pode ajudar e onde ela NÃO deve substituir o QA?",
+          "difficulty": "Média",
+          "expectedAnswer": "A IA ajuda em: análise de requisitos e extração de cenários, geração de casos (técnicas como boundary e tabelas de decisão), escrita de automação, revisão de cobertura, triagem de falhas e sugestões de SQL. Ela não deve substituir o QA em: decisões de priorização de riscos, validação da regra de negócio real, julgamento de impacto para o negócio, e aprovação final do que vai para produção. A IA acelera a produção de candidatos; o QA garante relevância, correção e contexto.",
+          "followUps": [
+            "Como você validaria casos de teste gerados por IA?",
+            "Dê um exemplo de alucinação que você já viu em saída de IA para QA."
+          ],
+          "mistakes": [
+            "Listar só usos sem mencionar limites.",
+            "Não citar a validação humana como parte do processo."
+          ],
+          "english": "AI helps with requirements analysis, test case generation, automation writing, coverage review and failure triage. It must not replace the QA in risk prioritization, business rule validation and final go/no-go decisions. AI accelerates candidates; the human guarantees correctness."
+        },
+        {
+          "question": "Como você usaria IA para melhorar a cobertura de testes de um fluxo legado sem documentação?",
+          "difficulty": "Intermediária",
+          "expectedAnswer": "Eu combino exploração humana com IA: (1) primeiro mapeio o fluxo executando a aplicação e capturo logs/traces; (2) uso IA para identificar estados e transições a partir dos logs, gerando um modelo mental de fluxos; (3) peço ao modelo para sugerir cenários de borda e negativos baseados no fluxo mapeado; (4) valido cada cenário executando de verdade. Também comparo cobertura de caminhos entre o que já é testado e o que a IA sugeriu, priorizando os que tocam regras de negócio críticas.",
+          "followUps": [
+            "Qual o risco de confiar no modelo de fluxo gerado por IA?",
+            "Como você prova que a cobertura melhorou de fato?"
+          ],
+          "mistakes": [
+            "Depender 100% da IA sem execução real.",
+            "Não usar a cobertura como métrica de priorização."
+          ],
+          "english": "I combine manual exploration with AI: I capture logs and traces, use AI to identify states and transitions, ask for edge and negative scenarios, and validate each one by executing the flow. I use coverage as a metric to prioritize what matters most."
+        }
+      ],
+      "challenges": [
+        "Descreva um fluxo de compra com regras de negócio e peça a um LLM para gerar 20 cenários; revise quais são válidos e quais são alucinações.",
+        "Liste 5 tarefas de QA onde IA ajuda e 5 onde o julgamento humano é imprescindível."
+      ]
+    },
+    {
+      "title": "Engenharia de Prompt (Boas Práticas)",
+      "theory": "Engenharia de prompt é a prática de construir instruções claras para obter respostas úteis e consistentes de um LLM. Boas práticas: dar papel (\"você é um QA sênior\"), fornecer contexto (domínio, regras de negócio), ser específico e delimitado (formato de saída, tamanho), pedir em etapas (chain of thought para raciocínio), dar exemplos (few-shot), e instruir a responder 'não sei' em vez de inventar. Técnicas: zero-shot (instrução direta), few-shot (exemplos), chain-of-thought (raciocínio passo a passo), e templates reutilizáveis com variáveis. Para QA, prompts bem estruturados geram saídas consistentes e auditáveis.",
+      "examples": [
+        "\"Você é um QA sênior de uma fintech. Liste casos de teste negativos para o campo CPF.\"",
+        "Zero-shot: 'Crie 5 cenários Gherkin para login'",
+        "Few-shot: mostrar 2 exemplos de cenário bem formatado antes de pedir 10",
+        "Chain-of-thought: 'Pense passo a passo sobre as regras e depois crie a tabela de decisão'",
+        "Pedir saída em JSON com chaves fixas para automação de consumo"
+      ],
+      "commonMistakes": [
+        "Prompt vago (ex.: 'me ajuda com teste') sem papel nem contexto.",
+        "Não especificar formato de saída, gerando respostas inconsistentes.",
+        "Não dar exemplo do formato esperado (few-shot ausente).",
+        "Pedir informações que o modelo não tem e aceitar invenções como verdade."
+      ],
+      "projectExample": "Padronizamos prompts de geração de casos no time: template com papel do QA, regras de negócio da feature, formato de saída em tabela (ID, pré-condição, passos, resultado esperado) e instrução de marcar incertezas. As saídas ficaram consistentes o suficiente para virar checklist inicial, e os casos marcados como incertos eram revistos em dupla. Diminuiu muito a retrabalho de reescrever casos formatados manualmente.",
+      "interviewQuestions": [
+        {
+          "question": "Explique a diferença entre zero-shot, few-shot e chain-of-thought e quando usar cada um na geração de testes.",
+          "difficulty": "Intermediária",
+          "expectedAnswer": "Zero-shot: instrução única sem exemplos — bom para tarefas simples e genéricas. Few-shot: inclui exemplos do formato esperado — bom para garantir consistência de formato (ex.: tabelas de casos). Chain-of-thought: pede raciocínio passo a passo antes da resposta final — bom para análise de regras de negócio complexas e para reduzir erros de lógica. Na prática, eu uso zero-shot para tarefas rápidas, few-shot quando preciso de formato padronizado e chain-of-thought quando a regra de negócio tem muitas condições.",
+          "followUps": [
+            "Quando chain-of-thought pode atrapalhar?",
+            "Como garantir que a saída tenha sempre o mesmo formato?"
+          ],
+          "mistakes": [
+            "Não saber explicar a diferença com exemplos.",
+            "Usar chain-of-thought para tarefas triviais (custo/latência)."
+          ],
+          "english": "Zero-shot uses a single instruction without examples, good for simple tasks. Few-shot includes examples to guarantee format consistency. Chain-of-thought asks for step-by-step reasoning, useful for complex business rules. I choose based on the task: fast, standardized, or analytical."
+        },
+        {
+          "question": "Como você construiria um prompt para um LLM revisar casos de teste existentes e apontar gaps?",
+          "difficulty": "Média",
+          "expectedAnswer": "Eu estruturaria: (1) papel — 'você é um QA sênior'; (2) contexto — a funcionalidade, regras de negócio e riscos; (3) entrada — os casos de teste existentes (delimitados e enxutos); (4) tarefa específica — identificar cobertura ausente por técnica (boundary, negativos, autorização, dados inválidos) e duplicações; (5) formato — saída em lista com categoria e justificativa; (6) instrução anti-alucinação — 'se não houver gap claro, diga que não há'. Depois eu valido as sugestões contra o código/regras reais antes de agir.",
+          "followUps": [
+            "Como você evita que o modelo invente gaps que não existem?",
+            "Que formato de saída você pediria para integrar a uma planilha?"
+          ],
+          "mistakes": [
+            "Prompt sem formato de saída, gerando resposta solta.",
+            "Confiar nas sugestões sem validar contra o contexto real."
+          ],
+          "english": "I structure the prompt with role, context, the existing test cases, a specific review task, a defined output format and an anti-hallucination instruction. Then I validate each suggestion against the real code and business rules before acting."
+        }
+      ],
+      "challenges": [
+        "Escreva um template de prompt reutilizável para gerar casos de teste de uma regra de negócio.",
+        "Transforme um prompt vago ('testa isso') em um prompt few-shot com exemplo e formato de saída."
+      ]
+    },
+    {
+      "title": "Vibe Coding & Desenvolvimento Assistido por IA",
+      "theory": "Vibe coding é a prática de desenvolver software com forte apoio de ferramentas de IA (assistentes de código, agentes), descrevendo a intenção em linguagem natural e iterando com o feedback do agente. O termo popularizou-se em 2025. A IA gera código rapidamente, mas o papel humano é essencial: revisar, testar, exigir qualidade, validar comportamento real e tomar decisões. Boas práticas: dividir tarefas pequenas, pedir testes junto com o código, revisar o que foi gerado, exigir explicações, rodar a suíte antes de aceitar, e usar a IA para acelerar — não como dono da verdade. Empresas sérias criam políticas de revisão humana para código gerado por IA.",
+      "examples": [
+        "Pedir ao agente para implementar um helper de autenticação com testes unitários",
+        "Refatorar um teste instável e pedir ao agente para explicar a causa raiz",
+        "Gerar fixtures de dados de teste a partir de um schema JSON",
+        "Pedir revisão de cobertura antes de fechar uma feature"
+      ],
+      "commonMistakes": [
+        "Aceitar código gerado por IA sem rodar a suíte de testes.",
+        "Deixar a IA escrever tudo e não entender o que foi feito (risco de débito técnico).",
+        "Não exigir testes junto com o código gerado.",
+        "Tratar a IA como autoridade em vez de ferramenta de rascunho."
+      ],
+      "projectExample": "No time, adotamos a política de 'código assistido por IA precisa de revisão e testes'. Um agente de IA gerou o esqueleto de uma suíte de testes de API para o novo serviço de pagamentos. Antes de aceitar, revisei os asserts, notei que o agente validava status 200 de forma genérica em vez dos contratos esperados, exigi correção e adicionei casos de erro (401, 422) que ele não cobriu. O código foi aprovado só depois da suíte passar em CI. Isso virou exemplo de como IA acelera sem abrir mão da qualidade.",
+      "interviewQuestions": [
+        {
+          "question": "O que é vibe coding e qual o papel do QA/engenheiro nesse modelo de desenvolvimento?",
+          "difficulty": "Intermediária",
+          "expectedAnswer": "Vibe coding é desenvolver com apoio intensivo de IA, descrevendo intenção em linguagem natural e iterando com o feedback do agente. O papel humano é crítico: revisar o código gerado, exigir testes, validar comportamento real, garantir que não vire débito técnico e tomar as decisões finais. Em QA, isso significa que mesmo código gerado por IA precisa passar por revisão, testes e gates de qualidade antes de aceitar. IA acelera a entrega; o humano garante qualidade, contexto e responsabilidade.",
+          "followUps": [
+            "Quais riscos o vibe coding traz sem revisão humana?",
+            "Como você garantiria qualidade em um time que usa muita IA?"
+          ],
+          "mistakes": [
+            "Confundir vibe coding com 'sem precisar de QA'.",
+            "Não mencionar revisão e testes como obrigatórios."
+          ],
+          "english": "Vibe coding is developing with heavy AI assistance, describing intent in natural language and iterating on agent feedback. The human role is critical: reviewing generated code, demanding tests, validating real behavior and making final decisions. AI accelerates; humans guarantee quality."
+        },
+        {
+          "question": "Como você revisaria código gerado por IA em um pipeline de QA?",
+          "difficulty": "Intermediária",
+          "expectedAnswer": "Eu trato código de IA como rascunho de alto risco: (1) reviso a lógica linha a linha, principalmente asserts e seletores; (2) rodo a suíte completa em ambiente real — nunca apenas 'faz sentido'; (3) verifico se há testes para os casos negativos e de borda, que IA costuma omitir; (4) peço ao autor/agente para explicar decisões estranhas; (5) checo cobertura e estabilidade (flakiness); (6) aplico os mesmos gates de código humano: lint, CI, code review. Qualquer código — humano ou IA — só entra se passar nos mesmos critérios.",
+          "followUps": [
+            "O que você faria se a IA gerasse um teste que sempre passa (vulgar false-positive)?",
+            "Como você evita aceitar código que você não entende?"
+          ],
+          "mistakes": [
+            "Revisar só 'por cima' por confiar na IA.",
+            "Não rodar a suíte antes de aceitar."
+          ],
+          "english": "I treat AI-generated code as a high-risk draft: I review the logic, run the full suite in a real environment, check negative and edge cases, ask for explanations, and apply the same gates as human code — lint, CI and code review. Nothing gets in without passing the same criteria."
+        }
+      ],
+      "challenges": [
+        "Use um agente de IA para gerar uma suíte de testes de login e revise-a: aponte 3 problemas que só a revisão humana pegaria.",
+        "Defina 5 políticas de qualidade para adotar código gerado por IA no seu time."
+      ]
+    },
+    {
+      "title": "Servidores & Infraestrutura para IA",
+      "theory": "Para usar IA no trabalho, é preciso entender onde o modelo roda: APIs de provedores (GPT, Claude, Gemini) — cloud, pagamento por uso, dados vão ao provedor; modelos self-hosted (Llama, Mistral via Ollama/vLLM) — rodam em servidores próprios, maior controle de dados e custo, mas exigem GPU/CPU e configuração; e ambientes locais para testes. Conceitos: GPU vs CPU (inferência em GPU é muito mais rápida), inferência (gerar resposta) vs treino (ajustar o modelo — exige muito mais recurso), rate limits (limites de requisições por minuto), latência, custo por token, e fine-tuning (adaptar modelo com dados próprios — raro e caro). Para QA, isso importa: pipelines que chamam LLM em massa precisam lidar com rate limit, retries e custo; dados sensíveis não podem sair para APIs públicas (LGPD).",
+      "examples": [
+        "Ollama rodando Llama 3.1 8B em GPU local para classificar erros sem enviar dados para fora",
+        "API da OpenAI com rate limit de 60 requisições/min em plano baixo",
+        "vLLM servindo modelo open-source com alta concorrência em produção",
+        "Custo estimado: chamar um modelo para resumir 10k tokens por bug × 500 bugs/mês"
+      ],
+      "commonMistakes": [
+        "Enviar dados pessoais (PII) de clientes para APIs públicas de IA sem anonimização (risco LGPD).",
+        "Ignorar rate limits e causar falhas em lote no CI.",
+        "Subestimar latência e custo por token em escala.",
+        "Achar que rodar LLM local em CPU é tão rápido quanto GPU."
+      ],
+      "projectExample": "No time, precisávamos classificar automaticamente bugs abertos por categoria (UI, API, dados). Regra LGPD: não podíamos mandar dados de cliente para API externa. Montamos um servidor interno com Ollama + modelo open-source para classificação local, com retry e fila para respeitar limite de concorrência. A acurácia era menor que a API paga, mas suficiente para triagem inicial, e os dados nunca saíram do ambiente corporativo. Esse trade-off segurança vs precisão foi a decisão de engenharia certa.",
+      "interviewQuestions": [
+        {
+          "question": "Quais os trade-offs entre usar API de LLM de um provedor cloud vs rodar um modelo self-hosted?",
+          "difficulty": "Avançada",
+          "expectedAnswer": "API cloud: pronta, maior qualidade, cobrança por uso, fácil de escalar, mas dados vão ao provedor (problema com LGPD/PII) e há rate limits/latência de rede. Self-hosted: dados permanecem internos (compliance), custo previsível de infra, mas exige GPU, manutenção, e qualidade/velocidade podem ser menores dependendo do hardware. Para QA, a decisão depende da sensibilidade dos dados: com PII ou exigência LGPD, self-hosted ou anonimização prévia; para tarefas não sensíveis e alto volume, API é mais prática. O ideal é um guarda-chuva: anonimizar sempre e escolher a infra por sensibilidade e custo.",
+          "followUps": [
+            "Quando valeria a pena fazer fine-tuning em vez de usar modelo pronto?",
+            "Como você calcula custo de usar LLM em um pipeline de testes?"
+          ],
+          "mistakes": [
+            "Ignorar o aspecto de dados/LGPD.",
+            "Não citar GPU e custo de infra."
+          ],
+          "english": "Cloud APIs are ready, higher quality and easy to scale, but data goes to the provider, which is a problem for PII and LGPD. Self-hosted models keep data internal but need GPU and maintenance. The decision depends on data sensitivity and cost."
+        },
+        {
+          "question": "Seu pipeline de CI vai processar 5.000 bugs por mês com IA. Como você projeta isso sem quebrar por rate limit?",
+          "difficulty": "Avançada",
+          "expectedAnswer": "Eu projetaria: (1) fila de mensagens para não sobrecarregar a API; (2) rate limiting com backoff exponencial e retries; (3) cache de resultados para chamadas repetidas (mesmo bug, mesmo resumo); (4) processamento em lotes com paralelismo controlado dentro do limite; (5) fallback para modelo local em caso de indisponibilidade; (6) monitoramento de custo por token e latência; (7) amostragem para validar a qualidade da classificação antes de aplicar em tudo. O design garante resiliência, controle de custo e qualidade auditável.",
+          "followUps": [
+            "Como você validaria a precisão da classificação automática?",
+            "O que fazer quando a API fica fora do ar no meio do lote?"
+          ],
+          "mistakes": [
+            "Ignorar rate limit (crash em massa no CI).",
+            "Não planejar monitoramento de custo e qualidade."
+          ],
+          "english": "I would design a queue, exponential backoff with retries, result caching, controlled parallel batches, a local fallback model, and cost and latency monitoring. I would also sample results to validate classification quality before scaling to everything."
+        }
+      ],
+      "challenges": [
+        "Estime o custo mensal de resumir todos os logs de falha de 2 semanas com uma API de LLM, considerando tokens por chamada e preço por milhão de tokens.",
+        "Desenhe um fluxo para classificar bugs com IA respeitando LGPD sem mandar PII para fora."
+      ]
+    },
+    {
+      "title": "IA Responsável, Viés e LGPD",
+      "theory": "Usar IA em QA envolve responsabilidade: viés (o modelo reflete viés dos dados de treino — pode gerar cenários que excluem perfis ou recomendações discriminatórias), alucinação (respostas plausíveis mas falsas — crítico em testes, onde afirmar cobertura errada é perigoso), transparência (registrar que a saída foi gerada por IA e validada por humano), e privacidade (LGPD: dados pessoais só podem ser processados com base legal; enviar PII a APIs externas exige anonimização, consentimento ou cláusula, e registro). Boas práticas: anonimizar/mascarar dados antes de usar IA, revisar saídas, documentar o uso, auditar decisões automatizadas e manter humano no processo decisório. LGPD (Lei 13.709/2018) exige responsabilização e registro do tratamento de dados.",
+      "examples": [
+        "Mascarar CPF/nome antes de enviar evidência de teste a uma API externa",
+        "Documentar em ADR que classificação de bugs usa IA com revisão humana",
+        "Registrar no log de evidência: 'resumo gerado por IA — validado por QA humano'",
+        "Testar a suíte gerada por IA com dados de perfis diversos para checar viés"
+      ],
+      "commonMistakes": [
+        "Enviar arquivos com PII (logs com CPF, e-mail) para LLM de terceiros sem anonimização.",
+        "Publicar relatório de teste com texto gerado por IA sem revisão de precisão.",
+        "Ignorar viés: validar cenários gerados apenas com o perfil dominante.",
+        "Não registrar que a decisão/saída envolveu IA (falta de transparência e auditoria)."
+      ],
+      "projectExample": "Ao automatizar relatórios de evidências com resumos de IA, os logs continham nomes e CPFs de clientes de teste. Implementamos um sanitizador que substitui PII por tokens (ex.: CPF_001) antes do envio e guardamos um mapa reverso local para rastreio. Também adicionamos rodapé automático 'Resumo gerado por IA e revisado por <QA>' nos relatórios. Isso manteve a eficiência da IA com conformidade LGPD e rastreabilidade.",
+      "interviewQuestions": [
+        {
+          "question": "Como você conciliaria usar IA no QA com as exigências da LGPD?",
+          "difficulty": "Avançada",
+          "expectedAnswer": "A LGPD exige base legal, minimização e registro do tratamento de dados pessoais. Na prática: (1) evito enviar PII a APIs externas — mascarando/anonimizando antes (tokens no lugar de CPF, nome, e-mail); (2) quando o dado precisa ser processado, garanto contrato/cláusula com o provedor e registro o tratamento; (3) prefiro modelo self-hosted para dados sensíveis; (4) documento o fluxo em registro de tratamento e ADR; (5) mantenho revisão humana no que é automatizado por IA. Isso protege a empresa, o usuário e dá rastreabilidade.",
+          "followUps": [
+            "O que é um registro de tratamento de dados?",
+            "Pode-se anonimizar dados antes de enviar a um LLM? Dê um exemplo."
+          ],
+          "mistakes": [
+            "Responder genérico 'dados ficam protegidos' sem falar de anonimização e registro.",
+            "Não conectar com LGPD de forma prática."
+          ],
+          "english": "LGPD requires a legal basis, data minimization and records of personal data processing. I avoid sending PII to external APIs by masking it first, use self-hosted models for sensitive data, document the flow, and keep human review in automated decisions."
+        },
+        {
+          "question": "O que são alucinações em IA e como você as detecta ao usar IA na geração de testes?",
+          "difficulty": "Média",
+          "expectedAnswer": "Alucinação é quando o modelo produz informação plausível mas incorreta — inventa campos, regras ou comportamentos que não existem. Para detectar: (1) valido cada saída contra fonte confiável (código, documento de requisitos, execução real); (2) executo os casos gerados em ambiente real e confiro que os resultados esperados fazem sentido; (3) cruzo com a regra de negócio documentada; (4) peço ao modelo para marcar incertezas; (5) mantenho amostragem — reviso uma amostra das saídas geradas por IA. Em QA, o perigo é o falso positivo: achar que algo foi testado quando o teste nem valida o que deveria.",
+          "followUps": [
+            "Como você reduziria alucinação em um prompt específico?",
+            "Dê um exemplo de alucinação que invalidaria uma suíte de testes."
+          ],
+          "mistakes": [
+            "Confundir alucinação com erro de código.",
+            "Não citar validação contra fonte real como método."
+          ],
+          "english": "A hallucination is when the model produces plausible but incorrect information. To detect them I validate every output against a reliable source, execute generated tests in a real environment, cross-check business rules and review samples. The danger in QA is a false positive: thinking something was tested when it was not."
+        }
+      ],
+      "challenges": [
+        "Analise um caso de uso de IA no seu projeto e aponte riscos LGPD e de viés, com mitigação para cada um.",
+        "Desenhe uma política de 'IA no fluxo de QA' com regras de anonimização, revisão e registro."
+      ]
+    }
+  ],
+  "quizCategory": "AI"
+}
