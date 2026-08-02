@@ -1,5 +1,5 @@
 {
-    "total": 390,
+    "total": 402,
     "categories": [
         "API",
         "Agile",
@@ -24,7 +24,8 @@
         "SQL",
         "Security",
         "Technical",
-        "Testing"
+        "Testing",
+        "AI"
     ],
     "questions": [
         {
@@ -25119,6 +25120,1074 @@
                     "english": "",
                     "followUps": [],
                     "commonMistakes": []
+                }
+            }
+        },
+        {
+            "id": "AI-01",
+            "category": "AI",
+            "difficulty": "Fácil",
+            "type": "choice",
+            "answer": 0,
+            "lang": {
+                "pt-br": {
+                    "question": "Qual é um benefício principal do uso de IA em testes de software?",
+                    "options": [
+                        "Aumentar a velocidade de cobertura de testes e detectar padrões",
+                        "Eliminar totalmente a necessidade de testes manuais",
+                        "Garantir que nenhum bug jamais ocorra",
+                        "Substituir completamente o QA em projetos"
+                    ],
+                    "expectedAnswer": "A IA acelera a geração de casos, prioriza por risco e detecta padrões em grandes volumes de dados. Ela aumenta a eficiência, mas o QA continua essencial para validar contexto, negócio e qualidade real.",
+                    "realExample": "Ex: modelos de IA sugerem casos de borda e revisam diffs para apontar áreas com maior risco de regressão.",
+                    "english": "The main benefit of AI in testing is accelerating coverage and detecting patterns, while human QA remains essential for context and business validation.",
+                    "followUps": [
+                        "Que riscos a IA pode introduzir?",
+                        "Como você valida que a sugestão da IA está correta?"
+                    ],
+                    "commonMistakes": [
+                        "Achar que IA substitui o raciocínio humano",
+                        "Confiar cegamente na sugestão sem validar"
+                    ]
+                },
+                "pt-pt": {
+                    "question": "Qual é um benefício principal do uso de IA em testes de software?",
+                    "options": [
+                        "Aumentar a velocidade de cobertura de testes e detectar padrões",
+                        "Eliminar totalmente a necessidade de testes manuais",
+                        "Garantir que nenhum bug jamais ocorra",
+                        "Substituir completamente o QA em projetos"
+                    ],
+                    "expectedAnswer": "A IA acelera a geração de casos, prioriza por risco e detecta padrões em grandes volumes de dados. Ela aumenta a eficiência, mas o QA continua essencial para validar contexto, negócio e qualidade real.",
+                    "realExample": "Ex: modelos de IA sugerem casos de borda e revisam diffs para apontar áreas com maior risco de regressão.",
+                    "english": "The main benefit of AI in testing is accelerating coverage and detecting patterns, while human QA remains essential for context and business validation.",
+                    "followUps": [
+                        "Que riscos a IA pode introduzir?",
+                        "Como você valida que a sugestão da IA está correta?"
+                    ],
+                    "commonMistakes": [
+                        "Achar que IA substitui o raciocínio humano",
+                        "Confiar cegamente na sugestão sem validar"
+                    ]
+                },
+                "en-us": {
+                    "question": "Qual é um benefício principal do uso de IA em testes de software?",
+                    "options": [
+                        "Aumentar a velocidade de cobertura de testes e detectar padrões",
+                        "Eliminar totalmente a necessidade de testes manuais",
+                        "Garantir que nenhum bug jamais ocorra",
+                        "Substituir completamente o QA em projetos"
+                    ],
+                    "expectedAnswer": "A IA acelera a geração de casos, prioriza por risco e detecta padrões em grandes volumes de dados. Ela aumenta a eficiência, mas o QA continua essencial para validar contexto, negócio e qualidade real.",
+                    "realExample": "Ex: modelos de IA sugerem casos de borda e revisam diffs para apontar áreas com maior risco de regressão.",
+                    "english": "The main benefit of AI in testing is accelerating coverage and detecting patterns, while human QA remains essential for context and business validation.",
+                    "followUps": [
+                        "Que riscos a IA pode introduzir?",
+                        "Como você valida que a sugestão da IA está correta?"
+                    ],
+                    "commonMistakes": [
+                        "Achar que IA substitui o raciocínio humano",
+                        "Confiar cegamente na sugestão sem validar"
+                    ]
+                },
+                "en-uk": {
+                    "question": "Qual é um benefício principal do uso de IA em testes de software?",
+                    "options": [
+                        "Aumentar a velocidade de cobertura de testes e detectar padrões",
+                        "Eliminar totalmente a necessidade de testes manuais",
+                        "Garantir que nenhum bug jamais ocorra",
+                        "Substituir completamente o QA em projetos"
+                    ],
+                    "expectedAnswer": "A IA acelera a geração de casos, prioriza por risco e detecta padrões em grandes volumes de dados. Ela aumenta a eficiência, mas o QA continua essencial para validar contexto, negócio e qualidade real.",
+                    "realExample": "Ex: modelos de IA sugerem casos de borda e revisam diffs para apontar áreas com maior risco de regressão.",
+                    "english": "The main benefit of AI in testing is accelerating coverage and detecting patterns, while human QA remains essential for context and business validation.",
+                    "followUps": [
+                        "Que riscos a IA pode introduzir?",
+                        "Como você valida que a sugestão da IA está correta?"
+                    ],
+                    "commonMistakes": [
+                        "Achar que IA substitui o raciocínio humano",
+                        "Confiar cegamente na sugestão sem validar"
+                    ]
+                }
+            }
+        },
+        {
+            "id": "AI-02",
+            "category": "AI",
+            "difficulty": "Média",
+            "type": "choice",
+            "answer": 0,
+            "lang": {
+                "pt-br": {
+                    "question": "Qual é um risco comum ao usar IA generativa em desenvolvimento?",
+                    "options": [
+                        "Alucinações: respostas plausíveis mas incorretas",
+                        "Redução do desempenho da aplicação",
+                        "Aumento do tempo de build",
+                        "Perda de dados do usuário"
+                    ],
+                    "expectedAnswer": "Alucinação é quando o modelo gera conteúdo confiante e incorreto. É um risco central: código, testes ou respostas podem parecer corretos sem ser. Por isso toda saída de IA deve ser revisada por humano.",
+                    "realExample": "Ex: a IA sugere um seletor CSS que não existe no DOM — o teste passa a falhar silenciosamente ou fica flaky.",
+                    "english": "Hallucination is when the model generates confident but incorrect content, so every AI output must be human-reviewed.",
+                    "followUps": [
+                        "Como você mitiga o risco de alucinação?",
+                        "Dê um exemplo real de alucinação em testes."
+                    ],
+                    "commonMistakes": [
+                        "Confiar na resposta sem revisar",
+                        "Não testar a sugestão da IA"
+                    ]
+                },
+                "pt-pt": {
+                    "question": "Qual é um risco comum ao usar IA generativa em desenvolvimento?",
+                    "options": [
+                        "Alucinações: respostas plausíveis mas incorretas",
+                        "Redução do desempenho da aplicação",
+                        "Aumento do tempo de build",
+                        "Perda de dados do usuário"
+                    ],
+                    "expectedAnswer": "Alucinação é quando o modelo gera conteúdo confiante e incorreto. É um risco central: código, testes ou respostas podem parecer corretos sem ser. Por isso toda saída de IA deve ser revisada por humano.",
+                    "realExample": "Ex: a IA sugere um seletor CSS que não existe no DOM — o teste passa a falhar silenciosamente ou fica flaky.",
+                    "english": "Hallucination is when the model generates confident but incorrect content, so every AI output must be human-reviewed.",
+                    "followUps": [
+                        "Como você mitiga o risco de alucinação?",
+                        "Dê um exemplo real de alucinação em testes."
+                    ],
+                    "commonMistakes": [
+                        "Confiar na resposta sem revisar",
+                        "Não testar a sugestão da IA"
+                    ]
+                },
+                "en-us": {
+                    "question": "Qual é um risco comum ao usar IA generativa em desenvolvimento?",
+                    "options": [
+                        "Alucinações: respostas plausíveis mas incorretas",
+                        "Redução do desempenho da aplicação",
+                        "Aumento do tempo de build",
+                        "Perda de dados do usuário"
+                    ],
+                    "expectedAnswer": "Alucinação é quando o modelo gera conteúdo confiante e incorreto. É um risco central: código, testes ou respostas podem parecer corretos sem ser. Por isso toda saída de IA deve ser revisada por humano.",
+                    "realExample": "Ex: a IA sugere um seletor CSS que não existe no DOM — o teste passa a falhar silenciosamente ou fica flaky.",
+                    "english": "Hallucination is when the model generates confident but incorrect content, so every AI output must be human-reviewed.",
+                    "followUps": [
+                        "Como você mitiga o risco de alucinação?",
+                        "Dê um exemplo real de alucinação em testes."
+                    ],
+                    "commonMistakes": [
+                        "Confiar na resposta sem revisar",
+                        "Não testar a sugestão da IA"
+                    ]
+                },
+                "en-uk": {
+                    "question": "Qual é um risco comum ao usar IA generativa em desenvolvimento?",
+                    "options": [
+                        "Alucinações: respostas plausíveis mas incorretas",
+                        "Redução do desempenho da aplicação",
+                        "Aumento do tempo de build",
+                        "Perda de dados do usuário"
+                    ],
+                    "expectedAnswer": "Alucinação é quando o modelo gera conteúdo confiante e incorreto. É um risco central: código, testes ou respostas podem parecer corretos sem ser. Por isso toda saída de IA deve ser revisada por humano.",
+                    "realExample": "Ex: a IA sugere um seletor CSS que não existe no DOM — o teste passa a falhar silenciosamente ou fica flaky.",
+                    "english": "Hallucination is when the model generates confident but incorrect content, so every AI output must be human-reviewed.",
+                    "followUps": [
+                        "Como você mitiga o risco de alucinação?",
+                        "Dê um exemplo real de alucinação em testes."
+                    ],
+                    "commonMistakes": [
+                        "Confiar na resposta sem revisar",
+                        "Não testar a sugestão da IA"
+                    ]
+                }
+            }
+        },
+        {
+            "id": "AI-03",
+            "category": "AI",
+            "difficulty": "Média",
+            "type": "choice",
+            "answer": 0,
+            "lang": {
+                "pt-br": {
+                    "question": "Para usar IA no desenvolvimento respeitando a LGPD, é necessário:",
+                    "options": [
+                        "Não enviar dados pessoais ou sensíveis para ferramentas de IA sem anonimização e consentimento",
+                        "Enviar todos os dados do cliente para treinar o modelo",
+                        "Usar IA apenas em produção",
+                        "Ignorar a política de privacidade da ferramenta"
+                    ],
+                    "expectedAnswer": "Dados pessoais e sensíveis não podem ser enviados a ferramentas de IA (especialmente nuvem) sem anonimização e base legal, conforme a LGPD. O ideal é usar dados sintéticos ou anonimizados.",
+                    "realExample": "Ex: em vez de colar logs reais com CPF em um chat de IA, anonimize e substitua por dados sintéticos.",
+                    "english": "Under LGPD, you must not send personal or sensitive data to AI tools without anonymisation and a legal basis.",
+                    "followUps": [
+                        "Que dados você nunca enviaria para uma IA?",
+                        "Como a anonimização ajuda na conformidade?"
+                    ],
+                    "commonMistakes": [
+                        "Enviar dados reais de clientes para ferramentas públicas",
+                        "Achar que a LGPD não se aplica a ferramentas de IA"
+                    ]
+                },
+                "pt-pt": {
+                    "question": "Para usar IA no desenvolvimento respeitando a LGPD, é necessário:",
+                    "options": [
+                        "Não enviar dados pessoais ou sensíveis para ferramentas de IA sem anonimização e consentimento",
+                        "Enviar todos os dados do cliente para treinar o modelo",
+                        "Usar IA apenas em produção",
+                        "Ignorar a política de privacidade da ferramenta"
+                    ],
+                    "expectedAnswer": "Dados pessoais e sensíveis não podem ser enviados a ferramentas de IA (especialmente nuvem) sem anonimização e base legal, conforme a LGPD. O ideal é usar dados sintéticos ou anonimizados.",
+                    "realExample": "Ex: em vez de colar logs reais com CPF em um chat de IA, anonimize e substitua por dados sintéticos.",
+                    "english": "Under LGPD, you must not send personal or sensitive data to AI tools without anonymisation and a legal basis.",
+                    "followUps": [
+                        "Que dados você nunca enviaria para uma IA?",
+                        "Como a anonimização ajuda na conformidade?"
+                    ],
+                    "commonMistakes": [
+                        "Enviar dados reais de clientes para ferramentas públicas",
+                        "Achar que a LGPD não se aplica a ferramentas de IA"
+                    ]
+                },
+                "en-us": {
+                    "question": "Para usar IA no desenvolvimento respeitando a LGPD, é necessário:",
+                    "options": [
+                        "Não enviar dados pessoais ou sensíveis para ferramentas de IA sem anonimização e consentimento",
+                        "Enviar todos os dados do cliente para treinar o modelo",
+                        "Usar IA apenas em produção",
+                        "Ignorar a política de privacidade da ferramenta"
+                    ],
+                    "expectedAnswer": "Dados pessoais e sensíveis não podem ser enviados a ferramentas de IA (especialmente nuvem) sem anonimização e base legal, conforme a LGPD. O ideal é usar dados sintéticos ou anonimizados.",
+                    "realExample": "Ex: em vez de colar logs reais com CPF em um chat de IA, anonimize e substitua por dados sintéticos.",
+                    "english": "Under LGPD, you must not send personal or sensitive data to AI tools without anonymisation and a legal basis.",
+                    "followUps": [
+                        "Que dados você nunca enviaria para uma IA?",
+                        "Como a anonimização ajuda na conformidade?"
+                    ],
+                    "commonMistakes": [
+                        "Enviar dados reais de clientes para ferramentas públicas",
+                        "Achar que a LGPD não se aplica a ferramentas de IA"
+                    ]
+                },
+                "en-uk": {
+                    "question": "Para usar IA no desenvolvimento respeitando a LGPD, é necessário:",
+                    "options": [
+                        "Não enviar dados pessoais ou sensíveis para ferramentas de IA sem anonimização e consentimento",
+                        "Enviar todos os dados do cliente para treinar o modelo",
+                        "Usar IA apenas em produção",
+                        "Ignorar a política de privacidade da ferramenta"
+                    ],
+                    "expectedAnswer": "Dados pessoais e sensíveis não podem ser enviados a ferramentas de IA (especialmente nuvem) sem anonimização e base legal, conforme a LGPD. O ideal é usar dados sintéticos ou anonimizados.",
+                    "realExample": "Ex: em vez de colar logs reais com CPF em um chat de IA, anonimize e substitua por dados sintéticos.",
+                    "english": "Under LGPD, you must not send personal or sensitive data to AI tools without anonymisation and a legal basis.",
+                    "followUps": [
+                        "Que dados você nunca enviaria para uma IA?",
+                        "Como a anonimização ajuda na conformidade?"
+                    ],
+                    "commonMistakes": [
+                        "Enviar dados reais de clientes para ferramentas públicas",
+                        "Achar que a LGPD não se aplica a ferramentas de IA"
+                    ]
+                }
+            }
+        },
+        {
+            "id": "AI-04",
+            "category": "AI",
+            "difficulty": "Fácil",
+            "type": "choice",
+            "answer": 0,
+            "lang": {
+                "pt-br": {
+                    "question": "Uma boa prática ao pedir ajuda a uma IA para escrever testes é:",
+                    "options": [
+                        "Dar contexto: tecnologia, regra de negócio e o que já foi tentado",
+                        "Pedir o código completo sem contexto",
+                        "Copiar o resultado sem revisar",
+                        "Usar a IA para rodar os testes por você"
+                    ],
+                    "expectedAnswer": "Quanto melhor o contexto, melhor a sugestão. Prompting eficaz inclui stack, cenário, critérios de aceite e restrições. Sempre revise e adapte o código ao seu projeto.",
+                    "realExample": "Ex: informe framework (Playwright), página, comportamento esperado e o erro atual que deseja resolver.",
+                    "english": "Effective AI prompting includes full context, and every suggestion must be reviewed and adapted.",
+                    "followUps": [
+                        "Como você estrutura um prompt para a IA?",
+                        "Que contexto você daria para gerar um teste de API?"
+                    ],
+                    "commonMistakes": [
+                        "Prompt vago sem contexto",
+                        "Copiar o código sem adaptar ao projeto"
+                    ]
+                },
+                "pt-pt": {
+                    "question": "Uma boa prática ao pedir ajuda a uma IA para escrever testes é:",
+                    "options": [
+                        "Dar contexto: tecnologia, regra de negócio e o que já foi tentado",
+                        "Pedir o código completo sem contexto",
+                        "Copiar o resultado sem revisar",
+                        "Usar a IA para rodar os testes por você"
+                    ],
+                    "expectedAnswer": "Quanto melhor o contexto, melhor a sugestão. Prompting eficaz inclui stack, cenário, critérios de aceite e restrições. Sempre revise e adapte o código ao seu projeto.",
+                    "realExample": "Ex: informe framework (Playwright), página, comportamento esperado e o erro atual que deseja resolver.",
+                    "english": "Effective AI prompting includes full context, and every suggestion must be reviewed and adapted.",
+                    "followUps": [
+                        "Como você estrutura um prompt para a IA?",
+                        "Que contexto você daria para gerar um teste de API?"
+                    ],
+                    "commonMistakes": [
+                        "Prompt vago sem contexto",
+                        "Copiar o código sem adaptar ao projeto"
+                    ]
+                },
+                "en-us": {
+                    "question": "Uma boa prática ao pedir ajuda a uma IA para escrever testes é:",
+                    "options": [
+                        "Dar contexto: tecnologia, regra de negócio e o que já foi tentado",
+                        "Pedir o código completo sem contexto",
+                        "Copiar o resultado sem revisar",
+                        "Usar a IA para rodar os testes por você"
+                    ],
+                    "expectedAnswer": "Quanto melhor o contexto, melhor a sugestão. Prompting eficaz inclui stack, cenário, critérios de aceite e restrições. Sempre revise e adapte o código ao seu projeto.",
+                    "realExample": "Ex: informe framework (Playwright), página, comportamento esperado e o erro atual que deseja resolver.",
+                    "english": "Effective AI prompting includes full context, and every suggestion must be reviewed and adapted.",
+                    "followUps": [
+                        "Como você estrutura um prompt para a IA?",
+                        "Que contexto você daria para gerar um teste de API?"
+                    ],
+                    "commonMistakes": [
+                        "Prompt vago sem contexto",
+                        "Copiar o código sem adaptar ao projeto"
+                    ]
+                },
+                "en-uk": {
+                    "question": "Uma boa prática ao pedir ajuda a uma IA para escrever testes é:",
+                    "options": [
+                        "Dar contexto: tecnologia, regra de negócio e o que já foi tentado",
+                        "Pedir o código completo sem contexto",
+                        "Copiar o resultado sem revisar",
+                        "Usar a IA para rodar os testes por você"
+                    ],
+                    "expectedAnswer": "Quanto melhor o contexto, melhor a sugestão. Prompting eficaz inclui stack, cenário, critérios de aceite e restrições. Sempre revise e adapte o código ao seu projeto.",
+                    "realExample": "Ex: informe framework (Playwright), página, comportamento esperado e o erro atual que deseja resolver.",
+                    "english": "Effective AI prompting includes full context, and every suggestion must be reviewed and adapted.",
+                    "followUps": [
+                        "Como você estrutura um prompt para a IA?",
+                        "Que contexto você daria para gerar um teste de API?"
+                    ],
+                    "commonMistakes": [
+                        "Prompt vago sem contexto",
+                        "Copiar o código sem adaptar ao projeto"
+                    ]
+                }
+            }
+        },
+        {
+            "id": "AI-05",
+            "category": "AI",
+            "difficulty": "Média",
+            "type": "choice",
+            "answer": 0,
+            "lang": {
+                "pt-br": {
+                    "question": "Como a IA pode ajudar no planejamento de testes (test design)?",
+                    "options": [
+                        "Gerando casos de borda, tabelas de decisão e priorização por risco",
+                        "Escrevendo o código de produção",
+                        "Definindo o salário do time",
+                        "Criando os critérios de aceite do cliente"
+                    ],
+                    "expectedAnswer": "A IA ajuda a explorar o espaço de teste: casos de borda, particionamento de equivalência, tabelas de decisão e priorização por risco. O QA valida a relevância e o contexto de negócio.",
+                    "realExample": "Ex: pedir à IA \"quais casos de borda para um campo de CPF com validação de formato?\" e depois revisar e completar.",
+                    "english": "AI helps generate edge cases, decision tables and risk-based prioritisation, while the QA validates relevance.",
+                    "followUps": [
+                        "Dê exemplos de casos de borda que a IA poderia gerar.",
+                        "Como você prioriza os casos sugeridos?"
+                    ],
+                    "commonMistakes": [
+                        "Aceitar todos os casos sugeridos sem revisar",
+                        "Não considerar o contexto de negócio"
+                    ]
+                },
+                "pt-pt": {
+                    "question": "Como a IA pode ajudar no planejamento de testes (test design)?",
+                    "options": [
+                        "Gerando casos de borda, tabelas de decisão e priorização por risco",
+                        "Escrevendo o código de produção",
+                        "Definindo o salário do time",
+                        "Criando os critérios de aceite do cliente"
+                    ],
+                    "expectedAnswer": "A IA ajuda a explorar o espaço de teste: casos de borda, particionamento de equivalência, tabelas de decisão e priorização por risco. O QA valida a relevância e o contexto de negócio.",
+                    "realExample": "Ex: pedir à IA \"quais casos de borda para um campo de CPF com validação de formato?\" e depois revisar e completar.",
+                    "english": "AI helps generate edge cases, decision tables and risk-based prioritisation, while the QA validates relevance.",
+                    "followUps": [
+                        "Dê exemplos de casos de borda que a IA poderia gerar.",
+                        "Como você prioriza os casos sugeridos?"
+                    ],
+                    "commonMistakes": [
+                        "Aceitar todos os casos sugeridos sem revisar",
+                        "Não considerar o contexto de negócio"
+                    ]
+                },
+                "en-us": {
+                    "question": "Como a IA pode ajudar no planejamento de testes (test design)?",
+                    "options": [
+                        "Gerando casos de borda, tabelas de decisão e priorização por risco",
+                        "Escrevendo o código de produção",
+                        "Definindo o salário do time",
+                        "Criando os critérios de aceite do cliente"
+                    ],
+                    "expectedAnswer": "A IA ajuda a explorar o espaço de teste: casos de borda, particionamento de equivalência, tabelas de decisão e priorização por risco. O QA valida a relevância e o contexto de negócio.",
+                    "realExample": "Ex: pedir à IA \"quais casos de borda para um campo de CPF com validação de formato?\" e depois revisar e completar.",
+                    "english": "AI helps generate edge cases, decision tables and risk-based prioritisation, while the QA validates relevance.",
+                    "followUps": [
+                        "Dê exemplos de casos de borda que a IA poderia gerar.",
+                        "Como você prioriza os casos sugeridos?"
+                    ],
+                    "commonMistakes": [
+                        "Aceitar todos os casos sugeridos sem revisar",
+                        "Não considerar o contexto de negócio"
+                    ]
+                },
+                "en-uk": {
+                    "question": "Como a IA pode ajudar no planejamento de testes (test design)?",
+                    "options": [
+                        "Gerando casos de borda, tabelas de decisão e priorização por risco",
+                        "Escrevendo o código de produção",
+                        "Definindo o salário do time",
+                        "Criando os critérios de aceite do cliente"
+                    ],
+                    "expectedAnswer": "A IA ajuda a explorar o espaço de teste: casos de borda, particionamento de equivalência, tabelas de decisão e priorização por risco. O QA valida a relevância e o contexto de negócio.",
+                    "realExample": "Ex: pedir à IA \"quais casos de borda para um campo de CPF com validação de formato?\" e depois revisar e completar.",
+                    "english": "AI helps generate edge cases, decision tables and risk-based prioritisation, while the QA validates relevance.",
+                    "followUps": [
+                        "Dê exemplos de casos de borda que a IA poderia gerar.",
+                        "Como você prioriza os casos sugeridos?"
+                    ],
+                    "commonMistakes": [
+                        "Aceitar todos os casos sugeridos sem revisar",
+                        "Não considerar o contexto de negócio"
+                    ]
+                }
+            }
+        },
+        {
+            "id": "AI-06",
+            "category": "AI",
+            "difficulty": "Intermediária",
+            "type": "choice",
+            "answer": 0,
+            "lang": {
+                "pt-br": {
+                    "question": "O que é \"vibe coding\" e qual é o papel do humano nesse processo?",
+                    "options": [
+                        "Desenvolver com forte apoio de IA, cabendo ao humano revisar, testar e exigir qualidade",
+                        "Programar sem nunca revisar código",
+                        "Usar IA apenas para escrever documentação",
+                        "Automatizar 100% sem intervenção humana"
+                    ],
+                    "expectedAnswer": "Vibe coding é desenvolver apoiado por IA com supervisão humana. O humano não é dispensável: testa, valida, exige correções, garante qualidade, segurança e conformidade. A IA é acelerador, não dono do resultado.",
+                    "realExample": "Ex: neste projeto, a IA gerou muito código, mas cada funcionalidade foi testada, revisada e exigida por um humano antes de ir ao ar.",
+                    "english": "Vibe coding means developing with strong AI support while the human reviews, tests and demands quality.",
+                    "followUps": [
+                        "Qual o papel do QA em projetos com vibe coding?",
+                        "Que riscos existem em desenvolver só com IA?"
+                    ],
+                    "commonMistakes": [
+                        "Achar que a IA entrega pronto e correto",
+                        "Não testar o que a IA gerou"
+                    ]
+                },
+                "pt-pt": {
+                    "question": "O que é \"vibe coding\" e qual é o papel do humano nesse processo?",
+                    "options": [
+                        "Desenvolver com forte apoio de IA, cabendo ao humano revisar, testar e exigir qualidade",
+                        "Programar sem nunca revisar código",
+                        "Usar IA apenas para escrever documentação",
+                        "Automatizar 100% sem intervenção humana"
+                    ],
+                    "expectedAnswer": "Vibe coding é desenvolver apoiado por IA com supervisão humana. O humano não é dispensável: testa, valida, exige correções, garante qualidade, segurança e conformidade. A IA é acelerador, não dono do resultado.",
+                    "realExample": "Ex: neste projeto, a IA gerou muito código, mas cada funcionalidade foi testada, revisada e exigida por um humano antes de ir ao ar.",
+                    "english": "Vibe coding means developing with strong AI support while the human reviews, tests and demands quality.",
+                    "followUps": [
+                        "Qual o papel do QA em projetos com vibe coding?",
+                        "Que riscos existem em desenvolver só com IA?"
+                    ],
+                    "commonMistakes": [
+                        "Achar que a IA entrega pronto e correto",
+                        "Não testar o que a IA gerou"
+                    ]
+                },
+                "en-us": {
+                    "question": "O que é \"vibe coding\" e qual é o papel do humano nesse processo?",
+                    "options": [
+                        "Desenvolver com forte apoio de IA, cabendo ao humano revisar, testar e exigir qualidade",
+                        "Programar sem nunca revisar código",
+                        "Usar IA apenas para escrever documentação",
+                        "Automatizar 100% sem intervenção humana"
+                    ],
+                    "expectedAnswer": "Vibe coding é desenvolver apoiado por IA com supervisão humana. O humano não é dispensável: testa, valida, exige correções, garante qualidade, segurança e conformidade. A IA é acelerador, não dono do resultado.",
+                    "realExample": "Ex: neste projeto, a IA gerou muito código, mas cada funcionalidade foi testada, revisada e exigida por um humano antes de ir ao ar.",
+                    "english": "Vibe coding means developing with strong AI support while the human reviews, tests and demands quality.",
+                    "followUps": [
+                        "Qual o papel do QA em projetos com vibe coding?",
+                        "Que riscos existem em desenvolver só com IA?"
+                    ],
+                    "commonMistakes": [
+                        "Achar que a IA entrega pronto e correto",
+                        "Não testar o que a IA gerou"
+                    ]
+                },
+                "en-uk": {
+                    "question": "O que é \"vibe coding\" e qual é o papel do humano nesse processo?",
+                    "options": [
+                        "Desenvolver com forte apoio de IA, cabendo ao humano revisar, testar e exigir qualidade",
+                        "Programar sem nunca revisar código",
+                        "Usar IA apenas para escrever documentação",
+                        "Automatizar 100% sem intervenção humana"
+                    ],
+                    "expectedAnswer": "Vibe coding é desenvolver apoiado por IA com supervisão humana. O humano não é dispensável: testa, valida, exige correções, garante qualidade, segurança e conformidade. A IA é acelerador, não dono do resultado.",
+                    "realExample": "Ex: neste projeto, a IA gerou muito código, mas cada funcionalidade foi testada, revisada e exigida por um humano antes de ir ao ar.",
+                    "english": "Vibe coding means developing with strong AI support while the human reviews, tests and demands quality.",
+                    "followUps": [
+                        "Qual o papel do QA em projetos com vibe coding?",
+                        "Que riscos existem em desenvolver só com IA?"
+                    ],
+                    "commonMistakes": [
+                        "Achar que a IA entrega pronto e correto",
+                        "Não testar o que a IA gerou"
+                    ]
+                }
+            }
+        },
+        {
+            "id": "AI-07",
+            "category": "AI",
+            "difficulty": "Fácil",
+            "type": "choice",
+            "answer": 0,
+            "lang": {
+                "pt-br": {
+                    "question": "Para garantir a qualidade do código gerado por IA, o QA deve:",
+                    "options": [
+                        "Revisar, testar e exigir correções antes da entrega",
+                        "Publicar direto em produção",
+                        "Confiar que a IA já testou",
+                        "Ignorar os resultados de teste"
+                    ],
+                    "expectedAnswer": "A IA não executa validação real. O time precisa rodar testes, revisar qualidade e exigir correções. Isso reforça que o humano é quem garante a qualidade final.",
+                    "realExample": "Ex: cada sugestão de IA passou por testes manuais e automatizados antes de ser considerada pronta.",
+                    "english": "AI-generated code must be reviewed and tested by humans before delivery.",
+                    "followUps": [
+                        "Qual processo você usa para validar código de IA?",
+                        "Quando você rejeita uma sugestão da IA?"
+                    ],
+                    "commonMistakes": [
+                        "Não revisar o código gerado",
+                        "Publicar sem testes"
+                    ]
+                },
+                "pt-pt": {
+                    "question": "Para garantir a qualidade do código gerado por IA, o QA deve:",
+                    "options": [
+                        "Revisar, testar e exigir correções antes da entrega",
+                        "Publicar direto em produção",
+                        "Confiar que a IA já testou",
+                        "Ignorar os resultados de teste"
+                    ],
+                    "expectedAnswer": "A IA não executa validação real. O time precisa rodar testes, revisar qualidade e exigir correções. Isso reforça que o humano é quem garante a qualidade final.",
+                    "realExample": "Ex: cada sugestão de IA passou por testes manuais e automatizados antes de ser considerada pronta.",
+                    "english": "AI-generated code must be reviewed and tested by humans before delivery.",
+                    "followUps": [
+                        "Qual processo você usa para validar código de IA?",
+                        "Quando você rejeita uma sugestão da IA?"
+                    ],
+                    "commonMistakes": [
+                        "Não revisar o código gerado",
+                        "Publicar sem testes"
+                    ]
+                },
+                "en-us": {
+                    "question": "Para garantir a qualidade do código gerado por IA, o QA deve:",
+                    "options": [
+                        "Revisar, testar e exigir correções antes da entrega",
+                        "Publicar direto em produção",
+                        "Confiar que a IA já testou",
+                        "Ignorar os resultados de teste"
+                    ],
+                    "expectedAnswer": "A IA não executa validação real. O time precisa rodar testes, revisar qualidade e exigir correções. Isso reforça que o humano é quem garante a qualidade final.",
+                    "realExample": "Ex: cada sugestão de IA passou por testes manuais e automatizados antes de ser considerada pronta.",
+                    "english": "AI-generated code must be reviewed and tested by humans before delivery.",
+                    "followUps": [
+                        "Qual processo você usa para validar código de IA?",
+                        "Quando você rejeita uma sugestão da IA?"
+                    ],
+                    "commonMistakes": [
+                        "Não revisar o código gerado",
+                        "Publicar sem testes"
+                    ]
+                },
+                "en-uk": {
+                    "question": "Para garantir a qualidade do código gerado por IA, o QA deve:",
+                    "options": [
+                        "Revisar, testar e exigir correções antes da entrega",
+                        "Publicar direto em produção",
+                        "Confiar que a IA já testou",
+                        "Ignorar os resultados de teste"
+                    ],
+                    "expectedAnswer": "A IA não executa validação real. O time precisa rodar testes, revisar qualidade e exigir correções. Isso reforça que o humano é quem garante a qualidade final.",
+                    "realExample": "Ex: cada sugestão de IA passou por testes manuais e automatizados antes de ser considerada pronta.",
+                    "english": "AI-generated code must be reviewed and tested by humans before delivery.",
+                    "followUps": [
+                        "Qual processo você usa para validar código de IA?",
+                        "Quando você rejeita uma sugestão da IA?"
+                    ],
+                    "commonMistakes": [
+                        "Não revisar o código gerado",
+                        "Publicar sem testes"
+                    ]
+                }
+            }
+        },
+        {
+            "id": "AI-08",
+            "category": "AI",
+            "difficulty": "Intermediária",
+            "type": "choice",
+            "answer": 0,
+            "lang": {
+                "pt-br": {
+                    "question": "Na automação de testes, qual é um uso adequado de IA?",
+                    "options": [
+                        "Analisar grandes volumes de evidências e logs para apontar falhas",
+                        "Substituir a decisão de prioridade do negócio",
+                        "Escrever todos os testes sem revisão",
+                        "Remover a necessidade de entender o produto"
+                    ],
+                    "expectedAnswer": "A IA se destaca em análise de volume: logs, screenshots, stack traces e cobertura. A decisão de o que testar e qual o impacto no negócio continua sendo humana.",
+                    "realExample": "Ex: a IA classifica screenshots de falha e agrupa casos semelhantes para reduzir o tempo de triagem.",
+                    "english": "AI is excellent for analysing large volumes of logs and evidence; business decisions remain human.",
+                    "followUps": [
+                        "Como a IA ajuda na triagem de falhas?",
+                        "Que tarefas repetitivas a IA pode assumir?"
+                    ],
+                    "commonMistakes": [
+                        "Delegar decisões de negócio à IA",
+                        "Ignorar logs que a IA não apontou"
+                    ]
+                },
+                "pt-pt": {
+                    "question": "Na automação de testes, qual é um uso adequado de IA?",
+                    "options": [
+                        "Analisar grandes volumes de evidências e logs para apontar falhas",
+                        "Substituir a decisão de prioridade do negócio",
+                        "Escrever todos os testes sem revisão",
+                        "Remover a necessidade de entender o produto"
+                    ],
+                    "expectedAnswer": "A IA se destaca em análise de volume: logs, screenshots, stack traces e cobertura. A decisão de o que testar e qual o impacto no negócio continua sendo humana.",
+                    "realExample": "Ex: a IA classifica screenshots de falha e agrupa casos semelhantes para reduzir o tempo de triagem.",
+                    "english": "AI is excellent for analysing large volumes of logs and evidence; business decisions remain human.",
+                    "followUps": [
+                        "Como a IA ajuda na triagem de falhas?",
+                        "Que tarefas repetitivas a IA pode assumir?"
+                    ],
+                    "commonMistakes": [
+                        "Delegar decisões de negócio à IA",
+                        "Ignorar logs que a IA não apontou"
+                    ]
+                },
+                "en-us": {
+                    "question": "Na automação de testes, qual é um uso adequado de IA?",
+                    "options": [
+                        "Analisar grandes volumes de evidências e logs para apontar falhas",
+                        "Substituir a decisão de prioridade do negócio",
+                        "Escrever todos os testes sem revisão",
+                        "Remover a necessidade de entender o produto"
+                    ],
+                    "expectedAnswer": "A IA se destaca em análise de volume: logs, screenshots, stack traces e cobertura. A decisão de o que testar e qual o impacto no negócio continua sendo humana.",
+                    "realExample": "Ex: a IA classifica screenshots de falha e agrupa casos semelhantes para reduzir o tempo de triagem.",
+                    "english": "AI is excellent for analysing large volumes of logs and evidence; business decisions remain human.",
+                    "followUps": [
+                        "Como a IA ajuda na triagem de falhas?",
+                        "Que tarefas repetitivas a IA pode assumir?"
+                    ],
+                    "commonMistakes": [
+                        "Delegar decisões de negócio à IA",
+                        "Ignorar logs que a IA não apontou"
+                    ]
+                },
+                "en-uk": {
+                    "question": "Na automação de testes, qual é um uso adequado de IA?",
+                    "options": [
+                        "Analisar grandes volumes de evidências e logs para apontar falhas",
+                        "Substituir a decisão de prioridade do negócio",
+                        "Escrever todos os testes sem revisão",
+                        "Remover a necessidade de entender o produto"
+                    ],
+                    "expectedAnswer": "A IA se destaca em análise de volume: logs, screenshots, stack traces e cobertura. A decisão de o que testar e qual o impacto no negócio continua sendo humana.",
+                    "realExample": "Ex: a IA classifica screenshots de falha e agrupa casos semelhantes para reduzir o tempo de triagem.",
+                    "english": "AI is excellent for analysing large volumes of logs and evidence; business decisions remain human.",
+                    "followUps": [
+                        "Como a IA ajuda na triagem de falhas?",
+                        "Que tarefas repetitivas a IA pode assumir?"
+                    ],
+                    "commonMistakes": [
+                        "Delegar decisões de negócio à IA",
+                        "Ignorar logs que a IA não apontou"
+                    ]
+                }
+            }
+        },
+        {
+            "id": "AI-09",
+            "category": "AI",
+            "difficulty": "Média",
+            "type": "choice",
+            "answer": 0,
+            "lang": {
+                "pt-br": {
+                    "question": "Qual das alternativas é uma boa prática de conformidade ao usar IA com dados de teste?",
+                    "options": [
+                        "Usar dados sintéticos e anonimizados em vez de dados reais de clientes",
+                        "Usar os dados reais dos clientes para melhorar o modelo",
+                        "Publicar dados internos em ferramentas de IA",
+                        "Compartilhar senhas de ambiente de homologação com a IA"
+                    ],
+                    "expectedAnswer": "Dados sintéticos e anonimizados evitam exposição de dados pessoais, cumprindo a LGPD e reduzindo risco de vazamento. Dados reais só com base legal e em ambientes controlados.",
+                    "realExample": "Ex: gerar CPFs, e-mails e documentos sintéticos para os testes em vez de usar dados reais de produção.",
+                    "english": "Using synthetic and anonymised test data is a best practice for LGPD compliance with AI tools.",
+                    "followUps": [
+                        "Por que dados sintéticos são preferíveis?",
+                        "Como você anonimiza dados antes de usar IA?"
+                    ],
+                    "commonMistakes": [
+                        "Usar dados reais de produção em ferramentas de IA",
+                        "Compartilhar credenciais com a IA"
+                    ]
+                },
+                "pt-pt": {
+                    "question": "Qual das alternativas é uma boa prática de conformidade ao usar IA com dados de teste?",
+                    "options": [
+                        "Usar dados sintéticos e anonimizados em vez de dados reais de clientes",
+                        "Usar os dados reais dos clientes para melhorar o modelo",
+                        "Publicar dados internos em ferramentas de IA",
+                        "Compartilhar senhas de ambiente de homologação com a IA"
+                    ],
+                    "expectedAnswer": "Dados sintéticos e anonimizados evitam exposição de dados pessoais, cumprindo a LGPD e reduzindo risco de vazamento. Dados reais só com base legal e em ambientes controlados.",
+                    "realExample": "Ex: gerar CPFs, e-mails e documentos sintéticos para os testes em vez de usar dados reais de produção.",
+                    "english": "Using synthetic and anonymised test data is a best practice for LGPD compliance with AI tools.",
+                    "followUps": [
+                        "Por que dados sintéticos são preferíveis?",
+                        "Como você anonimiza dados antes de usar IA?"
+                    ],
+                    "commonMistakes": [
+                        "Usar dados reais de produção em ferramentas de IA",
+                        "Compartilhar credenciais com a IA"
+                    ]
+                },
+                "en-us": {
+                    "question": "Qual das alternativas é uma boa prática de conformidade ao usar IA com dados de teste?",
+                    "options": [
+                        "Usar dados sintéticos e anonimizados em vez de dados reais de clientes",
+                        "Usar os dados reais dos clientes para melhorar o modelo",
+                        "Publicar dados internos em ferramentas de IA",
+                        "Compartilhar senhas de ambiente de homologação com a IA"
+                    ],
+                    "expectedAnswer": "Dados sintéticos e anonimizados evitam exposição de dados pessoais, cumprindo a LGPD e reduzindo risco de vazamento. Dados reais só com base legal e em ambientes controlados.",
+                    "realExample": "Ex: gerar CPFs, e-mails e documentos sintéticos para os testes em vez de usar dados reais de produção.",
+                    "english": "Using synthetic and anonymised test data is a best practice for LGPD compliance with AI tools.",
+                    "followUps": [
+                        "Por que dados sintéticos são preferíveis?",
+                        "Como você anonimiza dados antes de usar IA?"
+                    ],
+                    "commonMistakes": [
+                        "Usar dados reais de produção em ferramentas de IA",
+                        "Compartilhar credenciais com a IA"
+                    ]
+                },
+                "en-uk": {
+                    "question": "Qual das alternativas é uma boa prática de conformidade ao usar IA com dados de teste?",
+                    "options": [
+                        "Usar dados sintéticos e anonimizados em vez de dados reais de clientes",
+                        "Usar os dados reais dos clientes para melhorar o modelo",
+                        "Publicar dados internos em ferramentas de IA",
+                        "Compartilhar senhas de ambiente de homologação com a IA"
+                    ],
+                    "expectedAnswer": "Dados sintéticos e anonimizados evitam exposição de dados pessoais, cumprindo a LGPD e reduzindo risco de vazamento. Dados reais só com base legal e em ambientes controlados.",
+                    "realExample": "Ex: gerar CPFs, e-mails e documentos sintéticos para os testes em vez de usar dados reais de produção.",
+                    "english": "Using synthetic and anonymised test data is a best practice for LGPD compliance with AI tools.",
+                    "followUps": [
+                        "Por que dados sintéticos são preferíveis?",
+                        "Como você anonimiza dados antes de usar IA?"
+                    ],
+                    "commonMistakes": [
+                        "Usar dados reais de produção em ferramentas de IA",
+                        "Compartilhar credenciais com a IA"
+                    ]
+                }
+            }
+        },
+        {
+            "id": "AI-10",
+            "category": "AI",
+            "difficulty": "Média",
+            "type": "choice",
+            "answer": 0,
+            "lang": {
+                "pt-br": {
+                    "question": "Ao usar IA para gerar casos de teste, o que o QA deve sempre verificar?",
+                    "options": [
+                        "Se os casos refletem os critérios de aceite e as regras de negócio",
+                        "Se a IA escreveu muitos casos (quantidade basta)",
+                        "Se o número de casos é grande o suficiente",
+                        "Se os casos estão em inglês"
+                    ],
+                    "expectedAnswer": "O valor está na relevância: os casos devem refletir os critérios de aceite e o comportamento esperado. Quantidade sem aderência ao negócio é ruído, não cobertura.",
+                    "realExample": "Ex: comparar os casos gerados pela IA com o backlog e os critérios de aceite antes de priorizar.",
+                    "english": "QA must verify that AI-generated cases reflect acceptance criteria and business rules.",
+                    "followUps": [
+                        "Como você valida a relevância dos casos gerados?",
+                        "O que fazer com casos que não refletem o negócio?"
+                    ],
+                    "commonMistakes": [
+                        "Priorizar quantidade sobre relevância",
+                        "Aceitar casos sem validar com os critérios"
+                    ]
+                },
+                "pt-pt": {
+                    "question": "Ao usar IA para gerar casos de teste, o que o QA deve sempre verificar?",
+                    "options": [
+                        "Se os casos refletem os critérios de aceite e as regras de negócio",
+                        "Se a IA escreveu muitos casos (quantidade basta)",
+                        "Se o número de casos é grande o suficiente",
+                        "Se os casos estão em inglês"
+                    ],
+                    "expectedAnswer": "O valor está na relevância: os casos devem refletir os critérios de aceite e o comportamento esperado. Quantidade sem aderência ao negócio é ruído, não cobertura.",
+                    "realExample": "Ex: comparar os casos gerados pela IA com o backlog e os critérios de aceite antes de priorizar.",
+                    "english": "QA must verify that AI-generated cases reflect acceptance criteria and business rules.",
+                    "followUps": [
+                        "Como você valida a relevância dos casos gerados?",
+                        "O que fazer com casos que não refletem o negócio?"
+                    ],
+                    "commonMistakes": [
+                        "Priorizar quantidade sobre relevância",
+                        "Aceitar casos sem validar com os critérios"
+                    ]
+                },
+                "en-us": {
+                    "question": "Ao usar IA para gerar casos de teste, o que o QA deve sempre verificar?",
+                    "options": [
+                        "Se os casos refletem os critérios de aceite e as regras de negócio",
+                        "Se a IA escreveu muitos casos (quantidade basta)",
+                        "Se o número de casos é grande o suficiente",
+                        "Se os casos estão em inglês"
+                    ],
+                    "expectedAnswer": "O valor está na relevância: os casos devem refletir os critérios de aceite e o comportamento esperado. Quantidade sem aderência ao negócio é ruído, não cobertura.",
+                    "realExample": "Ex: comparar os casos gerados pela IA com o backlog e os critérios de aceite antes de priorizar.",
+                    "english": "QA must verify that AI-generated cases reflect acceptance criteria and business rules.",
+                    "followUps": [
+                        "Como você valida a relevância dos casos gerados?",
+                        "O que fazer com casos que não refletem o negócio?"
+                    ],
+                    "commonMistakes": [
+                        "Priorizar quantidade sobre relevância",
+                        "Aceitar casos sem validar com os critérios"
+                    ]
+                },
+                "en-uk": {
+                    "question": "Ao usar IA para gerar casos de teste, o que o QA deve sempre verificar?",
+                    "options": [
+                        "Se os casos refletem os critérios de aceite e as regras de negócio",
+                        "Se a IA escreveu muitos casos (quantidade basta)",
+                        "Se o número de casos é grande o suficiente",
+                        "Se os casos estão em inglês"
+                    ],
+                    "expectedAnswer": "O valor está na relevância: os casos devem refletir os critérios de aceite e o comportamento esperado. Quantidade sem aderência ao negócio é ruído, não cobertura.",
+                    "realExample": "Ex: comparar os casos gerados pela IA com o backlog e os critérios de aceite antes de priorizar.",
+                    "english": "QA must verify that AI-generated cases reflect acceptance criteria and business rules.",
+                    "followUps": [
+                        "Como você valida a relevância dos casos gerados?",
+                        "O que fazer com casos que não refletem o negócio?"
+                    ],
+                    "commonMistakes": [
+                        "Priorizar quantidade sobre relevância",
+                        "Aceitar casos sem validar com os critérios"
+                    ]
+                }
+            }
+        },
+        {
+            "id": "AI-11",
+            "category": "AI",
+            "difficulty": "Intermediária",
+            "type": "choice",
+            "answer": 0,
+            "lang": {
+                "pt-br": {
+                    "question": "Qual é uma limitação importante das ferramentas de IA no contexto de testes?",
+                    "options": [
+                        "Elas não entendem o contexto de negócio nem garantem a qualidade por si só",
+                        "Elas substituem a necessidade de testes manuais",
+                        "Elas eliminam os falsos positivos",
+                        "Elas são mais lentas que o teste manual em todos os casos"
+                    ],
+                    "expectedAnswer": "A IA processa padrões e volumes, mas não compreende o valor de negócio nem valida a qualidade final. A decisão e a responsabilidade da entrega continuam com o humano.",
+                    "realExample": "Ex: a IA pode sugerir um teste que passa, mas não validar se a regra de negócio atendeu o que o cliente esperava.",
+                    "english": "AI does not understand business context or guarantee quality; final responsibility remains with humans.",
+                    "followUps": [
+                        "Onde a IA falha no contexto de QA?",
+                        "Como o humano compensa essa limitação?"
+                    ],
+                    "commonMistakes": [
+                        "Achar que IA compreende o negócio",
+                        "Confiar em 100% de cobertura sugerida"
+                    ]
+                },
+                "pt-pt": {
+                    "question": "Qual é uma limitação importante das ferramentas de IA no contexto de testes?",
+                    "options": [
+                        "Elas não entendem o contexto de negócio nem garantem a qualidade por si só",
+                        "Elas substituem a necessidade de testes manuais",
+                        "Elas eliminam os falsos positivos",
+                        "Elas são mais lentas que o teste manual em todos os casos"
+                    ],
+                    "expectedAnswer": "A IA processa padrões e volumes, mas não compreende o valor de negócio nem valida a qualidade final. A decisão e a responsabilidade da entrega continuam com o humano.",
+                    "realExample": "Ex: a IA pode sugerir um teste que passa, mas não validar se a regra de negócio atendeu o que o cliente esperava.",
+                    "english": "AI does not understand business context or guarantee quality; final responsibility remains with humans.",
+                    "followUps": [
+                        "Onde a IA falha no contexto de QA?",
+                        "Como o humano compensa essa limitação?"
+                    ],
+                    "commonMistakes": [
+                        "Achar que IA compreende o negócio",
+                        "Confiar em 100% de cobertura sugerida"
+                    ]
+                },
+                "en-us": {
+                    "question": "Qual é uma limitação importante das ferramentas de IA no contexto de testes?",
+                    "options": [
+                        "Elas não entendem o contexto de negócio nem garantem a qualidade por si só",
+                        "Elas substituem a necessidade de testes manuais",
+                        "Elas eliminam os falsos positivos",
+                        "Elas são mais lentas que o teste manual em todos os casos"
+                    ],
+                    "expectedAnswer": "A IA processa padrões e volumes, mas não compreende o valor de negócio nem valida a qualidade final. A decisão e a responsabilidade da entrega continuam com o humano.",
+                    "realExample": "Ex: a IA pode sugerir um teste que passa, mas não validar se a regra de negócio atendeu o que o cliente esperava.",
+                    "english": "AI does not understand business context or guarantee quality; final responsibility remains with humans.",
+                    "followUps": [
+                        "Onde a IA falha no contexto de QA?",
+                        "Como o humano compensa essa limitação?"
+                    ],
+                    "commonMistakes": [
+                        "Achar que IA compreende o negócio",
+                        "Confiar em 100% de cobertura sugerida"
+                    ]
+                },
+                "en-uk": {
+                    "question": "Qual é uma limitação importante das ferramentas de IA no contexto de testes?",
+                    "options": [
+                        "Elas não entendem o contexto de negócio nem garantem a qualidade por si só",
+                        "Elas substituem a necessidade de testes manuais",
+                        "Elas eliminam os falsos positivos",
+                        "Elas são mais lentas que o teste manual em todos os casos"
+                    ],
+                    "expectedAnswer": "A IA processa padrões e volumes, mas não compreende o valor de negócio nem valida a qualidade final. A decisão e a responsabilidade da entrega continuam com o humano.",
+                    "realExample": "Ex: a IA pode sugerir um teste que passa, mas não validar se a regra de negócio atendeu o que o cliente esperava.",
+                    "english": "AI does not understand business context or guarantee quality; final responsibility remains with humans.",
+                    "followUps": [
+                        "Onde a IA falha no contexto de QA?",
+                        "Como o humano compensa essa limitação?"
+                    ],
+                    "commonMistakes": [
+                        "Achar que IA compreende o negócio",
+                        "Confiar em 100% de cobertura sugerida"
+                    ]
+                }
+            }
+        },
+        {
+            "id": "AI-12",
+            "category": "AI",
+            "difficulty": "Fácil",
+            "type": "choice",
+            "answer": 0,
+            "lang": {
+                "pt-br": {
+                    "question": "O que significa o humano \"exigir\" qualidade em um projeto apoiado por IA?",
+                    "options": [
+                        "Não aceitar entregas sem revisão, testes e evidências de qualidade",
+                        "Pedir mais código sem validar",
+                        "Delegar a decisão de pronto à IA",
+                        "Aceitar o que a IA sugerir rapidamente"
+                    ],
+                    "expectedAnswer": "Exigir qualidade é ter critério: não aceitar código ou testes sem revisão, sem rodar e sem evidência. O padrão de pronto é definido pelo time humano, não pela IA.",
+                    "realExample": "Ex: uma feature só é considerada pronta após testes passarem, revisão de código e evidência anexada.",
+                    "english": "Demanding quality means not accepting AI output without review, tests and evidence.",
+                    "followUps": [
+                        "Qual é o seu Definition of Done?",
+                        "Como você exige evidência de qualidade?"
+                    ],
+                    "commonMistakes": [
+                        "Aceitar entregas sem validação",
+                        "Definir pronto apenas pela IA"
+                    ]
+                },
+                "pt-pt": {
+                    "question": "O que significa o humano \"exigir\" qualidade em um projeto apoiado por IA?",
+                    "options": [
+                        "Não aceitar entregas sem revisão, testes e evidências de qualidade",
+                        "Pedir mais código sem validar",
+                        "Delegar a decisão de pronto à IA",
+                        "Aceitar o que a IA sugerir rapidamente"
+                    ],
+                    "expectedAnswer": "Exigir qualidade é ter critério: não aceitar código ou testes sem revisão, sem rodar e sem evidência. O padrão de pronto é definido pelo time humano, não pela IA.",
+                    "realExample": "Ex: uma feature só é considerada pronta após testes passarem, revisão de código e evidência anexada.",
+                    "english": "Demanding quality means not accepting AI output without review, tests and evidence.",
+                    "followUps": [
+                        "Qual é o seu Definition of Done?",
+                        "Como você exige evidência de qualidade?"
+                    ],
+                    "commonMistakes": [
+                        "Aceitar entregas sem validação",
+                        "Definir pronto apenas pela IA"
+                    ]
+                },
+                "en-us": {
+                    "question": "O que significa o humano \"exigir\" qualidade em um projeto apoiado por IA?",
+                    "options": [
+                        "Não aceitar entregas sem revisão, testes e evidências de qualidade",
+                        "Pedir mais código sem validar",
+                        "Delegar a decisão de pronto à IA",
+                        "Aceitar o que a IA sugerir rapidamente"
+                    ],
+                    "expectedAnswer": "Exigir qualidade é ter critério: não aceitar código ou testes sem revisão, sem rodar e sem evidência. O padrão de pronto é definido pelo time humano, não pela IA.",
+                    "realExample": "Ex: uma feature só é considerada pronta após testes passarem, revisão de código e evidência anexada.",
+                    "english": "Demanding quality means not accepting AI output without review, tests and evidence.",
+                    "followUps": [
+                        "Qual é o seu Definition of Done?",
+                        "Como você exige evidência de qualidade?"
+                    ],
+                    "commonMistakes": [
+                        "Aceitar entregas sem validação",
+                        "Definir pronto apenas pela IA"
+                    ]
+                },
+                "en-uk": {
+                    "question": "O que significa o humano \"exigir\" qualidade em um projeto apoiado por IA?",
+                    "options": [
+                        "Não aceitar entregas sem revisão, testes e evidências de qualidade",
+                        "Pedir mais código sem validar",
+                        "Delegar a decisão de pronto à IA",
+                        "Aceitar o que a IA sugerir rapidamente"
+                    ],
+                    "expectedAnswer": "Exigir qualidade é ter critério: não aceitar código ou testes sem revisão, sem rodar e sem evidência. O padrão de pronto é definido pelo time humano, não pela IA.",
+                    "realExample": "Ex: uma feature só é considerada pronta após testes passarem, revisão de código e evidência anexada.",
+                    "english": "Demanding quality means not accepting AI output without review, tests and evidence.",
+                    "followUps": [
+                        "Qual é o seu Definition of Done?",
+                        "Como você exige evidência de qualidade?"
+                    ],
+                    "commonMistakes": [
+                        "Aceitar entregas sem validação",
+                        "Definir pronto apenas pela IA"
+                    ]
                 }
             }
         }
