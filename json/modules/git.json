@@ -2,6 +2,7 @@
   "id": "git",
   "title": "Git & Versionamento",
   "icon": "fa-code-branch",
+  "iconFile": "icons/git.png",
   "level": "Básico",
   "duration": "1 semana",
   "shortDescription": "Branches, rebase, cherry-pick, fluxo de trabalho em equipe.",

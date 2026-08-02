@@ -536,6 +536,16 @@ button:disabled {
     font-size: 1.5rem;
 }
 
+/* Ícones animados (GIF) e estáticos (PNG) dos módulos */
+.module-icon-img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    display: block;
+    border-radius: var(--radius-sm);
+}
+.module-icon-lg { width: 48px; height: 48px; }
+
 .module-card h3 {
     font-size: 1.1rem;
     font-weight: 700;

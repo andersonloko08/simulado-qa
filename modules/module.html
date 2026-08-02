@@ -174,7 +174,7 @@
                 container.innerHTML = `
                     <div class="page-header">
                         <div class="flex-between wrap gap-2 mb-2">
-                            <div class="module-icon" style="width:60px;height:60px;font-size:1.7rem;background:var(--primary-light);color:var(--primary);border-radius:12px;display:flex;align-items:center;justify-content:center;"><i class="fa-solid ${data.icon}"></i></div>
+                            <div class="module-icon" style="width:60px;height:60px;font-size:1.7rem;background:var(--primary-light);color:var(--primary);border-radius:12px;display:flex;align-items:center;justify-content:center;">${moduleIconHtml(data, 'module-icon-lg')}</div>
                             <div class="flex gap-2 wrap">
                                 ${data.level === 'Avançado' ? '<span class="badge badge-danger">Avançado</span>' : data.level === 'Intermediário' ? '<span class="badge badge-warning">Intermediário</span>' : '<span class="badge badge-success">Básico</span>'}
                                 <span class="badge badge-info"><i class="fa-solid fa-clock"></i> ${data.duration}</span>

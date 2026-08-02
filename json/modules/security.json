@@ -2,6 +2,7 @@
   "id": "security",
   "title": "Security Testing",
   "icon": "fa-shield-halved",
+  "iconFile": "icons/data-safety.gif",
   "level": "Avançado",
   "duration": "2 semanas",
   "shortDescription": "OWASP, OAuth, vulnerabilidades e testes de segurança.",

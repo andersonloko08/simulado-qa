@@ -2,6 +2,7 @@
   "id": "api",
   "title": "API Testing & REST",
   "icon": "fa-plug",
+  "iconFile": "icons/api.gif",
   "level": "Avançado",
   "duration": "2-3 semanas",
   "shortDescription": "REST, HTTP, autenticação, contract testing e boas práticas.",

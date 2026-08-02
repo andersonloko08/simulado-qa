@@ -2,6 +2,7 @@
   "id": "sql",
   "title": "SQL",
   "icon": "fa-database",
+  "iconFile": "icons/database-table.gif",
   "level": "Avançado",
   "duration": "2-3 semanas",
   "shortDescription": "Consultas, joins, funções de agregação e validação de dados.",

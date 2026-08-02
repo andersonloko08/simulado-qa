@@ -147,7 +147,7 @@
             }
             document.getElementById('recommended').innerHTML = `
                 <div class="module-card">
-                    <div class="module-icon"><i class="fa-solid ${recommended.icon}"></i></div>
+                    <div class="module-icon">${moduleIconHtml(recommended)}</div>
                     <h3>${escapeHtml(recommended.title)}</h3>
                     <p>${escapeHtml(recommended.shortDescription)}</p>
                     <span class="badge badge-info"><i class="fa-solid fa-clock"></i> ${recommended.duration}</span>

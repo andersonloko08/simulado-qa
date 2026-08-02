@@ -2,6 +2,7 @@
   "id": "kubernetes",
   "title": "Kubernetes",
   "icon": "fa-cubes",
+  "iconFile": "icons/kubernets.png",
   "level": "Avançado",
   "duration": "2 semanas",
   "shortDescription": "Pods, deployments, serviços e testes em clusters.",

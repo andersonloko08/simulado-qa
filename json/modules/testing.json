@@ -2,6 +2,7 @@
   "id": "testing",
   "title": "Fundamentos de Teste",
   "icon": "fa-vial",
+  "iconFile": "icons/test.gif",
   "level": "Básico",
   "duration": "1-2 semanas",
   "shortDescription": "Estratégias, pirâmide, casos de teste e tipos de teste.",

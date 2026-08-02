@@ -2,6 +2,7 @@
   "id": "bdd",
   "title": "BDD & Gherkin",
   "icon": "fa-comment-dots",
+  "iconFile": "icons/cucumber.png",
   "level": "Intermediário",
   "duration": "1-2 semanas",
   "shortDescription": "Gherkin, Given/When/Then, colaboração e automação.",

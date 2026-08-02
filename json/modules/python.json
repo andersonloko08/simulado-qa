@@ -2,6 +2,7 @@
   "id": "python",
   "title": "Python para QA",
   "icon": "fa-python",
+  "iconFile": "icons/python.png",
   "level": "Intermediário",
   "duration": "2 semanas",
   "shortDescription": "Fundamentos, requests, pytest e boas práticas de automação.",

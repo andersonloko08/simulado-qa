@@ -2,6 +2,7 @@
   "id": "ai",
   "title": "IA para QA & Vibe Coding",
   "icon": "fa-robot",
+  "iconFile": "icons/artificial-intelligence.gif",
   "level": "Intermediário",
   "duration": "2-3 semanas",
   "shortDescription": "IA generativa, LLMs, engenharia de prompt, MCP, vibe coding, servidores e IA responsável.",

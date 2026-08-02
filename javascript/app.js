@@ -220,23 +220,39 @@ function t(key) {
     return table[key] || key;
 }
 
-async function initI18n() {
-    // Deriva o caminho relativo ao root do site a partir do src do próprio script.
-    // Home: src="javascript/app.js"  -> base ""  -> "json/i18n.json"
-    // Subdir: src="../javascript/app.js" -> base "../" -> "../json/i18n.json"
+// Deriva o caminho relativo ao root do site a partir do src do próprio script.
+// Home: src="javascript/app.js"  -> base ""  -> "json/i18n.json"
+// Subdir: src="../javascript/app.js" -> base "../" -> "../json/i18n.json"
+function siteBase() {
     let base = '';
     const scriptEl = document.querySelector('script[src$="app.js"]');
     if (scriptEl) {
         const idx = scriptEl.getAttribute('src').indexOf('javascript/');
         if (idx > 0) base = scriptEl.getAttribute('src').slice(0, idx);
     }
-    const i18nPath = base + 'json/i18n.json';
+    return base;
+}
+
+async function initI18n() {
+    const i18nPath = siteBase() + 'json/i18n.json';
     try {
         I18N = await loadJSON(i18nPath);
     } catch (e) {
         I18N = { lang: {} };
     }
     applyTranslations();
+}
+
+// Gera o HTML do ícone de um módulo: imagem animada (m.iconFile) quando houver,
+// senão o ícone Font Awesome (m.icon). O caminho da imagem é relativo à raiz.
+function moduleIconHtml(m, extraCls) {
+    const icon = (m && m.icon) || 'fa-code';
+    const cls = extraCls ? `module-icon-img ${extraCls}` : 'module-icon-img';
+    if (m && m.iconFile) {
+        const alt = escapeHtml((m && m.title) || '');
+        return `<img src="${siteBase()}${m.iconFile}" alt="${alt}" class="${cls}" loading="lazy">`;
+    }
+    return `<i class="fa-solid ${icon}"></i>`;
 }
 
 // Aplica traduções a elementos com data-i18n (interface fixa em pt-br).
@@ -469,6 +485,7 @@ window.formatTime = formatTime;
 window.t = t;
 window.l = l;
 window.resolveLang = resolveLang;
+window.moduleIconHtml = moduleIconHtml;
 
 // ---------- INIT ----------
 document.addEventListener('DOMContentLoaded', async () => {

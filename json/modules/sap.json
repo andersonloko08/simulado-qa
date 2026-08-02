@@ -2,6 +2,7 @@
   "id": "sap",
   "title": "SAP Testing",
   "icon": "fa-industry",
+  "iconFile": "icons/sap.png",
   "level": "Avançado",
   "duration": "2 semanas",
   "shortDescription": "SAP GUI, BAPI, integrações e automação em ecossistemas SAP.",

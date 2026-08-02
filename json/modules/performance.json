@@ -2,6 +2,7 @@
   "id": "performance",
   "title": "Performance Testing",
   "icon": "fa-gauge-high",
+  "iconFile": "icons/performance.gif",
   "level": "Avançado",
   "duration": "2 semanas",
   "shortDescription": "JMeter, k6, métricas e análise de resultados.",

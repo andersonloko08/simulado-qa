@@ -2,6 +2,7 @@
   "id": "robot",
   "title": "Robot Framework",
   "icon": "fa-robot",
+  "iconFile": "icons/turing-test.gif",
   "level": "Avançado",
   "duration": "3 semanas",
   "shortDescription": "Keywords, listeners, variáveis, dados e estabilidade de testes.",

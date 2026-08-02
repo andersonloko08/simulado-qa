@@ -158,7 +158,7 @@
                 const shown = metas.slice(0, 8);
                 modulesBox.innerHTML = shown.map(m => `
                     <a href="modules/module.html?id=${m.id}" class="module-card">
-                        <div class="module-icon"><i class="fa-solid ${m.icon || 'fa-code'}"></i></div>
+                        <div class="module-icon">${moduleIconHtml(m)}</div>
                         <h3>${escapeHtml(m.title)}</h3>
                         <p>${escapeHtml(m.shortDescription || m.description)}</p>
                         <span class="badge ${m.level === 'Avançado' ? 'badge-danger' : m.level === 'Intermediário' ? 'badge-warning' : 'badge-success'}">${escapeHtml(m.level || '')}</span>

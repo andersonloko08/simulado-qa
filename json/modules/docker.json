@@ -2,6 +2,7 @@
   "id": "docker",
   "title": "Docker",
   "icon": "fa-dharmachakra",
+  "iconFile": "icons/docker.png",
   "level": "Intermediário",
   "duration": "1-2 semanas",
   "shortDescription": "Imagens, containers, Dockerfile e compose para testes.",

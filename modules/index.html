@@ -88,7 +88,7 @@
                 return `
                 <a href="module.html?id=${m.id}" class="module-card">
                     <div class="flex-between">
-                        <div class="module-icon"><i class="fa-solid ${m.icon || 'fa-code'}"></i></div>
+                        <div class="module-icon">${moduleIconHtml(m)}</div>
                         ${levelBadge(m.level)}
                     </div>
                     <h3>${escapeHtml(m.title)}</h3>

@@ -2,6 +2,7 @@
   "id": "cicd",
   "title": "CI/CD",
   "icon": "fa-arrows-rotate",
+  "iconFile": "icons/CI-CD.png",
   "level": "Avançado",
   "duration": "2 semanas",
   "shortDescription": "Pipelines, integração contínua, deploy e qualidade no pipeline.",

@@ -2,6 +2,7 @@
   "id": "javascript",
   "title": "JavaScript para QA",
   "icon": "fa-js",
+  "iconFile": "icons/js.png",
   "level": "Intermediário",
   "duration": "2 semanas",
   "shortDescription": "Closures, async/await, Playwright, Cypress e testes com JS.",

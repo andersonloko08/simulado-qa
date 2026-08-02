@@ -2,6 +2,7 @@
   "id": "playwright",
   "title": "Playwright",
   "icon": "fa-window-restore",
+  "iconFile": "icons/Playwright--Streamline-Svg-Logos.png",
   "level": "Intermediário",
   "duration": "2-3 semanas",
   "shortDescription": "E2E moderno, auto-wait, fixtures e API testing.",

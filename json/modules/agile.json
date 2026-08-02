@@ -2,6 +2,7 @@
   "id": "agile",
   "title": "Agile & Scrum",
   "icon": "fa-people-group",
+  "iconFile": "icons/agile.gif",
   "level": "Básico",
   "duration": "1 semana",
   "shortDescription": "Scrum, Kanban, cerimônias e o papel do QA no time.",
