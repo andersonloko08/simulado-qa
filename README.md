@@ -24,7 +24,7 @@ Em vez de estudar tecnologias isoladamente, a plataforma ensina o candidato a co
 - Resolução de problemas
 - Confiança
 
-A plataforma foi construída em conjunto com IA (vibe coding) e revisada por um humano com mais de 10 anos de experiência em QA. Todo o conteúdo gerado por IA é claramente sinalizado na interface.
+A plataforma foi construída com assistência de IA (vibe coding) e integralmente revisada, validada e dirigida por um profissional de QA. Todo o conteúdo gerado por IA é claramente sinalizado na interface.
 
 ---
 
@@ -93,6 +93,22 @@ InterviewOps/
 - **Story Analyzer** (`career/analyzer.html`): analisa um relato do usuário em linguagem natural, detecta o tema (19 temas de QA), separa em Situation/Task/Action/Result (STAR) e estima o impacto da história. Usa matching por palavra inteira para evitar falsos positivos.
 - **Evidence Bank** (`career/stories.html`): 12 histórias reais em formato STAR com contexto de negócio, lições aprendidas e possíveis perguntas de entrevista.
 
+### 🚀 Tutorial Guiado (Onboarding)
+
+- **5 passos** com efeito spotlight (driver.js) que guiam o visitante pela Home: boas-vindas, navegação, CTAs de entrevista e Story Analyzer.
+- **Raramente visto**: "Pular tutorial" e botão "X" (fechar) sempre visíveis em todas as etapas.
+- **Não repete**: ao concluir ou pular, grava `hasSeenTutorial=true` (cookie LGPD) e nunca mais abre sozinho.
+- **Replay**: botão "?" no topo direito reativa o tour manualmente.
+
+### 🌐 QA Outdoor (painel giratório)
+
+- Outdoor de **10 frases** rotativas na Home: **curiosidades** históricas de QA/tecnologia (Grace Hopper, Ariane 5, Ada Lovelace), **motivações** e **dicas** de entrevista (STAR, storytelling).
+- Tag colorida por tipo (CURIOSIDADE / MOTIVAÇÃO / DICA), fade animado, indicadores clicáveis e pausa no hover.
+
+### 🎨 Ícones Animados dos Módulos
+
+- **8 GIFs animados** e **9 PNGs estáticos** substituíram os ícones Font Awesome dos 17 módulos, com suporte a fallback via helper `moduleIconHtml()` direto no `app.js`.
+
 ---
 
 ## 🌍 Multi-idioma
@@ -152,8 +168,8 @@ Veja a documentação completa em **[tools/qa_editor/README.md](tools/qa_editor/
 
 ## ✅ Como Construído (Transparência de IA)
 
-Este projeto foi desenvolvido com assistência de IA (vibe coding) e validado por um profissional de QA com mais de 10 anos de experiência. As premissas:
+Este projeto foi desenvolvido com assistência de IA (vibe coding) e integralmente revisado por um profissional de QA. As premissas:
 
-- O humano define o que construir e valida a qualidade técnica do resultado.
+- O humano define o que construir, valida a qualidade e toma todas as decisões de arquitetura e design.
 - A IA acelera geração de conteúdo, automação de tarefas repetitivas e revisão de código.
 - Todo conteúdo de autoria IA é sinalizado na interface (transparência).

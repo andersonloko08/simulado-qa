@@ -30,6 +30,22 @@ const OUTDOOR_MSGS = [
         text: 'Bugs de software custam à economia global mais de US$ 2 trilhões por ano. O teste é o freio mais barato desse custo.',
     },
     {
+        kind: 'curiosidade',
+        text: 'O primeiro vírus de computador, chamado Creeper, foi criado em 1971 como um experimento. O primeiro antivírus, Reaper, nasceu logo depois para caçá-lo.',
+    },
+    {
+        kind: 'curiosidade',
+        text: 'O bug Y2K mobilizou equipes no mundo todo: sistemas que guardavam anos com 2 dígitos podiam voltar a 1900 na virada de 1999.',
+    },
+    {
+        kind: 'curiosidade',
+        text: 'Em 2017, o ransomware WannaCry paralisou hospitais e empresas em 150 países, explorando uma falha que já tinha correção disponível — mas ninguém tinha aplicado.',
+    },
+    {
+        kind: 'curiosidade',
+        text: 'A Receita Federal já emite CNPJ com letras e números. Sistemas de validação antigos que só aceitam dígitos vão quebrar — e QA é quem vai descobrir primeiro.',
+    },
+    {
         kind: 'motivacao',
         text: 'Não memorize respostas: construa evidências, conte histórias, demonstre engenharia e inspire confiança.',
     },
@@ -42,12 +58,28 @@ const OUTDOOR_MSGS = [
         text: 'O melhor bug é o que você encontra em staging, não o que o usuário encontra em produção.',
     },
     {
+        kind: 'motivacao',
+        text: 'Cada teste que falha agora é uma resposta de entrevista que não vai falhar depois.',
+    },
+    {
+        kind: 'motivacao',
+        text: 'Testar não é destruir o produto. É garantir que ele não se destrua sozinho em produção.',
+    },
+    {
         kind: 'dica',
         text: 'Use a técnica STAR: Situação, Tarefa, Ação e Resultado. Recrutadores lembram de histórias, não de adjetivos.',
     },
     {
         kind: 'dica',
         text: 'Se você não explica um bug em uma frase, você ainda não o entendeu — e isso aparece na entrevista.',
+    },
+    {
+        kind: 'dica',
+        text: 'Mock interviews com timer treinam exatamente o que a entrevista real vai exigir: pensar rápido e estruturado sob pressão.',
+    },
+    {
+        kind: 'dica',
+        text: 'Perguntaram "como você testaria isso?" — comece SEMPRE pelos cenários de borda. É onde os bugs caros moram.',
     },
 ];
 
