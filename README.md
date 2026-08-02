@@ -7,7 +7,8 @@
 | **Versão** | 3.1 |
 | **Autor** | Anderson Vinicius dos Santos Pereira |
 | **Repositório** | https://github.com/andersonloko08/simulado-qa |
-| **Live Site** | https://andersonloko08.github.io/simulado-qa/ |
+| **Live Site** | https://andersonloko08.github.io/simulado-qa |
+| **Conecte-se** | https://www.linkedin.com/in/anderson-v-pereira |
 
 ---
 
