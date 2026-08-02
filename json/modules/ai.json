@@ -3,12 +3,13 @@
   "title": "IA para QA & Vibe Coding",
   "icon": "fa-robot",
   "level": "Intermediário",
-  "duration": "2 semanas",
-  "shortDescription": "IA generativa, LLMs, engenharia de prompt, vibe coding, servidores e IA responsável.",
-  "description": "A Inteligência Artificial está transformando a engenharia de teste: da geração de casos ao review de código assistido. Este módulo cobre os fundamentos de IA generativa e LLMs, como aplicar no ciclo de QA, boas práticas de prompt, vibe coding, infraestrutura/servidores para IA e uso responsável com LGPD.",
+  "duration": "2-3 semanas",
+  "shortDescription": "IA generativa, LLMs, engenharia de prompt, MCP, vibe coding, servidores e IA responsável.",
+  "description": "A Inteligência Artificial está transformando a engenharia de teste: da geração de casos ao review de código assistido. Este módulo cobre os fundamentos de IA generativa e LLMs (como funcionam por dentro), como aplicar no ciclo de QA, boas práticas de prompt, MCP (Model Context Protocol) e integrações, vibe coding, configuração de LLM local, infraestrutura/servidores para IA e uso responsável com LGPD.",
   "topics": [
     "LLMs",
     "Prompts",
+    "MCP",
     "Vibe Coding",
     "Infra",
     "LGPD"
@@ -16,18 +17,22 @@
   "concepts": [
     {
       "title": "Fundamentos de IA Generativa & LLMs",
-      "theory": "LLMs (Large Language Models) são modelos treinados em grandes volumes de texto para prever e gerar linguagem. Conceitos essenciais: tokens (unidades de texto processadas — uma palavra pode ter 1 a 3 tokens), janela de contexto (quantidade de tokens que o modelo considera por vez, ex.: 8k a 128k+), temperatura (controla aleatoriedade da saída — alta para criatividade, baixa para determinismo), e parâmetros (tamanho do modelo, ex.: 7B, 70B). Modelos podem ser proprietários (GPT, Claude) via API, ou abertos/self-hosted (Llama, Mistral). Para QA, entender tokens e contexto é essencial: prompts com excesso de logs podem estourar a janela e degradar a resposta.",
+      "theory": "LLMs (Large Language Models) são redes neurais treinadas em grandes volumes de texto para prever e gerar linguagem. Internamente usam a arquitetura Transformer com mecanismos de atenção que relacionam cada palavra às outras do contexto. O modelo converte texto em tokens e, em seguida, em embeddings (vetores numéricos) que capturam significado; durante a geração, produz um token por vez (autoregressivo). Conceitos essenciais: tokens (unidades de texto — uma palavra pode ter 1 a 3 tokens), janela de contexto (limite de tokens considerados por vez, ex.: 8k a 128k+), temperatura (controla aleatoriedade — alta para criatividade, baixa para determinismo), top-p (nucleus sampling — limita o pool de tokens candidatos) e parâmetros (tamanho do modelo, ex.: 7B, 70B). Modelos podem ser proprietários (GPT, Claude) via API, ou abertos/self-hosted (Llama, Mistral, Qwen) rodando em Ollama, vLLM ou llama.cpp. Para QA, entender tokens e contexto é essencial: prompts com excesso de logs podem estourar a janela e degradar a resposta.",
       "examples": [
         "Uma pergunta de 10 palavras em pt-br pode consumir ~15-20 tokens",
         "Janela de 8k tokens ≈ ~6.000 palavras — insuficiente para logs grandes inteiros",
         "Temperatura 0.0 em geração de código de teste → saída mais consistente e reprodutível",
-        "temperature 0.7 para brainstorming de cenários → mais variedade de ideias"
+        "temperature 0.7 para brainstorming de cenários → mais variedade de ideias",
+        "top_p 0.9 restringe a amostragem aos tokens mais prováveis — útil para reduzir respostas soltas",
+        "Embedding converte 'login' e 'autenticação' em vetores próximos, permitindo busca semântica em RAG"
       ],
       "commonMistakes": [
         "Jogar um log de 5MB inteiro no prompt e esperar análise precisa (estoura o contexto).",
         "Usar temperatura alta para tarefas que exigem precisão (código, schemas).",
         "Achar que o modelo tem memória infinita — cada sessão tem limite de contexto.",
-        "Não saber diferenciar API proprietária de modelo self-hosted ao avaliar custo/LGPD."
+        "Não saber diferenciar API proprietária de modelo self-hosted ao avaliar custo/LGPD.",
+        "Confundir tokens com palavras — um log pode ter muito mais tokens que palavras.",
+        "Achar que 'contexto maior' sempre melhora: contexto cheio de ruído degrada a resposta (overload)."
       ],
       "projectExample": "Em uma automação de APIs, precisávamos entender uma falha intermitente. Em vez de colar um log gigante no chat, criei um script que extraía só os trechos de erro (janela de contexto), resumia o fluxo da requisição e então mandava para o modelo com contexto específico. Isso reduziu a taxa de 'alucinação' e achamos um problema de timeout de 30s que o time não tinha visto.",
       "interviewQuestions": [
@@ -58,11 +63,40 @@
             "Não justificar o ajuste por tipo de tarefa."
           ],
           "english": "Temperature controls randomness. For generating test cases and automation code I use a low temperature for consistency and reproducibility. For brainstorming edge scenarios I use a higher temperature to get more varied suggestions."
+        },
+        {
+          "question": "Explique como um LLM gera texto por dentro e o que isso significa para o uso em QA.",
+          "difficulty": "Intermediária",
+          "expectedAnswer": "Um LLM usa a arquitetura Transformer com atenção: o texto de entrada é convertido em tokens e depois em embeddings (vetores), a atenção relaciona cada token aos demais para entender contexto, e a geração é autoregressiva — o modelo prevê um token por vez, condicionado ao que já gerou. Isso significa que: cada resposta é uma predição estatística, não uma 'consulta a banco' — por isso pode alucinar; a qualidade depende do contexto dado; e tokens de saída somam custo e latência. Para QA, isso reforça a necessidade de prompts precisos, contexto enxuto e validação humana de toda saída.",
+          "followUps": [
+            "O que diferencia um Transformer de uma rede recorrente tradicional?",
+            "Por que respostas longas custam mais e demoram mais?"
+          ],
+          "mistakes": [
+            "Achar que o modelo 'busca' a resposta em uma base.",
+            "Não conectar a natureza estatística com o risco de alucinação."
+          ],
+          "english": "An LLM uses the Transformer architecture with attention: input text becomes tokens then embeddings, attention links tokens to capture context, and generation is autoregressive — one token at a time. Outputs are statistical predictions, which is why hallucinations happen and human validation is mandatory."
+        },
+        {
+          "question": "Qual a diferença entre RAG e fine-tuning, e quando um QA usaria cada um?",
+          "difficulty": "Avançada",
+          "expectedAnswer": "RAG (Retrieval-Augmented Generation) injeta informações relevantes (ex.: documentos, specs, logs) no prompt em tempo de execução, via busca semântica por embeddings — sem alterar o modelo. Fine-tuning ajusta os pesos do modelo com dados próprios, mudando o comportamento. Para QA: RAG é ideal para dar ao modelo acesso a documentação viva, specs e bases de conhecimento que mudam com frequência, com custo baixo e sem retreinar. Fine-tuning é útil quando o modelo precisa aprender um formato ou estilo muito específico (ex.: gerar casos num padrão proprietário) e os dados não mudam tanto. Na prática, comece com RAG; use fine-tuning só quando o RAG não atender.",
+          "followUps": [
+            "Como você montaria um RAG com as specs do seu projeto?",
+            "Quais riscos existem em fine-tuning para QA?"
+          ],
+          "mistakes": [
+            "Confundir RAG (sem mudar o modelo) com fine-tuning (muda pesos).",
+            "Recomendar fine-tuning caro quando RAG resolveria."
+          ],
+          "english": "RAG injects relevant information into the prompt at runtime via semantic search, without changing the model. Fine-tuning adjusts the model weights with your own data. For QA, RAG is ideal for living documentation and specs; fine-tuning is only for very specific formats or styles."
         }
       ],
       "challenges": [
         "Calcule quantos tokens aproximadamente tem um caso de teste de 3 parágrafos e uma suite de 20 casos.",
-        "Explique por que colar um arquivo de 10.000 linhas no prompt é ineficiente e proponha uma alternativa."
+        "Explique por que colar um arquivo de 10.000 linhas no prompt é ineficiente e proponha uma alternativa.",
+        "Desenhe um fluxo de RAG que dê ao LLM acesso a specs e logs de teste, respeitando a janela de contexto."
       ]
     },
     {
@@ -268,6 +302,108 @@
       "challenges": [
         "Estime o custo mensal de resumir todos os logs de falha de 2 semanas com uma API de LLM, considerando tokens por chamada e preço por milhão de tokens.",
         "Desenhe um fluxo para classificar bugs com IA respeitando LGPD sem mandar PII para fora."
+      ]
+    },
+    {
+      "title": "MCP — Model Context Protocol",
+      "theory": "MCP (Model Context Protocol) é um protocolo aberto (Anthropic, 2024) que padroniza como aplicações de IA (clientes como Claude Desktop, opencode, Cursor, VS Code Copilot) conversam com fontes externas (servidores MCP). Em vez de cada ferramenta criar sua própria integração, o MCP define um contrato único. O cliente MCP conecta-se a servidores MCP que expõem: tools (ferramentas executáveis — rodar um teste, consultar uma API), resources (dados que o modelo pode ler — logs, specs, schemas) e prompts (templates reutilizáveis). O transporte típico é stdio (processo local) ou HTTP/SSE (remoto). Para QA, um servidor MCP pode expor ferramentas como 'executar suíte de testes', 'consultar bug no Jira' ou 'ler spec de API', permitindo que o agente de IA execute ações reais e acesse dados do projeto com autorização e auditoria.",
+      "examples": [
+        "Servidor MCP que expõe a ferramenta run_tests(scope) e o agente de IA executa a suíte e interpreta o resultado",
+        "Servidor MCP que lê o schema OpenAPI da API e o modelo usa como contexto para gerar casos de teste",
+        "Cliente MCP (opencode, Claude Desktop) configurado com servidor local via transporte stdio",
+        "Servidor MCP remoto via HTTP/SSE expondo a base de bugs da empresa com autenticação"
+      ],
+      "commonMistakes": [
+        "Confundir MCP com um modelo de IA — MCP é o protocolo de integração, não o LLM.",
+        "Criar integrações proprietárias quando o MCP padroniza a conexão.",
+        "Expor ferramentas no servidor MCP sem autorização/auditoria (risco de ações não intencionais).",
+        "Colocar dados sensíveis em servidor MCP remoto sem controle de acesso."
+      ],
+      "projectExample": "No time, configuramos um servidor MCP que expõe duas ferramentas ao agente de IA: ler o plano de testes do repositório (resource) e executar a suíte de smoke (tool). O agente passou a propor e validar mudanças executando a smoke real antes de sugerir merge. Isso acelerou o feedback e trouxe auditoria — cada execução ficou logada no servidor. Regras de autorização definidas no servidor impediam executar comandos em produção.",
+      "interviewQuestions": [
+        {
+          "question": "O que é o Model Context Protocol (MCP) e qual problema ele resolve para um QA que usa IA?",
+          "difficulty": "Intermediária",
+          "expectedAnswer": "MCP é um protocolo aberto que padroniza a comunicação entre aplicações de IA (clientes) e fontes externas de dados/ferramentas (servidores MCP). Ele resolve o problema da fragmentação: antes, cada integração era proprietária e específica; com MCP, um mesmo servidor funciona em vários clientes. Para QA, isso permite expor ferramentas e dados do projeto (executar testes, ler specs, consultar bugs) ao agente de IA de forma padronizada, com autorização e auditoria. Um QA pode criar um servidor MCP que expõe a suíte de testes para o assistente de IA rodar e analisar resultados.",
+          "followUps": [
+            "Quais os três tipos de primitivas que um servidor MCP expõe?",
+            "Qual a diferença entre transporte stdio e HTTP/SSE?"
+          ],
+          "mistakes": [
+            "Confundir MCP com um modelo de linguagem.",
+            "Não citar tools/resources/prompts."
+          ],
+          "english": "MCP is an open protocol that standardizes how AI applications talk to external tools and data. For QA it lets you expose test execution, specs and bug data to an AI agent in a standard way, with authorization and audit. A server exposes tools, resources and prompts."
+        },
+        {
+          "question": "Como você criaria um servidor MCP simples que permita a um agente de IA executar a suíte de testes do projeto?",
+          "difficulty": "Avançada",
+          "expectedAnswer": "Eu estruturaria assim: (1) um projeto MCP server (ex.: Python com o SDK oficial do MCP ou Node com @modelcontextprotocol/sdk) que implementa um handler de ferramenta; (2) a ferramenta 'run_test_suite(scope)' que valida os argumentos, executa o comando (ex.: pytest ou robot) em um subprocesso, captura stdout/exit code e retorna um resumo estruturado; (3) controls de segurança — whitelist de comandos permitidos, timeout, negação de comandos de escrita fora do escopo; (4) transporte stdio para uso local; (5) registro/auditoria de cada execução. Depois configuro o cliente (opencode/Claude Desktop) apontando para o servidor e testo a ferramenta via chat.",
+          "followUps": [
+            "Quais riscos você deve controlar ao expor execução de testes via MCP?",
+            "Como você autenticaria um servidor MCP remoto?"
+          ],
+          "mistakes": [
+            "Não mencionar segurança/whitelist de comandos.",
+            "Achar que MCP é exclusivo de um único fornecedor."
+          ],
+          "english": "I would build an MCP server that exposes a run_test_suite tool: validate arguments, run the test command in a subprocess, capture output and exit code, enforce a command whitelist and timeout, log every execution, and use stdio for local use. Then configure the client to point to the server."
+        }
+      ],
+      "challenges": [
+        "Liste 3 ferramentas que você exporia em um servidor MCP para apoiar o fluxo de QA do seu projeto.",
+        "Desenhe a configuração de um cliente MCP (opencode ou Claude Desktop) conectado a um servidor stdio local que executa sua suíte de testes."
+      ]
+    },
+    {
+      "title": "Configurando sua LLM Local & Assistentes",
+      "theory": "Rodar LLMs localmente permite privacidade (dados não saem da máquina), custo previsível e disponibilidade offline. Ferramentas principais: Ollama (simples, baixa de modelos com um comando), LM Studio (GUI para Windows/Mac), llama.cpp (leve, roda em CPU), e vLLM (alta performance para servidores). Fluxo típico: instalar a ferramenta, baixar um modelo (ex.: llama3.1, qwen2.5, mistral — variantes quantizadas como 4-bit/Q4 para caber na memória), configurar parâmetros (contexto, temperatura) e servir via API local (ex.: Ollama expõe http://localhost:11434 com API compatível com OpenAI). Assistentes (opencode, Cursor, VS Code) permitem apontar para um provider local (OpenAI-compatible) e usar seu LLM em vez da nuvem. Também é possível combinar LLM local com servidores MCP para que o agente acesse dados e ferramentas do projeto. Para QA: teste rápido de modelos, classificação local de bugs e automação sem enviar dados sensíveis para fora.",
+      "examples": [
+        "ollama pull llama3.1:8b — baixa e roda o modelo localmente",
+        "curl http://localhost:11434/v1/chat/completions — API local compatível com OpenAI",
+        "Configurar opencode/Cursor com provider local (base URL http://localhost:11434/v1) para usar o LLM local",
+        "lm studio com modelo quantizado Q4 de 8B em GPU com 8GB VRAM"
+      ],
+      "commonMistakes": [
+        "Baixar um modelo gigante sem checar VRAM/RAM — gera troca para disco (muito lento).",
+        "Ignorar a quantização: modelo Q4 roda em máquinas modestas; FP16 exige GPU robusta.",
+        "Esquecer de configurar a janela de contexto no servidor local (padrão pode ser pequeno).",
+        "Comparar qualidade de um modelo local pequeno com um frontier model gigante sem considerar o trade-off."
+      ],
+      "projectExample": "Para classificar bugs por categoria sem enviar dados do cliente para a nuvem, instalamos Ollama na máquina do QA, baixamos um modelo de 8B quantizado e configuramos um script que chama a API local para classificar o resumo de cada bug. A acurácia foi ~85% contra 95% da API paga, mas o suficiente para triagem inicial — e zero PII saiu da empresa. Também apontamos o assistente de código para o LLM local via provider OpenAI-compatible para tarefas simples de automação.",
+      "interviewQuestions": [
+        {
+          "question": "Como você configuraria uma LLM local com Ollama e a usaria em um assistente de código?",
+          "difficulty": "Intermediária",
+          "expectedAnswer": "Eu faria: (1) instalar o Ollama; (2) baixar um modelo adequado à máquina — verificando VRAM/RAM e preferindo versões quantizadas (ex.: llama3.1:8b ou qwen2.5:7b); (3) testar via terminal e via API local (http://localhost:11434), que é compatível com OpenAI; (4) no assistente (opencode/Cursor/VS Code), adicionar um provider local com base URL apontando para localhost e model correspondente; (5) validar com tarefas reais e ajustar parâmetros (contexto, temperatura). Também verifico a janela de contexto configurada para não estourar com prompts longos de código.",
+          "followUps": [
+            "O que é quantização e por que importa?",
+            "Quando você ainda usaria uma API em nuvem em vez do modelo local?"
+          ],
+          "mistakes": [
+            "Não verificar VRAM antes de escolher o modelo.",
+            "Ignorar a compatibilidade do endpoint com o assistente."
+          ],
+          "english": "I install Ollama, pull a quantized model that fits my hardware, test the local API on port 11434, then add a local provider to the code assistant pointing to localhost. I also check the context window and keep cloud APIs for tasks where a frontier model is required."
+        },
+        {
+          "question": "Quais são os trade-offs entre usar uma LLM local e uma API em nuvem no dia a dia de QA?",
+          "difficulty": "Avançada",
+          "expectedAnswer": "Local: privacidade (dados não saem da máquina — importante com PII/LGPD), custo previsível, funciona offline, sem rate limits; porém requer hardware (VRAM/RAM), a qualidade dos modelos menores é inferior em tarefas complexas, e a configuração/manutenção é responsabilidade sua. Nuvem: qualidade superior, zero manutenção de infra, escala fácil; porém dados vão ao provedor (risco LGPD), há custo por token e latência de rede. Em QA eu uso uma estratégia híbrida: tarefas sensíveis e repetitivas no local (classificação, formatação), tarefas complexas e pontuais na nuvem (análise de regras de negócio, geração de suites grandes).",
+          "followUps": [
+            "Como você decide a fronteira entre local e nuvem?",
+            "Qual o impacto de hardware no tempo de resposta local?"
+          ],
+          "mistakes": [
+            "Alegar que local sempre é melhor sem considerar qualidade.",
+            "Não citar privacidade/LGPD como fator decisivo."
+          ],
+          "english": "Local gives privacy, predictable cost and offline use, but needs hardware and the smaller models are less capable. Cloud gives top quality and zero maintenance, but data goes to the provider and there is cost per token. I use a hybrid: sensitive and repetitive tasks locally, complex tasks in the cloud."
+        }
+      ],
+      "challenges": [
+        "Monte um passo a passo para rodar um modelo 7B local no seu sistema e conectá-lo a um assistente de código.",
+        "Compare custo e privacidade de processar logs de teste localmente vs na nuvem para um cenário com dados de clientes."
       ]
     },
     {
