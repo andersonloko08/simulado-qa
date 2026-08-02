@@ -38,9 +38,9 @@ const COOKIE_PREFIX = 'interviewops_';
 const COOKIE_DAYS = 365;
 const COOKIE_MAX_CHARS = 3500;
 // Chaves que NÃO são por-perfil (preferências e configuração).
-const GLOBAL_KEYS = new Set(['lang', 'theme', 'active_profile', 'profiles', 'consent']);
+const GLOBAL_KEYS = new Set(['lang', 'theme', 'active_profile', 'profiles', 'consent', 'hasSeenTutorial']);
 // Chaves não-essenciais: só persistem após consentimento 'accepted'.
-const ESSENTIAL_KEYS = new Set(['lang', 'theme', 'active_profile', 'profiles', 'consent']);
+const ESSENTIAL_KEYS = new Set(['lang', 'theme', 'active_profile', 'profiles', 'consent', 'hasSeenTutorial']);
 
 let STORE_CACHE = {};
 

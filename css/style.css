@@ -1166,3 +1166,114 @@ tr:hover td { background: var(--option-hover); }
     border-radius: var(--radius-full);
 }
 ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* =========================
+   TUTORIAL GUIADO (driver.js)
+========================= */
+
+.driver-popover {
+    color: var(--text-color);
+    padding: 1.25rem 1.5rem;
+    border-radius: var(--radius-lg);
+    min-width: 260px;
+    max-width: 340px;
+    box-shadow: var(--shadow-lg);
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-border);
+}
+
+.driver-popover-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    line-height: 1.4;
+    color: var(--text-color);
+    padding-right: 1.25rem;
+}
+
+.driver-popover-description {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+}
+
+.driver-popover-close-btn {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    width: 30px;
+    height: 26px;
+}
+.driver-popover-close-btn:hover,
+.driver-popover-close-btn:focus { color: var(--danger); }
+
+.driver-popover-progress-text {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+.driver-popover-footer { gap: 0.5rem; }
+
+.driver-popover-footer button {
+    all: unset;
+    display: inline-block;
+    box-sizing: border-box;
+    padding: 0.45rem 0.9rem;
+    font: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    line-height: 1.2;
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--option-border);
+    background-color: var(--option-bg);
+    color: var(--text-color);
+    transition: var(--transition);
+}
+.driver-popover-footer button:hover,
+.driver-popover-footer button:focus {
+    background-color: var(--option-hover);
+    border-color: var(--primary);
+}
+
+.driver-popover-navigation-btns { gap: 0.5rem; }
+
+.driver-popover-navigation-btns button:last-child {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+}
+.driver-popover-navigation-btns button:last-child:hover {
+    background-color: var(--primary-hover);
+}
+
+.driver-popover-btn-disabled { opacity: 0.45; }
+
+.driver-popover-arrow-side-top,
+.driver-popover-arrow-side-bottom,
+.driver-popover-arrow-side-left,
+.driver-popover-arrow-side-right {
+    border-color: var(--card-bg);
+}
+
+/* Botão "Pular tutorial" injetado no rodapé */
+.tour-skip-btn {
+    all: unset;
+    display: inline-block;
+    box-sizing: border-box;
+    padding: 0.45rem 0.9rem;
+    font: inherit;
+    font-size: 0.8rem;
+    font-weight: 600;
+    line-height: 1.2;
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    background-color: transparent;
+    border: 1px solid transparent;
+    transition: var(--transition);
+    margin-right: auto;
+}
+.tour-skip-btn:hover {
+    color: var(--danger);
+    border-color: var(--danger);
+}

@@ -20,3 +20,6 @@ __pycache__/
 
 # Batches intermediários de geração de quiz
 json/batches/
+
+# Perfis temporários de debug (Chrome headless / CDP)
+.tmp-chrome-*/
