@@ -372,25 +372,30 @@
             const weak = getWeakCategories();
             const weakList = Object.entries(weak).sort((a, b) => b[1] - a[1]).slice(0, 3);
 
+            // Questões que o usuário nem chegou a ver (finalizou antes de avançar).
+            const unseen = Math.max(total - 1 - session.index, 0);
+            // Total de questões não respondidas = puladas + nunca vistas.
+            const notAnswered = session.skipped + unseen;
+
             // Preparo: apenas sobre questões efetivamente respondidas (não puladas).
-            const answered = Math.max(total - session.skipped, 0);
+            const answered = Math.max(total - notAnswered, 0);
             const prepared = total ? Math.round((answered - session.weak) / total * 100) : 0;
 
             document.getElementById('result-stats').innerHTML = `
                 <div class="stat-box"><div class="stat-value">${total}</div><div class="stat-label">Perguntas</div></div>
                 <div class="stat-box"><div class="stat-value" style="color:var(--warning);">${formatTime(elapsed)}</div><div class="stat-label">Duração</div></div>
                 <div class="stat-box"><div class="stat-value" style="color:var(--danger);">${session.weak}</div><div class="stat-label">Marcadas difíceis</div></div>
-                <div class="stat-box"><div class="stat-value" style="color:var(--info);">${session.skipped}</div><div class="stat-label">Puladas</div></div>
+                <div class="stat-box"><div class="stat-value" style="color:var(--info);">${notAnswered}</div><div class="stat-label">Não respondidas</div></div>
                 <div class="stat-box"><div class="stat-value" style="color:var(--success);">${Math.max(prepared, 0)}%</div><div class="stat-label">Sente-se preparado</div></div>
             `;
-            const skipNotice = session.skipped > 0
-                ? `<div class="callout callout-warning"><strong><i class="fa-solid fa-forward"></i> Você pulou ${session.skipped} ${session.skipped === 1 ? 'questão' : 'questões'}.</strong> Responder em voz alta é essencial para o treino — reveja as respostas esperadas das perguntas puladas.</div>`
+            const skipNotice = notAnswered > 0
+                ? `<div class="callout callout-warning"><strong><i class="fa-solid fa-forward"></i> Você deixou de responder ${notAnswered} ${notAnswered === 1 ? 'questão' : 'questões'}${session.skipped ? ` (${session.skipped} puladas, ${unseen} não vistas)` : ''}.</strong> Responder em voz alta é essencial para o treino — reveja as respostas esperadas das perguntas não respondidas.</div>`
                 : '';
             const weakNotice = weakList.length
                 ? `<div class="callout callout-warning"><strong><i class="fa-solid fa-fire"></i> Áreas para reforçar (adaptativo):</strong> ${weakList.map(([c, n]) => `${c} (${n}x)`).join(' · ')}</div>`
                 : '';
             // 'Ótimo' só aparece se todas as questões foram respondidas e nenhuma foi difícil.
-            const allAnswered = session.skipped === 0;
+            const allAnswered = notAnswered === 0;
             const praise = allAnswered && !weakList.length
                 ? '<div class="callout callout-success"><strong>Ótimo!</strong> Nenhuma área difícil registrada nesta sessão. Continue praticando.</div>'
                 : '';
