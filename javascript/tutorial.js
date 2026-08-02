@@ -118,12 +118,24 @@ function startTutorial() {
         overlayColor: 'rgba(0, 0, 0, 0.75)',
         smoothScroll: true,
         showProgress: true,
-        progressText: '{current} / {total}',
+        // driver.js não interpola strings; renderizamos "X / Y" por passo abaixo
+        progressText: '',
         showButtons: ['next', 'previous', 'close'],
         nextBtnText: 'Próximo',
         prevBtnText: 'Anterior',
         doneBtnText: 'Explorar a Plataforma',
-        onPopoverRender: (popover) => injectSkipButton(popover),
+        onPopoverRender: (popover, { config, state }) => {
+            injectSkipButton(popover);
+            // atualiza o contador de progresso no rodapé (state.activeIndex é 0-based)
+            const progressEl =
+                popover.footer && popover.footer.querySelector('.driver-popover-progress-text');
+            if (progressEl) {
+                const total = (config && config.steps && config.steps.length) || 0;
+                const current =
+                    state && typeof state.activeIndex === 'number' ? state.activeIndex + 1 : 0;
+                progressEl.textContent = `${current} / ${total}`;
+            }
+        },
         onDestroyed: () => markTutorialSeen(),
         steps: buildTutorialSteps(),
     });
