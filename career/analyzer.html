@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Story Analyzer | InterviewOps Portugal</title>
+    <meta name="description" content="Cole sua resposta de entrevista e descubra o assunto detectado, a cobertura da estrutura STAR e se o impacto está claro.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body data-page="career">
+    <header class="topbar">
+        <a href="../index.html" class="topbar-content">
+            <i class="fa-solid fa-bullseye logo-icon"></i>
+            <span>InterviewOps Portugal</span>
+        </a>
+        <div class="topbar-actions">
+            <button id="theme-toggle" class="theme-toggle" aria-label="Alternar tema"><i class="fa-solid fa-moon"></i></button>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <div class="nav-links">
+            <a href="../index.html" class="nav-link" data-page="home"><i class="fa-solid fa-house"></i> Home</a>
+            <a href="../dashboard/index.html" class="nav-link" data-page="dashboard"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+            <a href="../modules/index.html" class="nav-link" data-page="modules"><i class="fa-solid fa-book-open"></i> Módulos</a>
+            <a href="../mock/index.html" class="nav-link" data-page="mock"><i class="fa-solid fa-microphone"></i> Mock Interview</a>
+            <a href="index.html" class="nav-link" data-page="career"><i class="fa-solid fa-compass"></i> Career Engine</a>
+                        <a href="../english/index.html" class="nav-link" data-page="english"><i class="fa-solid fa-language"></i> English</a>
+            <a href="../tracker/index.html" class="nav-link" data-page="tracker"><i class="fa-solid fa-chart-line"></i> Gaps</a>
+            <a href="../roadmap/index.html" class="nav-link" data-page="roadmap"><i class="fa-solid fa-route"></i> Roadmap</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="breadcrumb">
+            <a href="../index.html">Home</a> <i class="fa-solid fa-chevron-right"></i>
+            <a href="index.html">Career Engine</a> <i class="fa-solid fa-chevron-right"></i> <span>Story Analyzer</span>
+        </div>
+
+        <div class="page-header">
+            <h1><i class="fa-solid fa-microscope" style="color: var(--primary);"></i> Story Analyzer</h1>
+            <p>Cole o rascunho de uma resposta de entrevista e o analisador investiga o texto: detecta o <strong>assunto</strong> predominante (com % de coerência), a cobertura da estrutura <strong>STAR</strong> (Situação, Tarefa, Ação, Resultado) e se o <strong>impacto</strong> está mensurável. Tudo roda no seu navegador — nada é enviado para fora.</p>
+        </div>
+
+        <div class="content-section">
+            <h2><i class="fa-solid fa-keyboard"></i> Sua resposta</h2>
+            <p class="text-muted mb-2">Exemplo: "Eu mexi com API na empresa XYZ para validar a entrada e saída de dados do servidor ABC, e reduzi o tempo de regressão em 50%."</p>
+            <textarea id="story-input" placeholder="Escreva ou cole aqui sua resposta de entrevista (mínimo ~20 palavras para análise mais confiável)..." rows="8" style="width:100%; padding:1rem; border-radius:12px; border:1px solid var(--option-border); background:var(--card-bg); color:var(--text-color); font-family:inherit; resize:vertical;"></textarea>
+            <div class="flex-between mt-2">
+                <span class="text-muted" id="char-count">0 palavras</span>
+                <div class="flex gap-2">
+                    <button class="outline-btn small-btn" onclick="loadExample()"><i class="fa-solid fa-wand-magic-sparkles"></i> Usar exemplo</button>
+                    <button class="primary-btn" onclick="analyzeStory()" style="display:inline-flex;align-items:center;gap:0.5rem;padding:0.7rem 1.4rem;border-radius:12px;color:#fff;font-weight:600;"><i class="fa-solid fa-microscope"></i> Analisar resposta</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="analysis-result" style="display:none;"></div>
+
+        <div class="content-section">
+            <h2><i class="fa-solid fa-circle-info"></i> Como o analisador funciona</h2>
+            <div class="grid-3 mt-2">
+                <div class="stat-box"><div class="stat-value" style="font-size:1.3rem; color:var(--info);"><i class="fa-solid fa-tag"></i></div><div class="stat-label" style="font-weight:700;">Detecção de tema</div><div class="text-muted" style="font-size:0.85rem;">Palavras-chave por tecnologia (API, SQL, Robot, Playwright, Docker...) são procuradas no texto para estimar o assunto com %.</div></div>
+                <div class="stat-box"><div class="stat-value" style="font-size:1.3rem; color:var(--warning);"><i class="fa-solid fa-list-check"></i></div><div class="stat-label" style="font-weight:700;">Estrutura STAR</div><div class="text-muted" style="font-size:0.85rem;">Situação, Tarefa, Ação e Resultado. Quanto mais elementos, mais completa e contável é a história.</div></div>
+                <div class="stat-box"><div class="stat-value" style="font-size:1.3rem; color:var(--success);"><i class="fa-solid fa-chart-column"></i></div><div class="stat-label" style="font-weight:700;">Impacto mensurável</div><div class="text-muted" style="font-size:0.85rem;">Números (%, tempo, bugs, valores) e palavras de impacto fazem a resposta entregar o valor que o entrevistador quer ouvir.</div></div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>InterviewOps Portugal &copy; 2026. Desenvolvido para estudos. <a href="../privacidade/index.html" style="color: var(--primary);"><span data-i18n="privacy_title">Política de Privacidade</span></a></p>
+    </footer>
+
+    <script src="../javascript/app.js"></script>
+    <script>
+        // ---- DICIONÁRIO DE TEMAS (palavras-chave por tecnologia) ----
+        // Cada tema tem keywords (termos fortes) e um rótulo amigável + sugestão de melhoria.
+        const THEMES = [
+            { name: 'API', label: 'API / Testes de API', icon: 'fa-plug', keywords: ['api', 'rest', 'endpoint', 'endpoints', 'http', 'postman', 'swagger', 'openapi', 'request', 'response', 'status code', 'status code', 'oauth', 'jwt', 'token', 'bearer', 'json', 'contrato', 'contract', 'payload', 'verbos', 'get ', 'put ', 'post ', 'patch', 'delete'], tip: 'Conte também o contrato (schemas), casos de erro (401/403/422) e como a autenticação é coberta.' },
+            { name: 'SQL', label: 'SQL / Validação de dados', icon: 'fa-database', keywords: ['sql', 'select', 'join', 'joins', 'query', 'queries', 'banco de dados', 'banco', 'schema', 'tabela', 'tabelas', 'persistencia', 'persistência', 'crud', 'validação de dados', 'validadção de dados', 'dados', 'consulta', 'insert', 'update', 'delete', 'view', 'store procedure'], tip: 'Conte como a validação de dados encontrou uma inconsistência invisível na UI e virou regressão.' },
+            { name: 'Robot Framework', label: 'Robot Framework', icon: 'fa-robot', keywords: ['robot framework', 'robot', 'keyword', 'keywords', 'suite', 'suites', 'output.xml', 'log.html', 'resource', 'variables', 'keywords-driven', 'flaky', 'retry'], tip: 'Conte sobre causas raiz de flakiness (Sleep, dados compartilhados, seletores) e a melhoria de estabilidade.' },
+            { name: 'Playwright', label: 'Playwright / E2E', icon: 'fa-window-restore', keywords: ['playwright', 'e2e', 'auto-wait', 'auto wait', 'getbyrole', 'getbytext', 'selector', 'seletores', 'fixture', 'fixtures', 'browser', 'cypress', 'selenium', 'puppeteer'], tip: 'Destaque auto-wait, seletores acessíveis e o ganho de estabilidade/tempo em relação à ferramenta anterior.' },
+            { name: 'Python', label: 'Python', icon: 'fa-python', keywords: ['python', 'pytest', 'requests', 'fixture', 'assert', 'pip', 'venv', 'script', 'scripts', 'função', 'funcoes', 'lib', 'framework'], tip: 'Ligue o Python ao caso real: fixtures de autenticação, helpers de API ou análise de logs.' },
+            { name: 'JavaScript', label: 'JavaScript', icon: 'fa-js', keywords: ['javascript', 'js', 'typescript', 'node', 'async', 'await', 'promise', 'closure', 'playwright', 'cypress', 'npm', 'dom'], tip: 'Mostre programação assíncrona e como resolveu um problema real de automação no dia a dia.' },
+            { name: 'CI/CD', label: 'CI/CD & Pipeline', icon: 'fa-arrows-rotate', keywords: ['ci', 'cd', 'pipeline', 'pipelines', 'jenkins', 'github actions', 'gitlab', 'azure devops', 'deploy', 'build', 'stage', 'estágios', 'stages', 'gates', 'quality gate', 'nightly', 'smoke'], tip: 'Conte sobre gates de qualidade, redução de tempo de suíte e execução a cada PR/deploy.' },
+            { name: 'Docker', label: 'Docker / Containers', icon: 'fa-dharmachakra', keywords: ['docker', 'container', 'containers', 'dockerfile', 'docker-compose', 'compose', 'imagem', 'image', 'volume', 'ambientes', 'ambiente', 'kubernetes', 'k8s', 'pod', 'deployment', 'orquestração'], tip: 'Mostre como containers resolveram problema de ambiente/dados poluídos e melhoraram a reprodução de testes.' },
+            { name: 'Git', label: 'Git', icon: 'fa-code-branch', keywords: ['git', 'branch', 'branches', 'rebase', 'merge', 'cherry-pick', 'pull request', 'pr', 'commit', 'gitflow', 'git flow', 'conflito', 'conflitos', 'tag', 'stash', 'checkout'], tip: 'Conte sobre fluxo de trabalho, gates no PR ou resolução de conflitos que protegeu a main.' },
+            { name: 'Security', label: 'Security / Segurança', icon: 'fa-shield-halved', keywords: ['segurança', 'security', 'owasp', 'vulnerabilidade', 'rbac', 'autorização', 'autorizacao', 'autenticação', 'autenticacao', 'oauth', 'jwt', 'token', 'injection', 'xss', 'csrf', 'pentest', 'sql injection', 'criptografia', 'auditoria'], tip: 'Conte sobre a matriz RBAC, cenários negativos de auth e a falha que você encontrou antes de produção.' },
+            { name: 'Performance', label: 'Performance / Carga', icon: 'fa-gauge-high', keywords: ['performance', 'carga', 'load', 'estresse', 'stress', 'jmeter', 'k6', 'latência', 'latencia', 'throughput', 'p95', 'p99', 'slas', 'sla', 'gargalo', 'concorrência', 'vus', 'threshold'], tip: 'Conte sobre o SLA definido, o gargalo encontrado sob carga e o impacto no negócio (ex.: lançamento).' },
+            { name: 'BDD', label: 'BDD / Gherkin', icon: 'fa-comment-dots', keywords: ['bdd', 'gherkin', 'given', 'when', 'then', 'e ', 'cenário', 'cenario', 'feature', 'cucumber', 'specflow', 'behavior', 'comportamento'], tip: 'Mostre colaboração com o time (3 amigos) e a ligação entre cenário Gherkin e automação.' },
+            { name: 'SAP', label: 'SAP', icon: 'fa-industry', keywords: ['sap', 'sap gui', 'bapi', 'rfm', 'tcode', 'transaction', 'transação', 'idoc', 'ale', 'ecossistema sap', 's4', 'ecc'], tip: 'Conte sobre integrações legadas e automação de fluxos críticos no ecossistema SAP.' },
+            { name: 'Agile', label: 'Agile / Scrum', icon: 'fa-people-group', keywords: ['ágil', 'agil', 'scrum', 'kanban', 'sprint', 'backlog', 'daily', 'retro', 'retrospectiva', 'cerimônias', 'cerimonias', 'stakeholder', 'product owner', 'po ', 'definição de pronto', 'definition of done', 'velocidade', 'planning'], tip: 'Mostre o seu papel no time ágil e como a qualidade participa das cerimônias e da Definition of Done.' },
+            { name: 'English', label: 'English / Inglês', icon: 'fa-language', keywords: ['inglês', 'ingles', 'english', 'b1', 'b2', 'c1', 'internacional', 'cliente internacional', 'daily em inglês', 'report em inglês', 'vocabulário técnico'], tip: 'Conte sobre comunicação com cliente internacional, relatórios e vocabulário técnico em inglês.' },
+            { name: 'IA', label: 'IA / LLM / MCP', icon: 'fa-robot', keywords: ['ia', 'inteligência artificial', 'llm', 'gpt', 'claude', 'modelo', 'prompt', 'prompts', 'mcp', 'model context protocol', 'ollama', 'fine-tuning', 'rag', 'vibe coding', 'embedding', 'tokens', 'alucinação', 'alucinacao', 'genai'], tip: 'Conte o uso prático (gerar casos, triar bugs, revisar código) e o papel humano de validar a saída.' },
+            { name: 'Leadership', label: 'Liderança', icon: 'fa-bullseye', keywords: ['liderança', 'lideranca', 'liderar', 'time', 'mentoria', 'mentor', 'conflitos', 'decisão', 'decisao', 'alinhamento', 'stakeholder', 'transformação', 'cultura', 'guia', 'capitão', 'coach'], tip: 'Mostre pessoas e processo: como alinhou o time, removeu obstáculos e mediu o resultado da transformação.' },
+            { name: 'HR', label: 'Comportamental / Soft skills', icon: 'fa-user', keywords: ['comunicação', 'comunicacao', 'trabalho em equipe', 'colaboração', 'colaboracao', 'feedback', 'proatividade', 'organização', 'organizacao', 'priorização', 'priorizacao', 'resiliência', 'resiliencia', 'adaptação', 'adaptacao', 'empatia'], tip: 'Conte uma situação real com pessoas, o conflito/desafio e o resultado no time.' }
+        ];
+
+        // Palavras por elemento STAR (marcadores de contexto + ação + resultado)
+        const STAR = {
+            S: {
+                label: 'Situação / Contexto',
+                icon: 'fa-briefcase',
+                keywords: ['projeto', 'empresa', 'cliente', 'time', 'squad', 'sistema', 'aplicação', 'aplicacao', 'contexto', 'precisávamos', 'precisavamos', 'estava', 'estavam', 'herdei', 'o cliente', 'situação', 'situacao', 'ambiente', 'produto', 'cenário', 'cenario', 'contexto', 'suíte', 'suite', 'fluxo']
+            },
+            T: {
+                label: 'Tarefa / Desafio',
+                icon: 'fa-list-check',
+                keywords: ['tarefa', 'desafio', 'objetivo', 'responsável', 'responsavel', 'precisava', 'necessário', 'necessario', 'fui responsável', 'fui responsavel', 'minha função', 'minha funcao', 'tive que', 'precisou', 'exigia', 'problema', 'meta', 'demanda']
+            },
+            A: {
+                label: 'Ação (o que VOCÊ fez)',
+                icon: 'fa-wand-magic-sparkles',
+                keywords: ['implementei', 'criei', 'desenvolvi', 'configurei', 'automatizei', 'escrevi', 'analisei', 'identifiquei', 'substituí', 'substitui', 'montei', 'estruturei', 'fiz', 'propus', 'liderei', 'refatorei', 'otimizei', 'padronizei', 'implementamos', 'criamos', 'configurei', 'desenvolvi', 'implementei', 'estabeleci', 'elaborei', 'construí', 'construi', 'executei', 'conduzi']
+            },
+            R: {
+                label: 'Resultado / Impacto',
+                icon: 'fa-chart-column',
+                keywords: ['resultado', 'reduzi', 'redução', 'reducao', 'caiu', 'subiu', 'aumentou', 'diminuiu', 'melhorou', 'evitou', 'evitei', 'gargalo', 'detectou', 'detectei', 'encontrei', 'encontramos', 'atingiu', 'cresceu', 'economizou', 'tempo', 'minutos', 'horas', 'dias', 'percentual', 'por cento', '%', 'stabilidade', 'estabilidade', '99%', '98%', 'produção', 'producao', 'release', 'bug', 'bugs', 'erros', 'falhas', 'custos', 'custo', 'financeiro', 'impacto', 'metrica', 'métrica', 'métricas', 'vendas', 'receita', 'cliente final']
+            }
+        };
+
+        // Palavras de impacto mensurável / valor de negócio
+        const IMPACT_WORDS = ['%', 'por cento', 'percentual', 'tempo', 'minutos', 'horas', 'dias', 'semanas', 'reduzi', 'redução', 'reducao', 'caiu', 'subiu', 'aumentou', 'diminuiu', 'melhorou', 'economizou', 'evitou', 'custos', 'custo', 'financeiro', 'financeira', 'receita', 'vendas', 'bugs', 'bug', 'erros', 'falhas', 'incidentes', 'incidente', 'produção', 'producao', 'release', 'estabilidade', '99%', '98%', '95%', 'dinheiro', 'prejuízo', 'prejuizo', 'impacto', 'risco', 'slas', 'sla', 'agilidade', 'velocidade'];
+
+        function wordCount(text) {
+            return text.trim() ? text.trim().split(/\s+/).length : 0;
+        }
+
+        function norm(text) {
+            return text.toLowerCase()
+                .replace(/[áàâãä]/g, 'a').replace(/[éèêë]/g, 'e')
+                .replace(/[íìîï]/g, 'i').replace(/[óòôõö]/g, 'o')
+                .replace(/[úùûü]/g, 'u').replace(/ç/g, 'c')
+                .replace(/\s+/g, ' ');
+        }
+
+        // Remove acentos para matching confiável
+        function findInNorm(normText, keyword) {
+            return normText.includes(norm(keyword));
+        }
+
+        function analyzeThemes(normText) {
+            const scored = THEMES.map(t => {
+                let hits = 0;
+                t.keywords.forEach(k => { if (findInNorm(normText, k)) hits++; });
+                return { theme: t, hits };
+            }).filter(x => x.hits > 0).sort((a, b) => b.hits - a.hits);
+
+            const totalHits = scored.reduce((s, x) => s + x.hits, 0);
+            return scored.slice(0, 3).map((x, i) => ({
+                theme: x.theme,
+                hits: x.hits,
+                pct: totalHits ? Math.round((x.hits / totalHits) * 100) : 0
+            }));
+        }
+
+        function analyzeSTAR(normText) {
+            const result = {};
+            Object.entries(STAR).forEach(([key, def]) => {
+                const hits = def.keywords.filter(k => findInNorm(normText, k)).length;
+                result[key] = { def, hits, present: hits > 0 };
+            });
+            return result;
+        }
+
+        function analyzeImpact(normText) {
+            const hits = IMPACT_WORDS.filter(k => findInNorm(normText, k));
+            return { hits, count: hits.length };
+        }
+
+        window.loadExample = function() {
+            const ex = "No projeto da empresa XYZ, a integração com o servidor ABC tinha um fluxo de entrada e saída de dados validado apenas manualmente. Eu era responsável por garantir a integridade da API. Desenvolvi uma suíte de testes de API com validação de contrato, cobrindo o happy path e os erros de negócio, e criei validações SQL da persistência. O resultado: reduzi o tempo de regressão de 2 dias para 30 minutos e evitei um bug que afetaria os clientes em produção.";
+            document.getElementById('story-input').value = ex;
+            updateCharCount();
+            analyzeStory();
+        };
+
+        function updateCharCount() {
+            const val = document.getElementById('story-input').value;
+            document.getElementById('char-count').innerText = `${wordCount(val)} palavras`;
+        }
+
+        window.analyzeStory = function() {
+            const text = document.getElementById('story-input').value;
+            const box = document.getElementById('analysis-result');
+            const words = wordCount(text);
+
+            if (words < 10) {
+                box.style.display = 'block';
+                box.innerHTML = '<div class="callout callout-warning" style="margin-top:1rem;"><strong><i class="fa-solid fa-triangle-exclamation"></i> Pouco texto.</strong> Escreva pelo menos 10-20 palavras para uma análise útil.</div>';
+                return;
+            }
+
+            const ntext = norm(text);
+            const themes = analyzeThemes(ntext);
+            const star = analyzeSTAR(ntext);
+            const impact = analyzeImpact(ntext);
+
+            const themeBlocks = themes.length
+                ? themes.map((t, i) => `
+                    <div class="criteria-box ${i === 0 ? 'criteria-good' : 'criteria-info'}">
+                        <strong><i class="fa-solid ${t.theme.icon}"></i> ${escapeHtml(t.theme.label)}</strong>
+                        <div class="progress-container mt-1" style="margin:0.5rem 0;"><div class="progress-bar ${t.pct >= 50 ? 'success' : 'warning'}" style="width:${t.pct}%"></div></div>
+                        <div class="text-muted" style="font-size:0.85rem;">Coerência estimada: <strong>${t.pct}%</strong> (${t.hits} indicador${t.hits === 1 ? '' : 'es'})</div>
+                        <p style="margin-top:0.6rem; font-size:0.85rem;"><i class="fa-solid fa-lightbulb"></i> ${escapeHtml(t.theme.tip)}</p>
+                    </div>`).join('')
+                : '<div class="callout callout-warning"><strong><i class="fa-solid fa-magnifying-glass"></i> Nenhum tema técnico claro detectado.</strong> Mencione a tecnologia (API, SQL, Robot, Playwright, Docker...) para o entrevistador mapear sua resposta à vaga.</div>';
+
+            const starBlocks = Object.entries(star).map(([k, s]) => {
+                const icon = s.present ? 'fa-circle-check' : 'fa-circle-xmark';
+                const cls = s.present ? 'callout-success' : 'callout-danger';
+                return `<div class="criteria-box criteria-${k === 'S' ? 'tech' : k === 'T' ? 'business' : k === 'A' ? 'good' : 'missing'}">
+                    <strong><i class="fa-solid ${icon}"></i> ${s.def.label}</strong>
+                    <p class="text-muted" style="margin-top:0.3rem; font-size:0.85rem;">${s.present ? 'Elemento presente no texto.' : 'Não detectado — adicione este elemento.'}</p>
+                </div>`;
+            }).join('');
+
+            const starCount = Object.values(star).filter(s => s.present).length;
+            const starPct = Math.round((starCount / 4) * 100);
+            const impactPct = impact.count >= 5 ? 100 : impact.count >= 3 ? 80 : impact.count >= 2 ? 60 : impact.count >= 1 ? 40 : 0;
+            const impactCls = impactPct >= 60 ? 'success' : impactPct >= 30 ? 'warning' : 'danger';
+            const impactList = impact.count
+                ? impact.hits.slice(0, 10).map(h => `<span class="tag-badge">${escapeHtml(h)}</span>`).join('')
+                : '<span class="text-muted">Nenhum número/impacto detectado.</span>';
+
+            const starSuggest = starCount < 4
+                ? `<div class="callout callout-warning" style="margin-top:0.75rem;"><strong><i class="fa-solid fa-list-check"></i> Dica STAR:</strong> Complete a história com os elementos ausentes. Regra: Situação (onde), Tarefa (seu desafio), Ação (o que VOCÊ fez com 'eu...'), Resultado (mensurável).</div>`
+                : '';
+            const impactSuggest = impactPct < 60
+                ? `<div class="callout callout-warning" style="margin-top:0.75rem;"><strong><i class="fa-solid fa-chart-column"></i> Impacto mensurável:</strong> Adicione números — redução de tempo (ex.: "de 2 dias para 30 min"), % de estabilidade, bugs evitados ou impacto financeiro/negócio.</div>`
+                : '';
+
+            const top = themes[0];
+            const verdict = top
+                ? `<div class="callout ${top.pct >= 50 ? 'callout-success' : 'callout-warning'}"><strong><i class="fa-solid fa-microscope"></i> Verdicto do analisador:</strong> "Está coerente com <strong>${top.pct}%</strong> sobre <strong>${escapeHtml(top.theme.label)}</strong>." ${top.pct >= 50 ? 'O tema está claro — agora refine a estrutura STAR e o impacto.' : 'O tema aparece, mas pode ficar mais explícito. Nomeie a tecnologia e o contexto com clareza.'}</div>`
+                : '';
+
+            box.style.display = 'block';
+            box.innerHTML = `
+                <div class="content-section" style="margin-top:1rem;">
+                    <div class="flex-between wrap gap-2 mb-2">
+                        <h2 style="margin:0;"><i class="fa-solid fa-microscope" style="color:var(--primary);"></i> Análise da resposta</h2>
+                        <span class="badge badge-info"><i class="fa-solid fa-file-lines"></i> ${words} palavras</span>
+                    </div>
+
+                    ${verdict}
+
+                    <h3 style="margin:1.25rem 0 0.6rem;"><i class="fa-solid fa-tag" style="color:var(--info);"></i> Assunto detectado</h3>
+                    <div class="grid-3">${themeBlocks}</div>
+
+                    <h3 style="margin:1.25rem 0 0.6rem;"><i class="fa-solid fa-list-check" style="color:var(--warning);"></i> Estrutura STAR — ${starCount}/4 (${starPct}%)</h3>
+                    <div class="criteria" style="grid-template-columns:repeat(4,1fr);">${starBlocks}</div>
+                    ${starSuggest}
+
+                    <h3 style="margin:1.25rem 0 0.6rem;"><i class="fa-solid fa-chart-column" style="color:var(--success);"></i> Impacto mensurável — ${impactPct}%</h3>
+                    <div class="progress-container" style="margin-bottom:0.6rem;"><div class="progress-bar ${impactCls}" style="width:${impactPct}%"></div></div>
+                    <div class="flex gap-2 wrap">${impactList}</div>
+                    ${impactSuggest}
+                </div>`;
+            window.scrollTo({ top: box.offsetTop - 70, behavior: 'smooth' });
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const input = document.getElementById('story-input');
+            input.addEventListener('input', updateCharCount);
+            updateCharCount();
+        });
+    </script>
+</body>
+</html>

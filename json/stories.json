@@ -1,6 +1,6 @@
 {
-    "total": 6,
-    "introduction": "O Evidence Bank resolve o maior problema das entrevistas: esquecer as próprias experiências. Cada história segue a estrutura STAR (Situação, Tarefa, Ação, Resultado) e pode ser reutilizada para responder várias perguntas. Edite os exemplos abaixo com seus dados reais.",
+    "total": 12,
+    "introduction": "O Evidence Bank resolve o maior problema das entrevistas: esquecer as próprias experiências. Cada história segue a estrutura STAR (Situação, Tarefa, Ação, Resultado) e pode ser reutilizada para responder várias perguntas. Edite os exemplos abaixo com seus dados reais — histórias de exemplo ajudam a construir a sua.",
     "stories": [
         {
             "id": "story-boticario-sql",
@@ -121,6 +121,126 @@
                 "Conte sobre um bug financeiro que você encontrou."
             ],
             "bestAnswer": "O fluxo de pagamentos era crítico e testado só em release. Automatizei testes de API (happy path + erros de negócio) e validações SQL de persistência e auditoria, rodando como smoke pós-deploy. Detectei um bug de arredondamento de valores que foi corrigido antes de afetar clientes."
+        },
+        {
+            "id": "story-playwright-e2e",
+            "title": "Piloto de Playwright que virou padrão de E2E",
+            "client": "Projeto de e-commerce",
+            "company": "Prime Control",
+            "technology": "Playwright",
+            "tags": ["Playwright", "E2E", "Auto-wait", "Fixtures", "CI/CD"],
+            "situation": "A suíte E2E legada usava Selenium com seletores frágeis e esperas manuais, falhando constantemente e exigindo manutenção alta a cada release.",
+            "task": "Avaliar e migrar a automação E2E para Playwright, reduzindo flakiness e tempo de manutenção.",
+            "action": "Implementei um piloto de Playwright: aproveitei o auto-wait para eliminar esperas manuais, criei fixtures para isolamento de estado, usei seletores baseados em roles e textos acessíveis (getByRole/getByText) e configurei a execução em paralelo com workers no CI.",
+            "result": "O piloto rodou a suíte de checkout em 40% do tempo anterior, com estabilidade de 98%. A migração completa do fluxo crítico passou a rodar a cada PR, e o padrão foi adotado pelas outras squads.",
+            "businessImpact": "Menos retrabalho de manutenção, feedback mais rápido em cada PR e maior confiança nos releases de e-commerce.",
+            "lessons": ["Auto-wait e seletores acessíveis reduzem drasticamente testes flaky.", "Um piloto pequeno e medido convence mais que uma migração grande."],
+            "possibleQuestions": [
+                "Por que Playwright em vez de Selenium?",
+                "Como você reduz testes flaky em E2E?",
+                "Como você decide quando automatizar um fluxo?"
+            ],
+            "bestAnswer": "A suíte E2E legada falhava muito por causa de seletores frágeis e esperas manuais. Implementei um piloto com Playwright: auto-wait, fixtures de estado e seletores acessíveis. O piloto rodou o checkout em 40% do tempo, com 98% de estabilidade, e virou padrão no CI a cada PR."
+        },
+        {
+            "id": "story-k6-performance",
+            "title": "Teste de carga com k6 que evitou queda no lançamento",
+            "client": "Cliente varejista",
+            "company": "Prime Control",
+            "technology": "Performance",
+            "tags": ["k6", "Performance", "Carga", "Métricas", "CI/CD"],
+            "situation": "Um grande lançamento de vendas estava previsto, mas a equipe nunca havia validado a capacidade da aplicação sob carga realista.",
+            "task": "Desenhar e executar um teste de carga do fluxo de vendas, definindo limites claros de aceite.",
+            "action": "Criei scripts de teste de carga com k6 simulando o perfil real de usuários (sessões, think time, cenários de pico). Defini SLA (p95 < 500ms, erro < 1%), configurei a execução no CI com thresholds e analisei as métricas de latência, throughput e uso de recursos.",
+            "result": "O teste revelou um gargalo no endpoint de checkout que degradava a latência para 3s sob carga, extrapolando o SLA. O time otimizou o endpoint antes do lançamento. No dia, a aplicação sustentou o pico sem queda.",
+            "businessImpact": "Evitou indisponibilidade e perda de vendas no lançamento, um evento crítico de receita do cliente.",
+            "lessons": ["Performance não é um evento único — precisa de thresholds no CI.", "Testar o perfil real de usuários é mais valioso que carga genérica."],
+            "possibleQuestions": [
+                "Como você define e valida SLAs de performance?",
+                "Conte sobre um gargalo de performance que você encontrou.",
+                "Como você integra testes de carga ao CI?"
+            ],
+            "bestAnswer": "Para um lançamento de vendas, criei testes de carga com k6 simulando o perfil real de usuários, com SLA de p95 < 500ms e erro < 1%. O teste revelou um gargalo no checkout que degradava para 3s sob carga. O time otimizou e a aplicação sustentou o pico no dia do lançamento."
+        },
+        {
+            "id": "story-security-jwt",
+            "title": "Testes de autorização que expuseram falha de RBAC",
+            "client": "Sistema bancário",
+            "company": "Prime Control",
+            "technology": "Security",
+            "tags": ["Security", "OAuth2", "JWT", "RBAC", "OWASP"],
+            "situation": "Uma API bancária havia sido projetada com controle de acesso por perfis, mas nunca houve validação automatizada de autorização entre os papéis.",
+            "task": "Criar uma matriz de testes de autorização cobrindo admin, operador e leitor em todos os recursos sensíveis.",
+            "action": "Montei uma matriz RBAC (perfil x recurso x permissão), escrevi testes de API que autenticavam com cada perfil via OAuth2/JWT e validavam o status esperado (200/403). Cobri também cenários de token expirado e escopo insuficiente.",
+            "result": "Os testes revelaram uma falha real: o perfil 'leitor' conseguia executar operações de escrita em um endpoint de transferências. O bug foi corrigido antes do release e a matriz virou regressão de segurança permanente no CI.",
+            "businessImpact": "Prevenção de uma falha de segurança grave em um sistema financeiro, protegendo operações e dados de clientes.",
+            "lessons": ["Testes de autorização são tão importantes quanto os funcionais em sistemas bancários.", "Uma matriz RBAC explícita deixa a cobertura visível para todos."],
+            "possibleQuestions": [
+                "Como você testa autorização e RBAC em APIs?",
+                "Conte sobre uma falha de segurança que você encontrou.",
+                "Como você cobre cenários negativos de autenticação?"
+            ],
+            "bestAnswer": "Em uma API bancária, montei uma matriz RBAC por perfil e recurso. Escrevi testes de API que autenticavam cada papel e validavam o status esperado. Os testes revelaram que o perfil leitor executava escrita em transferências. O bug foi corrigido antes do release e virou regressão de segurança no CI."
+        },
+        {
+            "id": "story-docker-ci",
+            "title": "Ambientes de teste com Docker Compose",
+            "client": "Projeto corporativo",
+            "company": "Prime Control",
+            "technology": "Docker",
+            "tags": ["Docker", "Compose", "CI/CD", "Ambientes"],
+            "situation": "Os testes dependiam de um ambiente compartilhado que estava sempre em estado inconsistente, causando falhas por dados poluídos e configuração divergente.",
+            "task": "Criar um ambiente de teste isolado, reproduzível e efêmero para a suíte de automação.",
+            "action": "Criei um docker-compose com os serviços necessários (app, banco, serviço auxiliar), com volumes efêmeros e seeds de dados determinísticos. Integrei a inicialização do ambiente ao pipeline de CI, recriando tudo a cada execução.",
+            "result": "As falhas por ambiente caíram a quase zero, e qualquer pessoa passou a rodar a suíte localmente com um único comando. O tempo de setup caiu de 30 minutos para menos de 5.",
+            "businessImpact": "Testes confiáveis e ambientes idênticos entre local e CI, reduzindo retrabalho e falsos negativos.",
+            "lessons": ["Ambiente reproduzível elimina a maior fonte de testes flaky.", "Containers efêmeros garantem dados limpos por execução."],
+            "possibleQuestions": [
+                "Como você cria ambientes de teste com Docker?",
+                "Como você resolve problemas de dados poluídos em testes?",
+                "Como você garante paridade entre local e CI?"
+            ],
+            "bestAnswer": "Os testes dependiam de um ambiente compartilhado e inconsistente. Criei um docker-compose com serviços, volumes efêmeros e seeds determinísticos, integrado ao CI. As falhas por ambiente caíram a quase zero, e o setup caiu de 30 para menos de 5 minutos."
+        },
+        {
+            "id": "story-gitflow",
+            "title": "Qualidade no fluxo Git com gates por branch",
+            "client": "Time interno",
+            "company": "Prime Control",
+            "technology": "Git",
+            "tags": ["Git", "GitFlow", "CI/CD", "Code Review"],
+            "situation": "Código de testes e mudanças de automação eram mesclados sem validação automática, e regressões chegavam à main silenciosamente.",
+            "task": "Implantar gates de qualidade no fluxo Git para proteger a branch principal.",
+            "action": "Defini um GitFlow leve para o time de automação: feature branches, validação obrigatória no PR (lint, execução da suíte afetada, análise de cobertura mínima) e proteção da main com merge somente após os checks. Padronizei os mensagens de commit e o uso de cherry-pick para hotfixes.",
+            "result": "Nenhuma regressão de automação chegou à main sem passar pelos gates, e o processo de code review ficou mais rápido e objetivo.",
+            "businessImpact": "Menos bugs em produção e processo de entrega de qualidade mais previsível para o time.",
+            "lessons": ["Gates de qualidade no PR protegem a main de forma automática.", "Um fluxo Git claro reduz atritos e erros de merge."],
+            "possibleQuestions": [
+                "Como você organiza o fluxo Git da sua automação?",
+                "Como você evita que código quebrado chegue à main?",
+                "Descreva sua experiência com GitFlow."
+            ],
+            "bestAnswer": "Código de automação era mesclado sem validação. Implantei um GitFlow leve com gates no PR: lint, suíte afetada e cobertura mínima obrigatórias antes do merge na main. Nenhuma regressão chegou à main sem passar pelos checks."
+        },
+        {
+            "id": "story-english-report",
+            "title": "Relatórios e sessões de teste em inglês",
+            "client": "Cliente internacional",
+            "company": "Prime Control",
+            "technology": "English",
+            "tags": ["English", "Comunicação", "Relatórios", "Internacional"],
+            "situation": "Um cliente internacional exigia toda a comunicação de QA em inglês — relatórios, defeitos e daily sync — e o time brasileiro tinha insegurança na comunicação.",
+            "task": "Garantir comunicação técnica clara em inglês para o cliente, incluindo relatórios de teste e descrições de bugs.",
+            "action": "Estruturei templates de relatório de teste e de defeitos em inglês, com vocabulário padrão de QA. Passei a conduzir o review diário de resultados em inglês, explicando o impacto e as próximas ações. Criei um glossário compartilhado de termos técnicos para o time.",
+            "result": "A comunicação com o cliente ficou fluida, os relatórios passaram a ser aprovados sem idas e vindas, e o time ganhou confiança para conduzir sessões em inglês.",
+            "businessImpact": "Relacionamento de confiança com o cliente internacional e redução de ruído de comunicação no projeto.",
+            "lessons": ["Templates e vocabulário padrão reduzem a barreira do inglês técnico.", "Comunicação clara do impacto é tão importante quanto o resultado técnico."],
+            "possibleQuestions": [
+                "Você já trabalhou com clientes internacionais? Como se comunica?",
+                "Como você reporta defeitos em inglês?",
+                "Como você conduz uma daily ou um review em inglês?"
+            ],
+            "bestAnswer": "Em um cliente internacional, toda comunicação de QA era em inglês. Estruturei templates de relatório e defeitos, conduzi o review diário em inglês e criei um glossário para o time. Os relatórios passaram a ser aprovados sem retrabalho e a comunicação ficou fluida."
         }
     ]
 }
